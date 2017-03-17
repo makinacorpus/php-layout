@@ -1,0 +1,60 @@
+<?php
+
+namespace MakinaCorpus\Layout\Grid;
+
+/**
+ * Leaf item representation
+ */
+interface ItemInterface
+{
+    /**
+     * Default/no style
+     */
+    const STYLE_DEFAULT = '_default';
+
+    /**
+     * Get node identifier
+     *
+     * @return int|string
+     */
+    public function getId() : string;
+
+    /**
+     * Get item type
+     *
+     * @return string
+     */
+    public function getType() : string;
+
+    /**
+     * Set display style
+     *
+     * @param string $style
+     *
+     * @return $this
+     */
+    public function setStyle(string $style) : Item;
+
+    /**
+     * Get display style
+     *
+     * @return string
+     */
+    public function getStyle() : string;
+
+    /**
+     * Is this instance updated
+     *
+     * @return bool
+     */
+    public function isUpdated() : bool;
+
+    /**
+     * Set the updated status of this instance
+     *
+     * @param bool $toggle
+     *
+     * @return $this
+     */
+    public function toggleUpdateStatus(bool $toggle);
+}

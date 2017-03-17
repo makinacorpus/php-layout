@@ -1,0 +1,25 @@
+{
+    "name": "makinacorpus/php-layout",
+    "description": "Grid layout reprensentation",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^5"
+    },
+    "authors": [
+        {
+            "name": "Pierre Rineau",
+            "email": "pierre.rineau@makina-corpus.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "MakinaCorpus\\Layout\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MakinaCorpus\\Layout\\Tests\\": "tests/"
+        }
+    }
+}
