@@ -71,13 +71,13 @@ class RenderTest extends \PHPUnit_Framework_TestCase
         // This is pseudo XML reprensentation of what we are waiting for:
         $representation = <<<EOT
 <container id="top-level">
-    <container id="C1">
+    <horizontal id="C1">
         <container id="C11">
             <item id="A1" />
             <item id="B4" />
         </container>
         <container id="C12">
-            <container id="C2">
+            <horizontal id="C2">
                 <container id="C21">
                     <item id="A2" />
                     <item id="A5" />
@@ -85,10 +85,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
                 <container id="C22">
                     <item id="B3" />
                 </container>
-            </container>
+            </horizontal>
         </container>
-    </container>
-    <container id="C3">
+    </horizontal>
+    <horizontal id="C3">
         <container id="C31">
             <item id="A6" />
             <item id="A9" />
@@ -102,11 +102,14 @@ class RenderTest extends \PHPUnit_Framework_TestCase
             <item id="B11" />
             <item id="A1" />
         </container>
-    </container>
+    </horizontal>
     <item id="A12" />
     <item id="B7" />
 </container>
 EOT;
+        // Create types
+        $aType = new ItemAType();
+        $bType = new ItemBType();
 
         // Place a top level container and build layout (no items)
         $topLevel = new ArbitraryContainer('top-level');
@@ -125,18 +128,18 @@ EOT;
         $c33 = $c3->appendColumn('C33');
 
         // Now place all items
-        $a1  = new Item('a',  1);
-        $a2  = new Item('a',  2);
-        $b3  = new Item('b',  3);
-        $b4  = new Item('b',  4);
-        $a5  = new Item('a',  5);
-        $a6  = new Item('a',  6);
-        $b7  = new Item('b',  7);
-        $b8  = new Item('b',  8);
-        $a9  = new Item('a',  9);
-        $b10 = new Item('b', 10);
-        $b11 = new Item('b', 11);
-        $a12 = new Item('a', 12);
+        $a1  = $aType->create(1);
+        $a2  = $aType->create(2);
+        $b3  = $bType->create(3);
+        $b4  = $bType->create(4);
+        $a5  = $aType->create(5);
+        $a6  = $aType->create(6);
+        $b7  = $bType->create(7);
+        $b8  = $bType->create(8);
+        $a9  = $aType->create(9);
+        $b10 = $bType->create(10);
+        $b11 = $bType->create(11);
+        $a12 = $aType->create(12);
 
         $c11->append($a1);
         $c11->append($b4);
@@ -161,8 +164,8 @@ EOT;
 
         // Creates the missing item type
         $itemTypeRegistry = new ItemTypeRegistry();
-        $itemTypeRegistry->registerType(new ItemAType());
-        $itemTypeRegistry->registerType(new ItemBType());
+        $itemTypeRegistry->registerType($aType);
+        $itemTypeRegistry->registerType($bType);
         $itemTypeRegistry->registerType(new ArbitraryContainerType());
         $itemTypeRegistry->registerType(new HorizontalContainerType());
 

@@ -32,7 +32,7 @@ class HorizontalContainerType implements ItemTypeInterface
     public function renderItem(ItemInterface $item, RenderCollection $collection) : string
     {
         /** @var \MakinaCorpus\Layout\Grid\ArbitraryContainer $item */
-        $output = '<container id="' . $item->getId() . '">';
+        $output = '<horizontal id="' . $item->getId() . '">';
 
         foreach ($item->getAllItems() as $child) {
             $type = $child->getType();
@@ -40,7 +40,7 @@ class HorizontalContainerType implements ItemTypeInterface
             $output .= $collection->getRenderedItem($type, $id, true);
         }
 
-        return $output . '</container>';
+        return $output . '</horizontal>';
     }
 
     public function renderAllItems(array $items, RenderCollection $collection) : array
