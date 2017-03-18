@@ -31,46 +31,39 @@ shows how it works, but won't be revelant for concrete use cases of this API.
 # Complete example
 
 For the sake of simplicity, we are going to use the unit test example to
-explain the layout we want to display, here is an XML reprensentation of
-it:
+explain the layout we want to display, here is an HTML reprensentation of
+what the bootstrap grid we want:
 
-```xml
-<container id="top-level">
-    <horizontal id="C1">
-        <container id="C11">
+```html
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
             <item id="A1" />
-            <item id="B4" />
-        </container>
-        <container id="C12">
-            <horizontal id="C2">
-                <container id="C21">
-                    <item id="A2" />
-                    <item id="A5" />
-                </container>
-                <container id="C22">
-                    <item id="B3" />
-                </container>
-            </horizontal>
-        </container>
-    </horizontal>
-    <horizontal id="C3">
-        <container id="C31">
-            <item id="A6" />
-            <item id="A9" />
-        </container>
-        <container id="C32">
-            <item id="B7" />
-            <item id="B10" />
-        </container>
-        <container id="C33">
-            <item id="B8" />
-            <item id="B11" />
-            <item id="A1" />
-        </container>
-    </horizontal>
-    <item id="A12" />
-    <item id="B7" />
-</container>
+            <item id="A4" />
+          </div>
+          <div class="col-md-6">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-6">
+                  <item id="A2" />
+                  <item id="A5" />
+                </div>
+                <div class="col-md-6">
+                  <item id="A3" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <item id="A6" />
+      <item id="A7" />
+    </div>
+  </div>
+</div>
 ```
 
 Which, for the sake of comprehensibility, would display as such (yes I am sorry
@@ -87,28 +80,16 @@ this is basic copy/paste of the comment lying in the unit test):
          * | |           |  C2         | |
          * | |           |  C21  C22   | |
          * | |           | +----+----+ | |
-         * | | A1        | | A2 | B3 | | |
-         * | | B4        | | A5 |    | | |
+         * | | A1        | | A2 | A3 | | |
+         * | | A4        | | A5 |    | | |
          * | |           | +----+----+ | |
          * | +-----+-----+-------------+ |
-         * |                             |
-         * | 3 columns:                  |
-         * |   C3                        |
-         * |   C31   C32      C33        |
-         * | +------+------+-----------+ |
-         * | | A6   | B7   | B8        | |
-         * | | A9   | B10  | B11       | |
-         * | |      |      | A1*       | |
-         * | +------+------+-----------+ |
-         * |                             |
-         * |  A12                        |
-         * |  *B7                        |
+         * |  A6                         |
+         * |  A7                         |
          * +-----------------------------+
          *
          * C: Container
          * A: Item of type A
-         * B: Item of type B
-         * *: Duplicated item
          */
 ```
 
@@ -119,10 +100,9 @@ And the associated PHP code for creating the container tree:
 ```php
 // Create types
 $aType = new ItemAType();
-$bType = new ItemBType();
 
 // Place a top level container and build layout (no items)
-$topLevel = new ArbitraryContainer('top-level');
+$topLevel = new VerticalContainer('top-level');
 $c1 = new HorizontalContainer('C1');
 $topLevel->append($c1);
 $c11 = $c1->appendColumn('C11');
@@ -131,46 +111,26 @@ $c2 = new HorizontalContainer('C2');
 $c12->append($c2);
 $c21 = $c2->appendColumn('C21');
 $c22 = $c2->appendColumn('C22');
-$c3 = new HorizontalContainer('C3');
-$topLevel->append($c3);
-$c31 = $c3->appendColumn('C31');
-$c32 = $c3->appendColumn('C32');
-$c33 = $c3->appendColumn('C33');
 
 // Now place all items
 $a1  = $aType->create(1);
 $a2  = $aType->create(2);
-$b3  = $bType->create(3);
-$b4  = $bType->create(4);
+$a3  = $aType->create(3);
+$a4  = $aType->create(4);
 $a5  = $aType->create(5);
 $a6  = $aType->create(6);
-$b7  = $bType->create(7);
-$b8  = $bType->create(8);
-$a9  = $aType->create(9);
-$b10 = $bType->create(10);
-$b11 = $bType->create(11);
-$a12 = $aType->create(12);
+$a7  = $aType->create(7);
 
 $c11->append($a1);
-$c11->append($b4);
+$c11->append($a4);
 
 $c21->append($a2);
 $c21->append($a5);
 
-$c22->append($b3);
+$c22->append($a3);
 
-$c31->append($a6);
-$c31->append($a9);
-
-$c32->append($b7);
-$c32->append($b10);
-
-$c33->append($b8);
-$c33->append($b11);
-$c33->append($a1);
-
-$topLevel->append($a12);
-$topLevel->append($b7);
+$topLevel->append($a6);
+$topLevel->append($a7);
 ```
 
 ## Render the layout
@@ -180,10 +140,11 @@ type handlers: containers are the basis of the grid and are responsible for
 the vertical and horizontal layout management.
 
 ```php
-// This is the class you would override to integrate with your own theme
-// and templating engine.
-$gridRenderer = new XmlGridRenderer();
-$vboxType = new ArbitraryContainerType($gridRenderer);
+// This is the class you would change in order to integrate more deeply with
+// your own theme and templating engine, or if you do not use bootstrap but
+// another grid layout.
+$gridRenderer = new BootstrapGridRenderer();
+$vboxType = new VerticalContainerType($gridRenderer);
 $hboxType = new HorizontalContainerType($gridRenderer);
 ```
 
@@ -193,7 +154,6 @@ type handlers:
 ```php
 $itemTypeRegistry = new ItemTypeRegistry();
 $itemTypeRegistry->registerType($aType);
-$itemTypeRegistry->registerType($bType);
 $itemTypeRegistry->registerType($vboxType);
 $itemTypeRegistry->registerType($hboxType);
 ```

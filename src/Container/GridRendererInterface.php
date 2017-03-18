@@ -2,8 +2,9 @@
 
 namespace MakinaCorpus\Layout\Container;
 
-use MakinaCorpus\Layout\Grid\ArbitraryContainer;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
@@ -13,14 +14,24 @@ use MakinaCorpus\Layout\Render\RenderCollection;
 interface GridRendererInterface
 {
     /**
-     * Render an arbitrary container
+     * Render an vertical container
      *
-     * @param ArbitraryContainer $container
+     * @param VerticalContainer $container
      * @param RenderCollection $collection
      *
      * @return string
      */
-    public function renderAbritraryContainer(ArbitraryContainer $container, RenderCollection $collection);
+    public function renderVerticalContainer(VerticalContainer $container, RenderCollection $collection) : string;
+
+    /**
+     * Render an horizontal container single column
+     *
+     * @param ColumnContainer $container
+     * @param RenderCollection $collection
+     *
+     * @return string
+     */
+    public function renderColumnContainer(ColumnContainer $container, RenderCollection $collection) : string;
 
     /**
      * Render an horizontal container
@@ -30,5 +41,5 @@ interface GridRendererInterface
      *
      * @return string
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection);
+    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string;
 }

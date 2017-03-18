@@ -3,8 +3,10 @@
 namespace MakinaCorpus\Layout\Tests\Unit\Render;
 
 use MakinaCorpus\Layout\Container\GridRendererInterface;
-use MakinaCorpus\Layout\Grid\ArbitraryContainer;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
+use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
@@ -14,30 +16,46 @@ use MakinaCorpus\Layout\Render\RenderCollection;
 class XmlGridRenderer implements GridRendererInterface
 {
     /**
-     * {@inheritdoc}
+     * Render as XML element
+     *
+     * @param ContainerInterface $container
+     * @param RenderCollection $collection
+     * @param string $element
+     *
+     * @return string
      */
-    public function renderAbritraryContainer(ArbitraryContainer $container, RenderCollection $collection)
+    private function renderAsElement(ContainerInterface $container, RenderCollection $collection, string $element) : string
     {
-        $output = '<container id="' . $container->getId() . '">';
+        $output = '<' . $element . ' id="' . $container->getId() . '">';
 
         foreach ($container->getAllItems() as $child) {
             $output .= $collection->getRenderedItem($child, true);
         }
 
-        return $output . '</container>';
+        return $output . '</' . $element . '>';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection)
+    public function renderVerticalContainer(VerticalContainer $container, RenderCollection $collection) : string
     {
-        $output = '<horizontal id="' . $container->getId() . '">';
+        return $this->renderAsElement($container, $collection, 'vertical');
+    }
 
-        foreach ($container->getAllItems() as $child) {
-            $output .= $collection->getRenderedItem($child, true);
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function renderColumnContainer(ColumnContainer $container, RenderCollection $collection) : string
+    {
+        return $this->renderAsElement($container, $collection, 'column');
+    }
 
-        return $output . '</horizontal>';
+    /**
+     * {@inheritdoc}
+     */
+    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string
+    {
+        return $this->renderAsElement($container, $collection, 'horizontal');
     }
 }

@@ -5,23 +5,23 @@ namespace MakinaCorpus\Layout\Grid;
 use MakinaCorpus\Layout\Error\OutOfBoundsError;
 
 /**
- * Arbitrary mutable item container
+ * Vertical mutable item container
  */
-class ArbitraryContainer extends Item implements ContainerInterface
+class VerticalContainer extends Item implements ContainerInterface
 {
     use ContainerTrait;
 
     /**
      * This type of item type string
      */
-    const ARBITRARY_CONTAINER = 'abox';
+    const VERTICAL_CONTAINER = 'vbox';
 
     /**
      * Default constructor
      */
     public function __construct($id = null)
     {
-        parent::__construct(self::ARBITRARY_CONTAINER, $id ?: uniqid());
+        parent::__construct(self::VERTICAL_CONTAINER, $id ?: uniqid());
     }
 
     /**
@@ -50,7 +50,7 @@ class ArbitraryContainer extends Item implements ContainerInterface
      *
      * @return $this
      */
-    public function addAt(Item $item, int $position = -1) : ArbitraryContainer
+    public function addAt(Item $item, int $position = -1) : VerticalContainer
     {
         if (0 === $position) {
             array_unshift($this->items, $item);
@@ -74,7 +74,7 @@ class ArbitraryContainer extends Item implements ContainerInterface
      *
      * @return $this
      */
-    public function removeAt(int $position) : ArbitraryContainer
+    public function removeAt(int $position) : VerticalContainer
     {
         if (!isset($this->items[$position])) {
             throw new OutOfBoundsError(sprintf("%d is out of bounds, allowed: [%d-%d]", $position, 0, count($this->items) - 1));
@@ -96,7 +96,7 @@ class ArbitraryContainer extends Item implements ContainerInterface
      *
      * @return $this
      */
-    public function prepend(Item $item) : ArbitraryContainer
+    public function prepend(Item $item) : VerticalContainer
     {
         $this->addAt($item, 0);
 
@@ -110,7 +110,7 @@ class ArbitraryContainer extends Item implements ContainerInterface
      *
      * @return $this
      */
-    public function append(Item $item) : ArbitraryContainer
+    public function append(Item $item) : VerticalContainer
     {
         $this->addAt($item, -1);
 

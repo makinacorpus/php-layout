@@ -2,11 +2,12 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
-use MakinaCorpus\Layout\Container\ArbitraryContainerType;
+use MakinaCorpus\Layout\Container\BootstrapGridRenderer;
 use MakinaCorpus\Layout\Container\HorizontalContainerType;
-use MakinaCorpus\Layout\Grid\ArbitraryContainer;
+use MakinaCorpus\Layout\Container\VerticalContainerType;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
@@ -33,7 +34,7 @@ class RenderTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the item base class
      */
-    public function testScenario()
+    public function testComplexScenario()
     {
         /**
          *             TOP LEVEL
@@ -71,49 +72,49 @@ class RenderTest extends \PHPUnit_Framework_TestCase
 
         // This is pseudo XML reprensentation of what we are waiting for:
         $representation = <<<EOT
-<container id="top-level">
+<vertical id="top-level">
     <horizontal id="C1">
-        <container id="C11">
+        <column id="C11">
             <item id="A1" />
             <item id="B4" />
-        </container>
-        <container id="C12">
+        </column>
+        <column id="C12">
             <horizontal id="C2">
-                <container id="C21">
+                <column id="C21">
                     <item id="A2" />
                     <item id="A5" />
-                </container>
-                <container id="C22">
+                </column>
+                <column id="C22">
                     <item id="B3" />
-                </container>
+                </column>
             </horizontal>
-        </container>
+        </column>
     </horizontal>
     <horizontal id="C3">
-        <container id="C31">
+        <column id="C31">
             <item id="A6" />
             <item id="A9" />
-        </container>
-        <container id="C32">
+        </column>
+        <column id="C32">
             <item id="B7" />
             <item id="B10" />
-        </container>
-        <container id="C33">
+        </column>
+        <column id="C33">
             <item id="B8" />
             <item id="B11" />
             <item id="A1" />
-        </container>
+        </column>
     </horizontal>
     <item id="A12" />
     <item id="B7" />
-</container>
+</vertical>
 EOT;
         // Create types
         $aType = new ItemAType();
         $bType = new ItemBType();
 
         // Place a top level container and build layout (no items)
-        $topLevel = new ArbitraryContainer('top-level');
+        $topLevel = new VerticalContainer('top-level');
         $c1 = new HorizontalContainer('C1');
         $topLevel->append($c1);
         $c11 = $c1->appendColumn('C11');
@@ -165,12 +166,120 @@ EOT;
 
         // Creates the missing item type
         $gridRenderer = new XmlGridRenderer();
-        $vboxType = new ArbitraryContainerType($gridRenderer);
+        $vboxType = new VerticalContainerType($gridRenderer);
         $hboxType = new HorizontalContainerType($gridRenderer);
 
         $itemTypeRegistry = new ItemTypeRegistry();
         $itemTypeRegistry->registerType($aType);
         $itemTypeRegistry->registerType($bType);
+        $itemTypeRegistry->registerType($vboxType);
+        $itemTypeRegistry->registerType($hboxType);
+
+        $renderer = new Renderer($itemTypeRegistry);
+        $string = $renderer->render($topLevel);
+        $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
+    }
+
+    /**
+     * Tests the item base class
+     */
+    public function testBootstrapGridRenderer()
+    {
+        /**
+         *             TOP LEVEL
+         * +-----------------------------+
+         * | 2 columns, with nested:     |
+         * |   C1                        |
+         * |   C11           C12         |
+         * | +-----------+-------------+ |
+         * | |           |  C2         | |
+         * | |           |  C21  C22   | |
+         * | |           | +----+----+ | |
+         * | | A1        | | A2 | A3 | | |
+         * | | A4        | | A5 |    | | |
+         * | |           | +----+----+ | |
+         * | +-----+-----+-------------+ |
+         * |  A6                         |
+         * |  A7                         |
+         * +-----------------------------+
+         *
+         * C: Container
+         * A: Item of type A
+         */
+
+        // This the HTML that should be generated:
+        $representation = <<<EOT
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <item id="A1" />
+            <item id="A4" />
+          </div>
+          <div class="col-md-6">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-6">
+                  <item id="A2" />
+                  <item id="A5" />
+                </div>
+                <div class="col-md-6">
+                  <item id="A3" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <item id="A6" />
+      <item id="A7" />
+    </div>
+  </div>
+</div>
+EOT;
+        // Create types
+        $aType = new ItemAType();
+
+        // Place a top level container and build layout (no items)
+        $topLevel = new VerticalContainer('top-level');
+        $c1 = new HorizontalContainer('C1');
+        $topLevel->append($c1);
+        $c11 = $c1->appendColumn('C11');
+        $c12 = $c1->appendColumn('C12');
+        $c2 = new HorizontalContainer('C2');
+        $c12->append($c2);
+        $c21 = $c2->appendColumn('C21');
+        $c22 = $c2->appendColumn('C22');
+
+        // Now place all items
+        $a1  = $aType->create(1);
+        $a2  = $aType->create(2);
+        $a3  = $aType->create(3);
+        $a4  = $aType->create(4);
+        $a5  = $aType->create(5);
+        $a6  = $aType->create(6);
+        $a7  = $aType->create(7);
+
+        $c11->append($a1);
+        $c11->append($a4);
+
+        $c21->append($a2);
+        $c21->append($a5);
+
+        $c22->append($a3);
+
+        $topLevel->append($a6);
+        $topLevel->append($a7);
+
+        // Creates the missing item type
+        $gridRenderer = new BootstrapGridRenderer();
+        $vboxType = new VerticalContainerType($gridRenderer);
+        $hboxType = new HorizontalContainerType($gridRenderer);
+
+        $itemTypeRegistry = new ItemTypeRegistry();
+        $itemTypeRegistry->registerType($aType);
         $itemTypeRegistry->registerType($vboxType);
         $itemTypeRegistry->registerType($hboxType);
 

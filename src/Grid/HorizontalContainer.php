@@ -6,7 +6,7 @@ use MakinaCorpus\Layout\Error\OutOfBoundsError;
 
 /**
  * Horizontal split container is basis of container grids: they can only cary
- * container themselves, but nested containers are always arbitrary containers
+ * container themselves, but nested containers are always vertical containers
  * that can contain anything.
  */
 class HorizontalContainer extends Item implements ContainerInterface
@@ -34,9 +34,9 @@ class HorizontalContainer extends Item implements ContainerInterface
      *
      * @param int $position
      *
-     * @return ArbitraryContainer
+     * @return ColumnContainer
      */
-    public function getColumnAt(int $position) : ArbitraryContainer
+    public function getColumnAt(int $position) : ColumnContainer
     {
         if (!isset($this->items[$position])) {
             throw new OutOfBoundsError(sprintf("%d is out of bounds, allowed: [%d-%d]", $position, 0, count($this->items)));
@@ -54,12 +54,12 @@ class HorizontalContainer extends Item implements ContainerInterface
      * @param int|string $id
      *   Column identifier, can be null
      *
-     * @return ArbitraryContainer
+     * @return ColumnContainer
      *   The added column
      */
-    public function createColumnAt(int $position = -1, $id = null) : ArbitraryContainer
+    public function createColumnAt(int $position = -1, $id = null) : ColumnContainer
     {
-        $container = new ArbitraryContainer($id);
+        $container = new ColumnContainer($id);
 
         if (0 === $position) {
             array_unshift($this->items, $container);
@@ -104,10 +104,10 @@ class HorizontalContainer extends Item implements ContainerInterface
      * @param int|string $id
      *   Column identifier, can be null
      *
-     * @return ArbitraryContainer
+     * @return ColumnContainer
      *   The added column
      */
-    public function prependColumn($id = null) : ArbitraryContainer
+    public function prependColumn($id = null) : ColumnContainer
     {
         return $this->createColumnAt(0, $id);
     }
@@ -118,10 +118,10 @@ class HorizontalContainer extends Item implements ContainerInterface
      * @param int|string $id
      *   Column identifier, can be null
      *
-     * @return ArbitraryContainer
+     * @return ColumnContainer
      *   The added column
      */
-    public function appendColumn($id = null) : ArbitraryContainer
+    public function appendColumn($id = null) : ColumnContainer
     {
         return $this->createColumnAt(-1, $id);
     }

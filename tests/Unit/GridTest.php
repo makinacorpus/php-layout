@@ -3,10 +3,10 @@
 namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Error\OutOfBoundsError;
-use MakinaCorpus\Layout\Grid\ArbitraryContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 
 /**
  * Basic API-driven composition
@@ -33,16 +33,16 @@ class GridTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the arbitrary container
+     * Tests the vertical container
      */
-    public function testArbitraryContainer()
+    public function testVerticalContainer()
     {
-        $container = new ArbitraryContainer();
+        $container = new VerticalContainer();
         $this->assertTrue($container->isEmpty());
         $this->assertFalse($container->isUpdated());
 
         $a = new Item('a', 11);
-        $b = new ArbitraryContainer(21);
+        $b = new VerticalContainer(21);
         $c = new Item('c', 31);
         $d = new Item('d', 41);
         $e = new HorizontalContainer(51);
@@ -139,7 +139,7 @@ class GridTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the arbitrary container
+     * Tests the vertical container
      */
     public function testHorizontalContainer()
     {
@@ -149,13 +149,13 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $container);
 
         $c = $container->appendColumn('31');
-        $this->assertInstanceOf(ArbitraryContainer::class, $c);
+        $this->assertInstanceOf(VerticalContainer::class, $c);
         $a = $container->prependColumn('11');
-        $this->assertInstanceOf(ArbitraryContainer::class, $a);
+        $this->assertInstanceOf(VerticalContainer::class, $a);
         $b = $container->createColumnAt(1, '21');
-        $this->assertInstanceOf(ArbitraryContainer::class, $b);
+        $this->assertInstanceOf(VerticalContainer::class, $b);
         $d = $container->createColumnAt(127, '41');
-        $this->assertInstanceOf(ArbitraryContainer::class, $d);
+        $this->assertInstanceOf(VerticalContainer::class, $d);
 
         // Updated state
         $container->toggleUpdateStatus(false);

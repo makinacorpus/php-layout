@@ -2,16 +2,17 @@
 
 namespace MakinaCorpus\Layout\Container;
 
-use MakinaCorpus\Layout\Grid\ArbitraryContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Render\RenderCollection;
 use MakinaCorpus\Layout\Type\ItemTypeInterface;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 
 /**
- * Default arbitrary container type
+ * Default vertical container type
  */
-class ArbitraryContainerType implements ItemTypeInterface
+class VerticalContainerType implements ItemTypeInterface
 {
     /**
      * @var GridRendererInterface
@@ -33,7 +34,7 @@ class ArbitraryContainerType implements ItemTypeInterface
      */
     public function getType() : string
     {
-        return ArbitraryContainer::ARBITRARY_CONTAINER;
+        return VerticalContainer::VERTICAL_CONTAINER;
     }
 
     /**
@@ -49,7 +50,7 @@ class ArbitraryContainerType implements ItemTypeInterface
      */
     public function create(string $id, array $options = []) : ItemInterface
     {
-        return new ArbitraryContainer($id);
+        return new VerticalContainer($id);
     }
 
     /**
@@ -64,7 +65,11 @@ class ArbitraryContainerType implements ItemTypeInterface
      */
     public function renderItem(ItemInterface $item, RenderCollection $collection) : string
     {
-        return $this->gridRenderer->renderAbritraryContainer($item, $collection);
+        if ($item instanceof ColumnContainer) {
+            return $this->gridRenderer->renderColumnContainer($item, $collection);
+        }
+
+        return $this->gridRenderer->renderVerticalContainer($item, $collection);
     }
 
     /**
