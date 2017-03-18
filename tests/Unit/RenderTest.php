@@ -8,6 +8,7 @@ use MakinaCorpus\Layout\Container\VerticalContainerType;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Render\DefaultIdentifierStrategy;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
@@ -72,41 +73,41 @@ class RenderTest extends \PHPUnit_Framework_TestCase
 
         // This is pseudo XML reprensentation of what we are waiting for:
         $representation = <<<EOT
-<vertical id="top-level">
-    <horizontal id="C1">
-        <column id="C11">
-            <item id="A1" />
-            <item id="B4" />
+<vertical id="container:vbox/top-level">
+    <horizontal id="container:hbox/C1">
+        <column id="container:vbox/C11">
+            <item id="leaf:a/1"/>
+            <item id="leaf:b/4"/>
         </column>
-        <column id="C12">
-            <horizontal id="C2">
-                <column id="C21">
-                    <item id="A2" />
-                    <item id="A5" />
+        <column id="container:vbox/C12">
+            <horizontal id="container:hbox/C2">
+                <column id="container:vbox/C21">
+                    <item id="leaf:a/2" />
+                    <item id="leaf:a/5" />
                 </column>
-                <column id="C22">
-                    <item id="B3" />
+                <column id="container:vbox/C22">
+                    <item id="leaf:b/3" />
                 </column>
             </horizontal>
         </column>
     </horizontal>
-    <horizontal id="C3">
-        <column id="C31">
-            <item id="A6" />
-            <item id="A9" />
+    <horizontal id="container:hbox/C3">
+        <column id="container:vbox/C31">
+            <item id="leaf:a/6" />
+            <item id="leaf:a/9" />
         </column>
-        <column id="C32">
-            <item id="B7" />
-            <item id="B10" />
+        <column id="container:vbox/C32">
+            <item id="leaf:b/7" />
+            <item id="leaf:b/10" />
         </column>
-        <column id="C33">
-            <item id="B8" />
-            <item id="B11" />
-            <item id="A1" />
+        <column id="container:vbox/C33">
+            <item id="leaf:b/8" />
+            <item id="leaf:b/11" />
+            <item id="leaf:a/1" />
         </column>
     </horizontal>
-    <item id="A12" />
-    <item id="B7" />
+    <item id="leaf:a/12" />
+    <item id="leaf:b/7" />
 </vertical>
 EOT;
         // Create types
@@ -175,7 +176,7 @@ EOT;
         $itemTypeRegistry->registerType($vboxType);
         $itemTypeRegistry->registerType($hboxType);
 
-        $renderer = new Renderer($itemTypeRegistry);
+        $renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
         $string = $renderer->render($topLevel);
         $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
     }
@@ -211,30 +212,30 @@ EOT;
         $representation = <<<EOT
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" data-layout="container:vbox/top-level">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-6">
-            <item id="A1" />
-            <item id="A4" />
+          <div class="col-md-6" data-layout="container:vbox/C11">
+            <item id="leaf:a/1" />
+            <item id="leaf:a/4" />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6" data-layout="container:vbox/C12">
             <div class="container-fluid">
               <div class="row">
-                <div class="col-md-6">
-                  <item id="A2" />
-                  <item id="A5" />
+                <div class="col-md-6" data-layout="container:vbox/C21">
+                  <item id="leaf:a/2" />
+                  <item id="leaf:a/5" />
                 </div>
-                <div class="col-md-6">
-                  <item id="A3" />
+                <div class="col-md-6" data-layout="container:vbox/C22">
+                  <item id="leaf:a/3" />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <item id="A6" />
-      <item id="A7" />
+      <item id="leaf:a/6" />
+      <item id="leaf:a/7" />
     </div>
   </div>
 </div>
@@ -283,7 +284,7 @@ EOT;
         $itemTypeRegistry->registerType($vboxType);
         $itemTypeRegistry->registerType($hboxType);
 
-        $renderer = new Renderer($itemTypeRegistry);
+        $renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
         $string = $renderer->render($topLevel);
         $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
     }

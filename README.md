@@ -160,7 +160,7 @@ $itemTypeRegistry->registerType($hboxType);
 
 Then render it:
 ```php
-$renderer = new Renderer($itemTypeRegistry);
+$renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
 $string = $renderer->render($topLevel);
 ```
 

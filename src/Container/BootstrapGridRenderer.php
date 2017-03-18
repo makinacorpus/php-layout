@@ -19,8 +19,13 @@ class BootstrapGridRenderer implements GridRendererInterface
      *
      * @return string
      */
-    private function renderRow(string $innerText) : string
+    private function renderRow(string $innerText, string $identifier = null) : string
     {
+        if ($identifier) {
+            // @todo this should be escaped
+            $additional = ' data-layout="' . $identifier . '"';
+        }
+
         return <<<EOT
 <div class="container-fluid">
   <div class="row">
@@ -38,10 +43,11 @@ EOT;
      *   bootstrap own prefixes (xs, sm, md, lg) and values are the width
      *   on the bootstrap grid for those medias.
      * @param string $innerText
+     * @param string $identifier
      *
      * @return string
      */
-    private function renderColumn(array $sizes, string $innerText) : string
+    private function renderColumn(array $sizes, string $innerText, string $identifier = null) : string
     {
         $classes = [];
         foreach ($sizes as $media => $size) {
@@ -50,8 +56,13 @@ EOT;
 
         $classAttr = implode(' ', $classes);
 
+        if ($identifier) {
+            // @todo this should be escaped
+            $additional = ' data-layout="' . $identifier . '"';
+        }
+
         return <<<EOT
-<div class="{$classAttr}">
+<div class="{$classAttr}"{$additional}>
   {$innerText}
 </div>
 EOT;
@@ -67,7 +78,7 @@ EOT;
             $innerText .= $collection->getRenderedItem($child);
         }
 
-        return $this->renderRow($this->renderColumn(['md' => 12], $innerText));
+        return $this->renderRow($this->renderColumn(['md' => 12], $innerText, $collection->identify($container)));
     }
 
     /**
@@ -95,7 +106,7 @@ EOT;
 
         $innerText = '';
         foreach ($innerContainers as $child) {
-            $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child));
+            $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child), $collection->identify($child));
         }
 
         return $this->renderRow($innerText);

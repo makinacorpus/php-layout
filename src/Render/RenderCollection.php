@@ -14,6 +14,11 @@ use MakinaCorpus\Layout\Grid\ItemInterface;
 final class RenderCollection
 {
     /**
+     * @var IdentifierStrategyInterface
+     */
+    private $identifierStrategy;
+
+    /**
      * Circular dependency breaker
      */
     private $index = [];
@@ -34,6 +39,16 @@ final class RenderCollection
     private $rendered = [];
 
     /**
+     * Default constructor
+     *
+     * @param IdentifierStrategyInterface $identifierStrategy
+     */
+    public function __construct(IdentifierStrategyInterface $identifierStrategy)
+    {
+        $this->identifierStrategy = $identifierStrategy;
+    }
+
+    /**
      * Circular dependency breaker
      *
      * @param ItemInterface $item
@@ -43,6 +58,18 @@ final class RenderCollection
     public function has(ItemInterface $item) : bool
     {
         return isset($this->index[$item->getType()][$item->getId()]);
+    }
+
+    /**
+     * Identify item using the identifier strategy
+     *
+     * @param ItemInterface $item
+     *
+     * @return string
+     */
+    public function identify(ItemInterface $item) : string
+    {
+        return $this->identifierStrategy->compute($item);
     }
 
     /**

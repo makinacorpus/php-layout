@@ -30,7 +30,7 @@ class ItemBType implements ItemTypeInterface
 
     public function renderItem(ItemInterface $item, RenderCollection $collection) : string
     {
-        return '<item id="B' . $item->getId() . '"/>';
+        return '<item id="' . $collection->identify($item) . '"/>';
     }
 
     public function renderAllItems(array $items, RenderCollection $collection) : array

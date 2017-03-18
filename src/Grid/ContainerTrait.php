@@ -11,6 +11,8 @@ trait ContainerTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @return ItemInterface[]
      */
     public function getAllItems() : array
     {

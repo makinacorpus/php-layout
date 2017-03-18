@@ -11,16 +11,19 @@ use MakinaCorpus\Layout\Type\ItemTypeRegistry;
  */
 class Renderer
 {
+    private $identifierStrategy;
     private $typeRegistry;
 
     /**
      * Default constructor
      *
      * @param ItemTypeRegistry $typeRegistry
+     * @param IdentifierStrategyInterface $identifierStrategy
      */
-    public function __construct(ItemTypeRegistry $typeRegistry)
+    public function __construct(ItemTypeRegistry $typeRegistry, IdentifierStrategyInterface $identifierStrategy)
     {
         $this->typeRegistry = $typeRegistry;
+        $this->identifierStrategy = $identifierStrategy;
     }
 
     /**
@@ -60,7 +63,7 @@ class Renderer
     public function render(ContainerInterface $container) : string
     {
         // First collect all items and categorize them
-        $collection = new RenderCollection();
+        $collection = new RenderCollection($this->identifierStrategy);
         $this->collect($container, $collection);
 
         // Render in two passes, first render all leaf items, we know for sure
