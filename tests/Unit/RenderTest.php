@@ -2,12 +2,12 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
-use MakinaCorpus\Layout\Container\BootstrapGridRenderer;
 use MakinaCorpus\Layout\Container\HorizontalContainerType;
 use MakinaCorpus\Layout\Container\VerticalContainerType;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Render\BootstrapGridRenderer;
 use MakinaCorpus\Layout\Render\DefaultIdentifierStrategy;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;

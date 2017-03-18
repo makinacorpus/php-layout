@@ -2,12 +2,13 @@
 
 namespace MakinaCorpus\Layout\Container;
 
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
 use MakinaCorpus\Layout\Type\ItemTypeInterface;
-use MakinaCorpus\Layout\Grid\ColumnContainer;
 
 /**
  * Default vertical container type

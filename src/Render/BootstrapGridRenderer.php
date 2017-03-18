@@ -1,6 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Container;
+namespace MakinaCorpus\Layout\Render;
 
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;

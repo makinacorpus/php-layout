@@ -5,6 +5,7 @@ namespace MakinaCorpus\Layout\Container;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
 use MakinaCorpus\Layout\Type\ItemTypeInterface;
 

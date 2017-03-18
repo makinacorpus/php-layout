@@ -2,11 +2,11 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit\Render;
 
-use MakinaCorpus\Layout\Container\GridRendererInterface;
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
