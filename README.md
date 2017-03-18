@@ -135,7 +135,7 @@ $topLevel->append($a7);
 
 ## Render the layout
 
-Before initializint the type handlers, we will first create the containers
+Before initializing the type handlers, we will first create the containers
 type handlers: containers are the basis of the grid and are responsible for
 the vertical and horizontal layout management.
 
@@ -164,10 +164,10 @@ $renderer = new Renderer($itemTypeRegistry);
 $string = $renderer->render($topLevel);
 ```
 
-Which should give you for the ``$string`` the XML representation we did show
+Which should give you for the ``$string`` the HTML representation we did show
 before.
 
-# Why is it very fast to render?
+# Why should it render fast?
 
 When you ask for rendering, two very important things are done:
 
