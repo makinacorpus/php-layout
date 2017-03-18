@@ -23,12 +23,16 @@ class BootstrapGridRenderer implements GridRendererInterface
     {
         if ($identifier) {
             // @todo this should be escaped
-            $additional = ' data-layout="' . $identifier . '"';
+            $additional = ' data-id="' . $identifier . '"';
+            $container  = ' data-contains';
+        } else {
+            $additional = '';
+            $container  = '';
         }
 
         return <<<EOT
-<div class="container-fluid">
-  <div class="row">
+<div class="container-fluid"{$additional}>
+  <div class="row"{$container}>
     {$innerText}
   </div>
 </div>
@@ -58,7 +62,9 @@ EOT;
 
         if ($identifier) {
             // @todo this should be escaped
-            $additional = ' data-layout="' . $identifier . '"';
+            $additional = ' data-id="' . $identifier . '" data-contains';
+        } else {
+            $additional = '';
         }
 
         return <<<EOT
@@ -109,6 +115,6 @@ EOT;
             $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child), $collection->identify($child));
         }
 
-        return $this->renderRow($innerText);
+        return $this->renderRow($innerText, $collection->identify($container));
     }
 }
