@@ -112,14 +112,16 @@ final class RenderCollection
     /**
      * Get rendered item
      *
-     * @param string $type
-     * @param string $id
+     * @param ItemInterface $item
      * @param bool $throwExceptions
      *
      * @return string
      */
-    public function getRenderedItem(string $type, string $id, bool $throwExceptions = false) : string
+    public function getRenderedItem(ItemInterface $item, bool $throwExceptions = false) : string
     {
+        $type = $item->getType();
+        $id = $item->getId();
+
         if (!isset($this->rendered[$type][$id])) {
             if ($throwExceptions) {
                 throw new GenericError(sprintf("item %s, %s has not been rendered yet", $type, $id));

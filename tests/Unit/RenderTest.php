@@ -2,14 +2,15 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
+use MakinaCorpus\Layout\Container\ArbitraryContainerType;
+use MakinaCorpus\Layout\Container\HorizontalContainerType;
 use MakinaCorpus\Layout\Grid\ArbitraryContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Render\Renderer;
-use MakinaCorpus\Layout\Tests\Unit\Render\ArbitraryContainerType;
-use MakinaCorpus\Layout\Tests\Unit\Render\HorizontalContainerType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
+use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
 
 /**
@@ -163,11 +164,15 @@ EOT;
         $topLevel->append($b7);
 
         // Creates the missing item type
+        $gridRenderer = new XmlGridRenderer();
+        $vboxType = new ArbitraryContainerType($gridRenderer);
+        $hboxType = new HorizontalContainerType($gridRenderer);
+
         $itemTypeRegistry = new ItemTypeRegistry();
         $itemTypeRegistry->registerType($aType);
         $itemTypeRegistry->registerType($bType);
-        $itemTypeRegistry->registerType(new ArbitraryContainerType());
-        $itemTypeRegistry->registerType(new HorizontalContainerType());
+        $itemTypeRegistry->registerType($vboxType);
+        $itemTypeRegistry->registerType($hboxType);
 
         $renderer = new Renderer($itemTypeRegistry);
         $string = $renderer->render($topLevel);

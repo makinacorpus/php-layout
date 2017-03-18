@@ -21,6 +21,13 @@ and pre-rendering objects (for example, Drupal).
 > Please note this is, as of today, rather a playground than an API you could
 > use, but it worth the short of trying.
 
+# Before going deeper
+
+You should be aware the goal of this API is to, in a near future, be integrated
+into page composition tools, and its API to be hidden behind user friendly UI
+for contributing. Don't be afraid of the concrete code example below, it only
+shows how it works, but won't be revelant for concrete use cases of this API.
+
 # Complete example
 
 For the sake of simplicity, we are going to use the unit test example to
@@ -168,6 +175,18 @@ $topLevel->append($b7);
 
 ## Render the layout
 
+Before initializint the type handlers, we will first create the containers
+type handlers: containers are the basis of the grid and are responsible for
+the vertical and horizontal layout management.
+
+```php
+// This is the class you would override to integrate with your own theme
+// and templating engine.
+$gridRenderer = new XmlGridRenderer();
+$vboxType = new ArbitraryContainerType($gridRenderer);
+$hboxType = new HorizontalContainerType($gridRenderer);
+```
+
 Now that we have our top-level container, we need to instanciate the various
 type handlers:
 
@@ -175,8 +194,8 @@ type handlers:
 $itemTypeRegistry = new ItemTypeRegistry();
 $itemTypeRegistry->registerType($aType);
 $itemTypeRegistry->registerType($bType);
-$itemTypeRegistry->registerType(new ArbitraryContainerType());
-$itemTypeRegistry->registerType(new HorizontalContainerType());
+$itemTypeRegistry->registerType($vboxType);
+$itemTypeRegistry->registerType($hboxType);
 ```
 
 Then render it:
