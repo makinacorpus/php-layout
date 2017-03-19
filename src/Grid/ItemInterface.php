@@ -13,6 +13,20 @@ interface ItemInterface
     const STYLE_DEFAULT = '_default';
 
     /**
+     * For storage engine only
+     *
+     * @param int $id
+     */
+    public function setStorageId(int $id);
+
+    /**
+     * For storage engine only
+     *
+     * @return int|null
+     */
+    public function getStorageId();
+
+    /**
      * Get node identifier
      *
      * @return int|string
