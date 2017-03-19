@@ -94,13 +94,15 @@ interface LayoutStorageInterface
      * Check that a layout exists
      *
      * @param int $id
+     *
+     * @return bool
      */
     public function exists(int $id) : bool;
 
     /**
      * Load multiple layouts
      *
-     * @param int[] int $id
+     * @param int[] $idList
      *
      * @return LayoutInterface[]
      *   Same as load() but an array of it keyed by identifiers
@@ -112,14 +114,12 @@ interface LayoutStorageInterface
      *
      * This will remain silent if the layout does not exist
      *
-     * @param string $name
+     * @param int $id
      */
     public function delete(int $id);
 
     /**
      * Update a layout
-     *
-     * @param int $id
      *
      * @param LayoutInterface $layout
      *
