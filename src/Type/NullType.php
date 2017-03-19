@@ -42,7 +42,7 @@ final class NullType implements ItemTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function create(string $id, array $options = []) : ItemInterface
+    public function create(string $id, string $style = null, array $options = []) : ItemInterface
     {
         return new Item($this->type, $id);
     }

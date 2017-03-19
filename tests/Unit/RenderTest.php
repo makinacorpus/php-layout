@@ -6,20 +6,16 @@ use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Render\BootstrapGridRenderer;
-use MakinaCorpus\Layout\Render\DefaultIdentifierStrategy;
 use MakinaCorpus\Layout\Render\Renderer;
-use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
-use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
-use MakinaCorpus\Layout\Type\HorizontalContainerType;
-use MakinaCorpus\Layout\Type\ItemTypeRegistry;
-use MakinaCorpus\Layout\Type\VerticalContainerType;
 
 /**
  * Render test, ensures the bottom-top rendering of elements
  */
 class RenderTest extends \PHPUnit_Framework_TestCase
 {
+    use ComparisonTestTrait;
+
     /**
      * Normalize XML for comparison
      *
@@ -111,8 +107,9 @@ class RenderTest extends \PHPUnit_Framework_TestCase
 </vertical>
 EOT;
         // Create types
-        $aType = new ItemAType();
-        $bType = new ItemBType();
+        $typeRegistry = $this->createTypeRegistry(new XmlGridRenderer());
+        $aType = $typeRegistry->getType('a');
+        $bType = $typeRegistry->getType('b');
 
         // Place a top level container and build layout (no items)
         $topLevel = new VerticalContainer('top-level');
@@ -165,18 +162,7 @@ EOT;
         $topLevel->append($a12);
         $topLevel->append($b7);
 
-        // Creates the missing item type
-        $gridRenderer = new XmlGridRenderer();
-        $vboxType = new VerticalContainerType($gridRenderer);
-        $hboxType = new HorizontalContainerType($gridRenderer);
-
-        $itemTypeRegistry = new ItemTypeRegistry();
-        $itemTypeRegistry->registerType($aType);
-        $itemTypeRegistry->registerType($bType);
-        $itemTypeRegistry->registerType($vboxType);
-        $itemTypeRegistry->registerType($hboxType);
-
-        $renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
+        $renderer = $this->createRenderer($typeRegistry);
         $string = $renderer->render($topLevel);
         $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
     }
@@ -241,7 +227,8 @@ EOT;
 </div>
 EOT;
         // Create types
-        $aType = new ItemAType();
+        $typeRegistry = $this->createTypeRegistry(new BootstrapGridRenderer());
+        $aType = $typeRegistry->getType('a');
 
         // Place a top level container and build layout (no items)
         $topLevel = new VerticalContainer('top-level');
@@ -274,17 +261,7 @@ EOT;
         $topLevel->append($a6);
         $topLevel->append($a7);
 
-        // Creates the missing item type
-        $gridRenderer = new BootstrapGridRenderer();
-        $vboxType = new VerticalContainerType($gridRenderer);
-        $hboxType = new HorizontalContainerType($gridRenderer);
-
-        $itemTypeRegistry = new ItemTypeRegistry();
-        $itemTypeRegistry->registerType($aType);
-        $itemTypeRegistry->registerType($vboxType);
-        $itemTypeRegistry->registerType($hboxType);
-
-        $renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
+        $renderer = $this->createRenderer($typeRegistry);
         $string = $renderer->render($topLevel);
         $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
     }
