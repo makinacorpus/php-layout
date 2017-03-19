@@ -26,7 +26,7 @@ final class RenderCollection
     /**
      * Type map of items
      */
-    private $itemPerTypeMap;
+    private $itemPerTypeMap = [];
 
     /**
      * This is the sorted list of containers
