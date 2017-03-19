@@ -2,8 +2,6 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
-use MakinaCorpus\Layout\Container\HorizontalContainerType;
-use MakinaCorpus\Layout\Container\VerticalContainerType;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
@@ -13,7 +11,9 @@ use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
+use MakinaCorpus\Layout\Type\HorizontalContainerType;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
+use MakinaCorpus\Layout\Type\VerticalContainerType;
 
 /**
  * Render test, ensures the bottom-top rendering of elements

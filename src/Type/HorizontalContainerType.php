@@ -1,13 +1,12 @@
 <?php
 
-namespace MakinaCorpus\Layout\Container;
+namespace MakinaCorpus\Layout\Type;
 
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
-use MakinaCorpus\Layout\Type\ItemTypeInterface;
 
 /**
  * Default horizontal container type

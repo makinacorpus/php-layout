@@ -53,8 +53,6 @@ interface ItemInterface
      * Set the updated status of this instance
      *
      * @param bool $toggle
-     *
-     * @return $this
      */
     public function toggleUpdateStatus(bool $toggle);
 }

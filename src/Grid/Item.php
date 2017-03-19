@@ -36,6 +36,9 @@ class Item implements ItemInterface
         return $this->id;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getType() : string
     {
         return $this->type;
