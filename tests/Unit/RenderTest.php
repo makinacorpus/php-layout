@@ -17,18 +17,6 @@ class RenderTest extends \PHPUnit_Framework_TestCase
     use ComparisonTestTrait;
 
     /**
-     * Normalize XML for comparison
-     *
-     * @param string $input
-     *
-     * @return string
-     */
-    private function normalizeXML(string $input) : string
-    {
-        return preg_replace('/\s+/', '', $input);
-    }
-
-    /**
      * Tests the item base class
      */
     public function testComplexScenario()
@@ -164,7 +152,7 @@ EOT;
 
         $renderer = $this->createRenderer($typeRegistry);
         $string = $renderer->render($topLevel);
-        $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
+        $this->assertSameRenderedGrid($representation, $string);
     }
 
     /**
@@ -263,6 +251,6 @@ EOT;
 
         $renderer = $this->createRenderer($typeRegistry);
         $string = $renderer->render($topLevel);
-        $this->assertSame($this->normalizeXML($representation), $this->normalizeXML($string));
+        $this->assertSameRenderedGrid($representation, $string);
     }
 }

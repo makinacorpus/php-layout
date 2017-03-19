@@ -43,4 +43,28 @@ trait ComparisonTestTrait
     {
         return new Renderer($typeRegistry, new DefaultIdentifierStrategy());
     }
+
+    /**
+     * Normalize XML for comparison
+     *
+     * @param string $input
+     *
+     * @return string
+     */
+    private function normalizeXML(string $input) : string
+    {
+        return preg_replace('/\s+/', '', $input);
+    }
+
+    /**
+     * Asserts that two variables are the same rendered output
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    private function assertSameRenderedGrid($expected, $actual, $message = '')
+    {
+        $this->assertSame($this->normalizeXML($expected), $this->normalizeXML($actual), $message = '');
+    }
 }
