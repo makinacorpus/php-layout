@@ -11,6 +11,8 @@
             "email": "pierre.rineau@makina-corpus.com"
         }
     ],
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
     "require": {},
     "autoload": {
         "psr-4": {
