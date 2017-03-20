@@ -26,7 +26,7 @@ final class RenderCollection
     /**
      * Type map of items
      */
-    private $itemPerTypeMap = [];
+    private $itemMap = [];
 
     /**
      * This is the sorted list of containers
@@ -57,7 +57,7 @@ final class RenderCollection
      */
     public function has(ItemInterface $item) : bool
     {
-        return isset($this->index[$item->getType()][$item->getId()]);
+        return isset($this->index[$item->getType()][$item->getId()][$item->getStyle()]);
     }
 
     /**
@@ -79,15 +79,16 @@ final class RenderCollection
      */
     public function addItem(ItemInterface $item)
     {
-        $type = $item->getType();
-        $id = $item->getId();
+        $type   = $item->getType();
+        $id     = $item->getId();
+        $style  = $item->getStyle();
 
-        $this->index[$type][$id] = true;
+        $this->index[$type][$id][$style] = true;
 
         if ($item instanceof ContainerInterface) {
             $this->containers[$type . '#' . $id] = $item;
         } else {
-            $this->itemPerTypeMap[$type][$id] = $item;
+            $this->itemMap[$type][] = $item;
         }
     }
 
@@ -108,32 +109,18 @@ final class RenderCollection
      */
     public function getItemMap() : array
     {
-        return $this->itemPerTypeMap;
+        return $this->itemMap;
     }
 
     /**
      * Add rendered list of items
      *
-     * @param string $type
-     * @param string[] $itemList
+     * @param ItemInterface $item
+     * @param string $otuput
      */
-    public function addRenderedItemAll(string $type, array $itemList)
+    public function addRenderedItem(ItemInterface $item, string $output)
     {
-        foreach ($itemList as $id => $output) {
-            $this->rendered[$type][$id] = $output;
-        }
-    }
-
-    /**
-     * Add a single rendered item
-     *
-     * @param string $type
-     * @param string $id
-     * @param string[] $itemList
-     */
-    public function addRenderedItem(string $type, string $id, $output)
-    {
-        $this->rendered[$type][$id] = $output;
+        $this->rendered[$item->getType()][$item->getId()][$item->getStyle()] = $output;
     }
 
     /**
@@ -146,18 +133,19 @@ final class RenderCollection
      */
     public function getRenderedItem(ItemInterface $item, bool $throwExceptions = false) : string
     {
-        $type = $item->getType();
-        $id = $item->getId();
+        $type   = $item->getType();
+        $id     = $item->getId();
+        $style  = $item->getStyle();
 
-        if (!isset($this->rendered[$type][$id])) {
+        if (!isset($this->rendered[$type][$id][$style])) {
             if ($throwExceptions) {
-                throw new GenericError(sprintf("item %s, %s has not been rendered yet", $type, $id));
+                throw new GenericError(sprintf("item %s, %s with style %s has not been rendered yet", $type, $id, $style));
             }
 
             // Silent fallback
             return '';
         }
 
-        return $this->rendered[$type][$id];
+        return $this->rendered[$type][$id][$style];
     }
 }

@@ -53,6 +53,8 @@ class RenderTest extends \PHPUnit_Framework_TestCase
          * A: Item of type A
          * B: Item of type B
          * *: Duplicated item
+         *
+         * Note that duplicated items will have different styles
          */
 
         // This is pseudo XML reprensentation of what we are waiting for:
@@ -61,7 +63,7 @@ class RenderTest extends \PHPUnit_Framework_TestCase
     <horizontal id="container:hbox/C1">
         <column id="container:vbox/C11">
             <item id="leaf:a/1"/>
-            <item id="leaf:b/4"/>
+            <item id="leaf:b/4" style="teaser"/>
         </column>
         <column id="container:vbox/C12">
             <horizontal id="container:hbox/C2">
@@ -87,11 +89,11 @@ class RenderTest extends \PHPUnit_Framework_TestCase
         <column id="container:vbox/C33">
             <item id="leaf:b/8" />
             <item id="leaf:b/11" />
-            <item id="leaf:a/1" />
+            <item id="leaf:a/1" style="foo"/>
         </column>
     </horizontal>
     <item id="leaf:a/12" />
-    <item id="leaf:b/7" />
+    <item id="leaf:b/7" style="bar"/>
 </vertical>
 EOT;
         // Create types
@@ -116,20 +118,22 @@ EOT;
         $c33 = $c3->appendColumn('C33');
 
         // Now place all items
-        $a1  = $aType->create(1);
-        $a2  = $aType->create(2);
-        $b3  = $bType->create(3);
-        $b4  = $bType->create(4);
-        $a5  = $aType->create(5);
-        $a6  = $aType->create(6);
-        $b7  = $bType->create(7);
-        $b8  = $bType->create(8);
-        $a9  = $aType->create(9);
-        $b10 = $bType->create(10);
-        $b11 = $bType->create(11);
-        $a12 = $aType->create(12);
+        $a1_1 = $aType->create(1);
+        $a1_2 = $aType->create(1, 'foo');
+        $a2   = $aType->create(2);
+        $b3   = $bType->create(3);
+        $b4   = $bType->create(4, 'teaser');
+        $a5   = $aType->create(5);
+        $a6   = $aType->create(6);
+        $b7_1 = $bType->create(7);
+        $b7_2 = $bType->create(7, 'bar');
+        $b8   = $bType->create(8);
+        $a9   = $aType->create(9);
+        $b10  = $bType->create(10);
+        $b11  = $bType->create(11);
+        $a12  = $aType->create(12);
 
-        $c11->append($a1);
+        $c11->append($a1_1);
         $c11->append($b4);
 
         $c21->append($a2);
@@ -140,15 +144,15 @@ EOT;
         $c31->append($a6);
         $c31->append($a9);
 
-        $c32->append($b7);
+        $c32->append($b7_1);
         $c32->append($b10);
 
         $c33->append($b8);
         $c33->append($b11);
-        $c33->append($a1);
+        $c33->append($a1_2);
 
         $topLevel->append($a12);
-        $topLevel->append($b7);
+        $topLevel->append($b7_2);
 
         $renderer = $this->createRenderer($typeRegistry);
         $string = $renderer->render($topLevel);

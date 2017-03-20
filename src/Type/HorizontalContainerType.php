@@ -62,22 +62,18 @@ class HorizontalContainerType implements ItemTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, RenderCollection $collection) : string
+    public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
-        return $this->gridRenderer->renderHorizontalContainer($item, $collection);
+        $collection->addRenderedItem($item, $this->gridRenderer->renderHorizontalContainer($item, $collection));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderAllItems(array $items, RenderCollection $collection) : array
+    public function renderAllItems(array $items, RenderCollection $collection)
     {
-        $ret = [];
-
         foreach ($items as $item) {
-            $ret[$item->getId()] = $this->renderItem($item, $collection);
+            $this->renderItem($item, $collection);
         }
-
-        return $ret;
     }
 }

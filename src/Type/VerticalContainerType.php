@@ -63,26 +63,24 @@ class VerticalContainerType implements ItemTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, RenderCollection $collection) : string
+    public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
         if ($item instanceof ColumnContainer) {
-            return $this->gridRenderer->renderColumnContainer($item, $collection);
+            $output = $this->gridRenderer->renderColumnContainer($item, $collection);
+        } else {
+            $output = $this->gridRenderer->renderVerticalContainer($item, $collection);
         }
 
-        return $this->gridRenderer->renderVerticalContainer($item, $collection);
+        $collection->addRenderedItem($item, $output);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderAllItems(array $items, RenderCollection $collection) : array
+    public function renderAllItems(array $items, RenderCollection $collection)
     {
-        $ret = [];
-
         foreach ($items as $item) {
-            $ret[$item->getId()] = $this->renderItem($item, $collection);
+            $this->renderItem($item, $collection);
         }
-
-        return $ret;
     }
 }

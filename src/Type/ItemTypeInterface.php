@@ -53,33 +53,30 @@ interface ItemTypeInterface
     /**
      * Render a single item
      *
+     * Item must be set using RenderCollection::addRenderedItem()
+     *
      * @param ItemInterface $item
      *   Item to render
      * @param RenderCollection $collection
      *   Already rendered items
      *
-     * @return string
-     *   If the item is not renderable or invalid, return an empty string
-     *
      * @throws TypeMismatchError
      *   In case the item has not the right type
      */
-    public function renderItem(ItemInterface $item, RenderCollection $collection) : string;
+    public function renderItem(ItemInterface $item, RenderCollection $collection);
 
     /**
      * Render an array of items
+     *
+     * Each item must be set using RenderCollection::addRenderedItem()
      *
      * @param ItemInterface[] $items
      *   Items to render
      * @param RenderCollection $collection
      *   Already rendered items
      *
-     * @return string[]
-     *   Array of render strings, keyed using item identifiers, invalid items
-     *   must be silently removed from the returned array, no errors
-     *
      * @throws TypeMismatchError
      *   In case one of the items has not the right type
      */
-    public function renderAllItems(array $items, RenderCollection $collection) : array;
+    public function renderAllItems(array $items, RenderCollection $collection);
 }

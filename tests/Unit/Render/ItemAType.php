@@ -21,26 +21,29 @@ class ItemAType implements ItemTypeInterface
 
     public function create(string $id, string $style = null, array $options = []) : ItemInterface
     {
-        return new Item('a', $id);
+        return new Item('a', $id, $style ?: ItemInterface::STYLE_DEFAULT);
     }
 
     public function preload(array $items)
     {
     }
 
-    public function renderItem(ItemInterface $item, RenderCollection $collection) : string
+    public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
-        return '<item id="' . $collection->identify($item) . '"/>';
-    }
+        $style = $item->getStyle();
+        $styleAttr = '';
 
-    public function renderAllItems(array $items, RenderCollection $collection) : array
-    {
-        $ret = [];
-
-        foreach ($items as $item) {
-            $ret[$item->getId()] = $this->renderItem($item, $collection);
+        if (ItemInterface::STYLE_DEFAULT !== $style) {
+            $styleAttr = ' style="' . $style . '"';
         }
 
-        return $ret;
+        $collection->addRenderedItem($item, '<item id="' . $collection->identify($item) . '"' . $styleAttr . '/>');
+    }
+
+    public function renderAllItems(array $items, RenderCollection $collection)
+    {
+        foreach ($items as $item) {
+            $this->renderItem($item, $collection);
+        }
     }
 }
