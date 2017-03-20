@@ -142,9 +142,12 @@ interface LayoutStorageInterface
     /**
      * Creates and persist an empty layout
      *
+     * @param string[] $values
+     *   Various values, at the discretion of the underlaying implemetation
+     *
      * @return LayoutInterface
      */
-    public function create() : LayoutInterface;
+    public function create(array $values = []) : LayoutInterface;
 
     /**
      * Drop all caches if any
