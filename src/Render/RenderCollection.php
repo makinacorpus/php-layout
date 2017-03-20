@@ -118,9 +118,22 @@ final class RenderCollection
      * @param ItemInterface $item
      * @param string $otuput
      */
-    public function addRenderedItem(ItemInterface $item, string $output)
+    public function setOutputFor(ItemInterface $item, string $output)
     {
         $this->rendered[$item->getType()][$item->getId()][$item->getStyle()] = $output;
+    }
+
+    /**
+     * Alias of setOutputFor() using direct type, id and style parameter
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $style
+     * @param string $output
+     */
+    public function setOutputWith(string $type, string $id, string $style, string $output)
+    {
+        $this->rendered[$type][$id][$style] = $output;
     }
 
     /**

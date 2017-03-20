@@ -71,7 +71,7 @@ class VerticalContainerType implements ItemTypeInterface
             $output = $this->gridRenderer->renderVerticalContainer($item, $collection);
         }
 
-        $collection->addRenderedItem($item, $output);
+        $collection->setOutputFor($item, $output);
     }
 
     /**

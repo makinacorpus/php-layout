@@ -59,7 +59,7 @@ final class NullType implements ItemTypeInterface
      */
     public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
-        $collection->addRenderedItem($item, '');
+        $collection->setOutputFor($item, '');
     }
 
     /**
@@ -68,7 +68,7 @@ final class NullType implements ItemTypeInterface
     public function renderAllItems(array $items, RenderCollection $collection)
     {
         foreach ($items as $item) {
-            $collection->addRenderedItem($item, '');
+            $collection->setOutputFor($item, '');
         }
     }
 }

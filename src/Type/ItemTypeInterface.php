@@ -53,7 +53,8 @@ interface ItemTypeInterface
     /**
      * Render a single item
      *
-     * Item must be set using RenderCollection::addRenderedItem()
+     * Item must be set using RenderCollection::setOutputFor()
+     * or RenderCollection::setOutputWith()
      *
      * @param ItemInterface $item
      *   Item to render
@@ -68,7 +69,8 @@ interface ItemTypeInterface
     /**
      * Render an array of items
      *
-     * Each item must be set using RenderCollection::addRenderedItem()
+     * Each item must be set using RenderCollection::setOutputFor()
+     * or RenderCollection::setOutputWith()
      *
      * @param ItemInterface[] $items
      *   Items to render

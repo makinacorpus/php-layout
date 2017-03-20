@@ -37,7 +37,7 @@ class ItemAType implements ItemTypeInterface
             $styleAttr = ' style="' . $style . '"';
         }
 
-        $collection->addRenderedItem($item, '<item id="' . $collection->identify($item) . '"' . $styleAttr . '/>');
+        $collection->setOutputFor($item, '<item id="' . $collection->identify($item) . '"' . $styleAttr . '/>');
     }
 
     public function renderAllItems(array $items, RenderCollection $collection)
