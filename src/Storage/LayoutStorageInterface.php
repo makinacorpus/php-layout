@@ -100,6 +100,17 @@ interface LayoutStorageInterface
     public function exists(int $id) : bool;
 
     /**
+     * List using conditions
+     *
+     * @param string[] $conditions
+     *   Various conditions, at the discretion of the underlaying implemetation
+     *
+     * @return int[]
+     *   Layout identifiers
+     */
+    public function listWithConditions(array $conditions) : array;
+
+    /**
      * Load multiple layouts
      *
      * @param int[] $idList
