@@ -19,7 +19,7 @@ trait ComparisonTestTrait
     /**
      * @return ItemTypeRegistry
      */
-    private function createTypeRegistry(GridRendererInterface $gridRenderer) : ItemTypeRegistry
+    protected function createTypeRegistry(GridRendererInterface $gridRenderer) : ItemTypeRegistry
     {
         $aType = new ItemAType();
         $bType = new ItemBType();
@@ -39,7 +39,7 @@ trait ComparisonTestTrait
     /**
      * @return Renderer
      */
-    private function createRenderer(ItemTypeRegistry $typeRegistry) : Renderer
+    protected function createRenderer(ItemTypeRegistry $typeRegistry) : Renderer
     {
         return new Renderer($typeRegistry, new DefaultIdentifierStrategy());
     }
@@ -51,7 +51,7 @@ trait ComparisonTestTrait
      *
      * @return string
      */
-    private function normalizeXML(string $input) : string
+    protected function normalizeXML(string $input) : string
     {
         return preg_replace('/\s+/', '', $input);
     }
@@ -63,7 +63,7 @@ trait ComparisonTestTrait
      * @param mixed  $actual
      * @param string $message
      */
-    private function assertSameRenderedGrid($expected, $actual, $message = '')
+    protected function assertSameRenderedGrid($expected, $actual, $message = '')
     {
         $this->assertSame($this->normalizeXML($expected), $this->normalizeXML($actual), $message = '');
     }
