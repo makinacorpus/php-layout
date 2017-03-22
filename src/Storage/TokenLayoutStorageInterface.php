@@ -31,7 +31,7 @@ interface TokenLayoutStorageInterface
     public function saveToken(EditToken $token);
 
     /**
-     * Load multiple layouts
+     * Load a single layout
      *
      * @param string $token
      *   String token identifier
@@ -69,8 +69,6 @@ interface TokenLayoutStorageInterface
      *
      * @param string $token
      *   String token identifier
-     *
-     * @param string $token
      */
     public function deleteAll(string $token);
 
