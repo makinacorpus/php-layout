@@ -17,6 +17,9 @@
         <testsuite name="Basic unit testing">
             <directory>./tests/Unit</directory>
         </testsuite>
+        <testsuite name="Basic functionnal testing">
+            <directory>./tests/Functionnal</directory>
+        </testsuite>
     </testsuites>
 
     <filter>

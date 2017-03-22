@@ -44,7 +44,11 @@ abstract class AbstractLayout implements LayoutInterface
      */
     final public function findItem(int $itemId) : ItemInterface
     {
-        $item = $this->recursiveFindItemIn($this->getTopLevelContainer(), $itemId);
+        $item = $this->getTopLevelContainer();
+
+        if ($item->getStorageId() != $itemId) {
+            $item = $this->recursiveFindItemIn($item, $itemId);
+        }
 
         if (!$item) {
             throw new GenericError("item %d: does not exists", $itemId);
@@ -62,7 +66,11 @@ abstract class AbstractLayout implements LayoutInterface
      */
     final public function findContainer(int $itemId) : ContainerInterface
     {
-        $item = $this->recursiveFindItemIn($this->getTopLevelContainer(), $itemId);
+        $item = $this->getTopLevelContainer();
+
+        if ($item->getStorageId() != $itemId) {
+            $item = $this->recursiveFindItemIn($item, $itemId);
+        }
 
         if (!$item) {
             throw new GenericError("item %d: does not exists", $itemId);
@@ -107,7 +115,11 @@ abstract class AbstractLayout implements LayoutInterface
      */
     final public function findContainerOf(int $itemId) : ContainerInterface
     {
-        $item = $this->recursiveFindContainerOf($this->getTopLevelContainer(), $itemId);
+        $item = $this->getTopLevelContainer();
+
+        if ($item->getStorageId() != $itemId) {
+            $item = $this->recursiveFindContainerOf($item, $itemId);
+        }
 
         if (!$item) {
             throw new GenericError("item %d: does not exists", $itemId);
