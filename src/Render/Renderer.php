@@ -87,20 +87,25 @@ class Renderer
      *
      * @return string
      */
-    public function render(ContainerInterface $container) : string
+    public function render(ItemInterface $item) : string
     {
-        // First collect all items and categorize them
         $collection = new RenderCollection($this->identifierStrategy);
-        $this->collect($container, $collection);
+        $itemType   = $this->typeRegistry->getType($item->getType());
 
-        // Proceed to 2-passes collection render.
-        $this->renderCollection($collection);
+        if ($item instanceof ContainerInterface) {
+
+            // First collect all items and categorize them
+            $this->collect($item, $collection);
+
+            // Proceed to 2-passes collection render.
+            $this->renderCollection($collection);
+        }
 
         // Finally, render the top level container by giving it all
         // rendered children, it should work
-        $this->typeRegistry->getType($container->getType())->renderItem($container, $collection);
+        $itemType->renderItem($item, $collection);
 
-        return $collection->getRenderedItem($container);
+        return $collection->getRenderedItem($item);
     }
 
     /**
