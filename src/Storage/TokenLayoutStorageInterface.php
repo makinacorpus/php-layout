@@ -80,7 +80,7 @@ interface TokenLayoutStorageInterface
      * @param LayoutInterface $layout
      *   Layout instance to update
      *
-     * @throws GenericError
+     * @throws InvalidTokenError
      *   If the menu does not exist
      */
     public function update(string $token, LayoutInterface $layout);
