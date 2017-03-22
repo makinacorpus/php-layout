@@ -144,8 +144,6 @@ the vertical and horizontal layout management.
 // your own theme and templating engine, or if you do not use bootstrap but
 // another grid layout.
 $gridRenderer = new BootstrapGridRenderer();
-$vboxType = new VerticalContainerType($gridRenderer);
-$hboxType = new HorizontalContainerType($gridRenderer);
 ```
 
 Now that we have our top-level container, we need to instanciate the various
@@ -160,7 +158,7 @@ $itemTypeRegistry->registerType($hboxType);
 
 Then render it:
 ```php
-$renderer = new Renderer($itemTypeRegistry, new DefaultIdentifierStrategy());
+$renderer = new Renderer($itemTypeRegistry, $gridRenderer, new DefaultIdentifierStrategy());
 $string = $renderer->render($topLevel);
 ```
 

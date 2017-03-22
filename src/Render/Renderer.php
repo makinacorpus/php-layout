@@ -2,8 +2,12 @@
 
 namespace MakinaCorpus\Layout\Render;
 
+use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
+use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Grid\VerticalContainer;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
 
 /**
@@ -13,6 +17,7 @@ class Renderer
 {
     private $identifierStrategy;
     private $typeRegistry;
+    private $gridRenderer;
 
     /**
      * Default constructor
@@ -20,9 +25,10 @@ class Renderer
      * @param ItemTypeRegistry $typeRegistry
      * @param IdentifierStrategyInterface $identifierStrategy
      */
-    public function __construct(ItemTypeRegistry $typeRegistry, IdentifierStrategyInterface $identifierStrategy)
+    public function __construct(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer, IdentifierStrategyInterface $identifierStrategy)
     {
         $this->typeRegistry = $typeRegistry;
+        $this->gridRenderer = $gridRenderer;
         $this->identifierStrategy = $identifierStrategy;
     }
 
@@ -54,6 +60,33 @@ class Renderer
     }
 
     /**
+     * Render a single container
+     *
+     * @param ContainerInterface $container
+     * @param RenderCollection $collection
+     *
+     * @return string
+     */
+    private function renderContainer(ContainerInterface $container, RenderCollection $collection) : string
+    {
+        // Column must be rendered before vertical, because they are
+        // VerticalContainer by inheritance, don't change the order.
+        if ($container instanceof ColumnContainer) {
+            $output = $this->gridRenderer->renderColumnContainer($container, $collection);
+        } else if ($container instanceof VerticalContainer) {
+            $output = $this->gridRenderer->renderVerticalContainer($container, $collection);
+        } else if ($container instanceof HorizontalContainer) {
+            $output = $this->gridRenderer->renderHorizontalContainer($container, $collection);
+        } else {
+            throw new GenericError(sprintf("%s: invalid container class", HorizontalContainer::class));
+        }
+
+        $collection->setOutputFor($container, $output);
+
+        return $output;
+    }
+
+    /**
      * Preload and render everything in the given collection
      *
      * @param RenderCollection $collection
@@ -75,8 +108,7 @@ class Renderer
         // bottom-top processing, so we must process them in an orderly fashion.
         // @todo this imply we cannot preload the containers
         foreach ($collection->getAllContainers() as $container) {
-            $type = $container->getType();
-            $this->typeRegistry->getType($type)->renderItem($container, $collection);
+            $this->renderContainer($container, $collection);
         }
     }
 
@@ -99,11 +131,14 @@ class Renderer
 
             // Proceed to 2-passes collection render.
             $this->renderCollection($collection);
-        }
 
-        // Finally, render the top level container by giving it all
-        // rendered children, it should work
-        $itemType->renderItem($item, $collection);
+            // And finally, the top level item
+            $this->renderContainer($item, $collection);
+
+        } else {
+            // We are working on a single item
+            $itemType->renderItem($item, $collection);
+        }
 
         return $collection->getRenderedItem($item);
     }
@@ -139,8 +174,7 @@ class Renderer
 
         // Collect from all given containers
         foreach ($containers as $index => $container) {
-            $this->typeRegistry->getType($container->getType())->renderItem($container, $collection);
-
+            $this->renderContainer($container, $collection);
             $ret[$index] = $collection->getRenderedItem($container);
         }
 

@@ -3,13 +3,11 @@
 namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Render\DefaultIdentifierStrategy;
-use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
-use MakinaCorpus\Layout\Type\HorizontalContainerType;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
-use MakinaCorpus\Layout\Type\VerticalContainerType;
+use MakinaCorpus\Layout\Render\GridRendererInterface;
 
 /**
  * Comparison test basics
@@ -19,19 +17,14 @@ trait ComparisonTestTrait
     /**
      * @return ItemTypeRegistry
      */
-    protected function createTypeRegistry(GridRendererInterface $gridRenderer) : ItemTypeRegistry
+    protected function createTypeRegistry() : ItemTypeRegistry
     {
         $aType = new ItemAType();
         $bType = new ItemBType();
 
-        $vboxType = new VerticalContainerType($gridRenderer);
-        $hboxType = new HorizontalContainerType($gridRenderer);
-
         $typeRegistry = new ItemTypeRegistry();
         $typeRegistry->registerType($aType);
         $typeRegistry->registerType($bType);
-        $typeRegistry->registerType($vboxType);
-        $typeRegistry->registerType($hboxType);
 
         return $typeRegistry;
     }
@@ -39,19 +32,20 @@ trait ComparisonTestTrait
     /**
      * @return Renderer
      */
-    protected function createRenderer(ItemTypeRegistry $typeRegistry) : Renderer
+    protected function createRenderer(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer) : Renderer
     {
-        return new Renderer($typeRegistry, new DefaultIdentifierStrategy());
+        return new Renderer($typeRegistry, $gridRenderer, new DefaultIdentifierStrategy());
     }
 
     /**
      * Normalize XML for comparison
      *
      * @param string $input
+     * @param bool $assertIdAreUnique
      *
      * @return string
      */
-    protected function normalizeXML(string $input) : string
+    protected function normalizeXML(string $input, bool $assertIdAreUnique = true) : string
     {
         return preg_replace('/\s+/', '', $input);
     }

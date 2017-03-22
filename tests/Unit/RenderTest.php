@@ -97,7 +97,7 @@ class RenderTest extends \PHPUnit_Framework_TestCase
 </vertical>
 EOT;
         // Create types
-        $typeRegistry = $this->createTypeRegistry(new XmlGridRenderer());
+        $typeRegistry = $this->createTypeRegistry();
         $aType = $typeRegistry->getType('a');
         $bType = $typeRegistry->getType('b');
 
@@ -154,7 +154,7 @@ EOT;
         $topLevel->append($a12);
         $topLevel->append($b7_2);
 
-        $renderer = $this->createRenderer($typeRegistry);
+        $renderer = $this->createRenderer($typeRegistry, new XmlGridRenderer());
         $string = $renderer->render($topLevel);
         $this->assertSameRenderedGrid($representation, $string);
     }
@@ -219,7 +219,7 @@ EOT;
 </div>
 EOT;
         // Create types
-        $typeRegistry = $this->createTypeRegistry(new BootstrapGridRenderer());
+        $typeRegistry = $this->createTypeRegistry();
         $aType = $typeRegistry->getType('a');
 
         // Place a top level container and build layout (no items)
@@ -253,7 +253,7 @@ EOT;
         $topLevel->append($a6);
         $topLevel->append($a7);
 
-        $renderer = $this->createRenderer($typeRegistry);
+        $renderer = $this->createRenderer($typeRegistry, new BootstrapGridRenderer());
         $string = $renderer->render($topLevel);
         $this->assertSameRenderedGrid($representation, $string);
     }

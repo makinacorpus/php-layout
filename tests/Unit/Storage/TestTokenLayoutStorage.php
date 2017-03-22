@@ -4,10 +4,10 @@ namespace MakinaCorpus\Layout\Tests\Unit\Storage;
 
 use MakinaCorpus\Layout\Controller\EditToken;
 use MakinaCorpus\Layout\Error\InvalidTokenError;
+use MakinaCorpus\Layout\Grid\ContainerInterface;
+use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
-use MakinaCorpus\Layout\Grid\ItemInterface;
-use MakinaCorpus\Layout\Grid\ContainerInterface;
 
 /**
  * Very specific version of layout storage, used only for editing purposes

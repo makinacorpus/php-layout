@@ -6,7 +6,6 @@ use MakinaCorpus\Layout\Controller\EditToken;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
-use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
 
@@ -63,7 +62,7 @@ class LayoutLookupTest extends \PHPUnit_Framework_TestCase
         $storage->saveToken(new EditToken('testing', []));
 
         // Create types
-        $typeRegistry = $this->createTypeRegistry(new XmlGridRenderer());
+        $typeRegistry = $this->createTypeRegistry();
         $aType = $typeRegistry->getType('a');
         $bType = $typeRegistry->getType('b');
 
