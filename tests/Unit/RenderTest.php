@@ -257,4 +257,29 @@ EOT;
         $string = $renderer->render($topLevel);
         $this->assertSameRenderedGrid($representation, $string);
     }
+
+    /**
+     * Tests renderAll() and ensures there's no conflict between items
+     */
+    public function testRenderAllNoConflicts()
+    {
+        // Creates two very simple layouts with containers that have the same
+        // type and identifiers, but have different items inside
+        $topLevel1 = new VerticalContainer('top-level-1');
+        $topLevel1->append($vertical1 = new VerticalContainer('a'));
+        $vertical1->append(new Item('a', '1'));
+
+        $topLevel2 = new VerticalContainer('top-level-2');
+        $topLevel2->append($vertical2 = new VerticalContainer('a'));
+        $vertical2->append(new Item('b', '2'));
+
+        $topLevel3 = new VerticalContainer('top-level-2');
+        $topLevel3->append($vertical3 = new VerticalContainer('a'));
+        $vertical3->append(new Item('a', '1', 'foo'));
+
+        $renderer = $this->createRenderer($this->createTypeRegistry(), new XmlGridRenderer());
+        $ret = $renderer->renderAll([$topLevel1, $topLevel2, $topLevel3]);
+
+        // @todo unfinished, we MUST implement correctly renderAll()
+    }
 }

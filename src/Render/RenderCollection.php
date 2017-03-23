@@ -86,7 +86,7 @@ final class RenderCollection
         $this->index[$type][$id][$style] = true;
 
         if ($item instanceof ContainerInterface) {
-            $this->containers[$type . '#' . $id] = $item;
+            $this->containers[] = $item;
         } else {
             $this->itemMap[$type][] = $item;
         }

@@ -115,30 +115,19 @@ class Renderer
     /**
      * Renders the full composition
      *
-     * @param ContainerInterface $container
+     * @param ItemInterface $item
      *
      * @return string
      */
     public function render(ItemInterface $item) : string
     {
         $collection = new RenderCollection($this->identifierStrategy);
-        $itemType   = $this->typeRegistry->getType($item->getType());
 
-        if ($item instanceof ContainerInterface) {
+        // First collect all items and categorize them
+        $this->collect($item, $collection);
 
-            // First collect all items and categorize them
-            $this->collect($item, $collection);
-
-            // Proceed to 2-passes collection render.
-            $this->renderCollection($collection);
-
-            // And finally, the top level item
-            $this->renderContainer($item, $collection);
-
-        } else {
-            // We are working on a single item
-            $itemType->renderItem($item, $collection);
-        }
+        // Proceed to 2-passes collection render.
+        $this->renderCollection($collection);
 
         return $collection->getRenderedItem($item);
     }
@@ -146,15 +135,17 @@ class Renderer
     /**
      * Render compositions for all containers
      *
+     * @todo WARNING DO NOT USE IN PRODUCTION, METHOD IS NOT FIXED YET
+     *
      * Algorithm is the same as the render() method except that it will
      * mutualize item preloading and item rendering in bulk.
      *
-     * @param ContainerInterface[] $containers
+     * @param ItemInterface[] $item
      *   Keys will be the identifier used as keys of the return array
      *
      * @return string[]
      */
-    public function renderAll(array $containers) : array
+    public function renderAll(array $items) : array
     {
         $ret = [];
 
@@ -162,20 +153,16 @@ class Renderer
         $collection = new RenderCollection($this->identifierStrategy);
 
         // Collect from all given containers
-        // @todo this causes problems because containers with same
-        //   identifiers do conflict between layouts and output gets
-        //   broken
-        foreach ($containers as $container) {
-            $this->collect($container, $collection);
+        foreach ($items as $item) {
+            $this->collect($item, $collection);
         }
 
         // Proceed to 2-passes collection render.
         $this->renderCollection($collection);
 
         // Collect from all given containers
-        foreach ($containers as $index => $container) {
-            $this->renderContainer($container, $collection);
-            $ret[$index] = $collection->getRenderedItem($container);
+        foreach ($items as $index => $item) {
+            $ret[$index] = $collection->getRenderedItem($item);
         }
 
         return $ret;
