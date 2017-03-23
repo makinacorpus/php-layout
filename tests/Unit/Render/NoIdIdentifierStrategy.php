@@ -7,11 +7,8 @@ use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Render\IdentifierStrategyInterface;
 
 /**
- * Default usage implementation
- *
- * @todo
- *  - escaping at some point?
- *  - enforce type and identifier naming constraints on items?
+ * Do not return any identifier, for unit test for which identification
+ * does not matter.
  */
 class NoIdIdentifierStrategy implements IdentifierStrategyInterface
 {
@@ -25,13 +22,5 @@ class NoIdIdentifierStrategy implements IdentifierStrategyInterface
         }
 
         return 'leaf:' . $item->getType() . '/' . $item->getId();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(string $identifier) : array
-    {
-        throw new \LogicException("Not implemented");
     }
 }

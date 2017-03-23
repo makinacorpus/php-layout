@@ -2,12 +2,12 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
-use MakinaCorpus\Layout\Render\DefaultIdentifierStrategy;
+use MakinaCorpus\Layout\Render\GridRendererInterface;
+use MakinaCorpus\Layout\Render\ItemIdentifierStrategy;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
-use MakinaCorpus\Layout\Render\GridRendererInterface;
 
 /**
  * Comparison test basics
@@ -34,7 +34,7 @@ trait ComparisonTestTrait
      */
     protected function createRenderer(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer) : Renderer
     {
-        return new Renderer($typeRegistry, $gridRenderer, new DefaultIdentifierStrategy());
+        return new Renderer($typeRegistry, $gridRenderer, new ItemIdentifierStrategy());
     }
 
     /**

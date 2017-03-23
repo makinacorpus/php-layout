@@ -158,7 +158,7 @@ $itemTypeRegistry->registerType($hboxType);
 
 Then render it:
 ```php
-$renderer = new Renderer($itemTypeRegistry, $gridRenderer, new DefaultIdentifierStrategy());
+$renderer = new Renderer($itemTypeRegistry, $gridRenderer, new ItemIdentifierStrategy());
 $string = $renderer->render($topLevel);
 ```
 
