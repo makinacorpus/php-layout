@@ -10,7 +10,7 @@ use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
 
 /**
- * Very specific version of layout storage, used only for editing purposes
+ * Very specific version of layout storage, used only for testing purposes
  */
 class TestTokenLayoutStorage implements TokenLayoutStorageInterface
 {

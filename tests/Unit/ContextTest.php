@@ -4,8 +4,11 @@ namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Controller\Context;
 use MakinaCorpus\Layout\Controller\DefaultTokenGenerator;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
 use MakinaCorpus\Layout\Controller\EditToken;
+use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
+use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayoutStorage;
+use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
+use MakinaCorpus\Layout\Error\GenericError;
 
 /**
  * Basic context and token testing
@@ -48,16 +51,32 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertArraySubset([1, 2], $token->getLayoutIdList());
     }
 
+    /**
+     * Create an empty testing token
+     *
+     * @return Context
+     */
+    private function createContext() : Context
+    {
+        $storage = new TestLayoutStorage();
+        $tokenStorage = new TestTokenLayoutStorage();
+        $tokenGenerator = new DefaultTokenGenerator();
+        $context = new Context($storage, $tokenStorage, $tokenGenerator);
+
+        return $context;
+    }
+
+    /**
+     * Basic functionnality
+     */
     public function testEditToken()
     {
-        $context = new Context();
+        $context = $this->createContext();
 
         // Just for the sake of rising the coverage
-        $tokenGenerator = new DefaultTokenGenerator();
         $this->assertInstanceOf(DefaultTokenGenerator::class, $context->getTokenGenerator());
-        $this->assertNotSame($tokenGenerator, $context->getTokenGenerator());
-        $context->setTokenGenerator($tokenGenerator);
-        $this->assertSame($tokenGenerator, $context->getTokenGenerator());
+        $this->assertTrue($context->isEmpty());
+        $this->assertFalse($context->hasToken());
 
         // Now the real tests shall begin
         $layouts = [];
@@ -69,6 +88,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $layouts[6] = $layout6 = new TestLayout(6);
 
         $context->add([$layout1, $layout2], true);
+        $this->assertFalse($context->isEmpty());
         $context->add([$layout3, $layout4, $layout5], false);
 
         $this->assertTrue($context->isEditable($layout1));
@@ -89,7 +109,94 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $wakeUpToken = unserialize(serialize($token));
         $this->assertTokenValues($wakeUpToken, $layouts);
         $this->assertSame($token->getToken(), $wakeUpToken->getToken());
+
+        $all = $context->getAll();
+        $this->assertCount(5, $all);
+        $this->assertSame($layout1, $all[$layout1->getId()]);
+        $this->assertSame($layout2, $all[$layout2->getId()]);
+        $this->assertSame($layout3, $all[$layout3->getId()]);
+        $this->assertSame($layout4, $all[$layout4->getId()]);
+        $this->assertSame($layout5, $all[$layout5->getId()]);
     }
 
+    /**
+     * When you set a token, context must reload layouts from the temp storage
+     */
+    public function testTransparentTokenLoad()
+    {
 
+    }
+
+    /**
+     * Test commit and rollback operations
+     */
+    public function testCommitRollback()
+    {
+
+    }
+
+    /**
+     * Test most error handling operations
+     */
+    public function testErrorHandler()
+    {
+        $context = $this->createContext();
+
+        try {
+            $context->getCurrentToken();
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $context->commit();
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $context->rollback();
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
+
+        $editToken = $context->createEditToken();
+        $this->assertTrue($context->hasToken());
+        $this->assertSame($editToken, $context->getCurrentToken());
+
+        try {
+            $context->createEditToken();
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $context->setCurrentToken(new EditToken('test', []));
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
+
+        $context->commit();
+        $this->assertFalse($context->hasToken());
+
+        $context->createEditToken();
+        $this->assertTrue($context->hasToken());
+
+        $context->rollback();
+        $this->assertFalse($context->hasToken());
+
+        $context->createEditToken();
+        $this->assertTrue($context->hasToken());
+        $context->resetToken();
+        $this->assertFalse($context->hasToken());
+
+        $newEditToken = new EditToken('testing', []);
+        $context->setCurrentToken($newEditToken);
+        $this->assertSame($newEditToken, $context->getCurrentToken());
+    }
 }
