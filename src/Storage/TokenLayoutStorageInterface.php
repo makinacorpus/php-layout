@@ -56,9 +56,6 @@ interface TokenLayoutStorageInterface
      *
      * @return LayoutInterface[]
      *   Same as load() but an array of it keyed by identifiers
-     *
-     * @throws InvalidTokenError
-     *   If one more layout does not exist
      */
     public function loadMultiple(string $token, array $idList) : array;
 

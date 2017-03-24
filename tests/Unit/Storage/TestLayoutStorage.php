@@ -19,8 +19,8 @@ class TestLayoutStorage implements LayoutStorageInterface
      */
     public function load(int $id) : LayoutInterface
     {
-        if (isset($this->layouts[$id])) {
-            throw new GenericError();
+        if (!isset($this->layouts[$id])) {
+            throw new GenericError("layout with id %d is not stored", $id);
         }
 
         return clone $this->layouts[$id];

@@ -34,4 +34,12 @@ class TestLayout extends AbstractLayout
     {
         return $this->container;
     }
+
+    /**
+     * Clone implementation, allows unit testing storage using object copies
+     */
+    public function __clone()
+    {
+        $this->container = clone $this->container;
+    }
 }

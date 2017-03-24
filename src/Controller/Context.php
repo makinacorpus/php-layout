@@ -2,8 +2,8 @@
 
 namespace MakinaCorpus\Layout\Controller;
 
-use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\LayoutStorageInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
 
@@ -114,17 +114,34 @@ final class Context
     }
 
     /**
+     * Get permanenet object storage
+     *
+     * @return LayoutStorageInterface
+     *
+     * @internal
+     */
+    public function getStorage() : LayoutStorageInterface
+    {
+        return $this->storage;
+    }
+
+    /**
      * Set current context edit token
      *
-     * @param EditToken $token
+     * @param string $tokenString
      */
-    public function setCurrentToken(EditToken $token)
+    public function setCurrentToken(string $tokenString)
     {
         if ($this->currentToken) {
             throw new GenericError("you cannot create a new token, context is already in edit mode");
         }
 
-        $this->currentToken = $token;
+        $this->currentToken = $this->tokenStorage->loadToken($tokenString);
+
+        // Force current context to reload using temporary layouts
+        // This cannot crash per TokenLayoutStorageInterface signature
+        $idList = $this->currentToken->getLayoutIdList();
+        $this->add($this->tokenStorage->loadMultiple($this->currentToken->getToken(), $idList), true);
     }
 
     /**
@@ -156,10 +173,27 @@ final class Context
             throw new GenericError("you cannot create a new token, context is already in edit mode");
         }
 
-        $token = new EditToken($this->getTokenGenerator()->create(), array_keys(array_filter($this->editableIndex)), $additional);
-        $this->tokenStorage->saveToken($token);
+        $this->currentToken = new EditToken($this->getTokenGenerator()->create(), array_keys(array_filter($this->editableIndex)), $additional);
+        $this->tokenStorage->saveToken($this->currentToken);
 
-        return $this->currentToken = $token;
+        $this->createSnapshot();
+
+        return $this->currentToken;
+    }
+
+    /**
+     * Save current work in progress
+
+     */
+    public function createSnapshot()
+    {
+        if (!$this->currentToken) {
+            throw new GenericError("you cannot create a snapshot without a token");
+        }
+
+        foreach ($this->currentToken->getLayoutIdList() as $id) {
+            $this->tokenStorage->update($this->currentToken->getToken(), $this->layouts[$id]);
+        }
     }
 
     /**
@@ -178,6 +212,7 @@ final class Context
             $this->layouts[$layout->getId()] = $layout;
         }
 
+        $this->tokenStorage->deleteAll($this->currentToken->getToken());
         $this->currentToken = null;
     }
 
@@ -190,14 +225,14 @@ final class Context
             throw new GenericError("you cannot rollback without a token");
         }
 
-        // Reload the real layouts unchanged
-        foreach ($this->storage->loadMultiple($this->currentToken->getLayoutIdList()) as $layout) {
-            $this->layouts[$layout->getId()] = $layout;
-        }
-
+        // No matter how hard can be the crash, we first need to really delete
+        // the temporary storage data, then item reloading might fail, that's
+        // not our problem
+        $idList = $this->currentToken->getLayoutIdList();
         $this->tokenStorage->deleteAll($this->currentToken->getToken());
-
         $this->currentToken = null;
-    }
 
+        // Reload the real layouts unchanged
+        $this->add($this->storage->loadMultiple($idList), true);
+    }
 }

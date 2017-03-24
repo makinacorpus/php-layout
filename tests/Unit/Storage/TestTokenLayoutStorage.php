@@ -64,10 +64,6 @@ class TestTokenLayoutStorage implements TokenLayoutStorageInterface
 
         $ret = [];
         foreach ($idList as $id) {
-            if (!isset($this->layouts[$token][$id])) {
-                throw new InvalidTokenError();
-            }
-
             $ret[$id] = $this->layouts[$token][$id];
         }
 

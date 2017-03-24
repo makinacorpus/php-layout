@@ -5,10 +5,12 @@ namespace MakinaCorpus\Layout\Tests\Unit;
 use MakinaCorpus\Layout\Controller\Context;
 use MakinaCorpus\Layout\Controller\DefaultTokenGenerator;
 use MakinaCorpus\Layout\Controller\EditToken;
+use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayoutStorage;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
-use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Grid\Item;
+use MakinaCorpus\Layout\Error\InvalidTokenError;
 
 /**
  * Basic context and token testing
@@ -132,7 +134,59 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testCommitRollback()
     {
+        $context = $this->createContext();
+        $storage = $context->getStorage();
 
+        $editableLayout = $storage->create();
+        $nonEditableLayout = $storage->create();
+        $context->add([$editableLayout], true);
+        $context->add([$nonEditableLayout], false);
+
+        // Go to temporary mode and edit the layout
+        $token = $context->createEditToken();
+        $editableLayout->getTopLevelContainer()->append(new Item('a', 1));
+        $nonEditableLayout->getTopLevelContainer()->append(new Item('a', 1));
+
+        $permanentLayout = $storage->load($editableLayout->getId());
+        // It is empty, it should be
+        $this->assertTrue($permanentLayout->getTopLevelContainer()->isEmpty());
+        $this->assertFalse($editableLayout->getTopLevelContainer()->isEmpty());
+
+        // Now, rollback pretty much everything
+        $context->rollback();
+        $this->assertFalse($context->hasToken());
+
+        $loadedLayout = $storage->load($editableLayout->getId());
+        $this->assertTrue($loadedLayout->getTopLevelContainer()->isEmpty());
+        // Token should have been deleted
+        try {
+            $context->setCurrentToken($token->getToken());
+            $this->fail();
+        } catch (InvalidTokenError $e) {
+            $this->assertTrue(true);
+        }
+
+        // Start again but we'll commit this time
+        $token = $context->createEditToken();
+        $newLayout = $context->getAll()[$editableLayout->getId()];
+        $this->assertTrue($newLayout->getTopLevelContainer()->isEmpty());
+
+        $newLayout->getTopLevelContainer()->append(new Item('a', 1));
+        $this->assertFalse($newLayout->getTopLevelContainer()->isEmpty());
+
+        // Aaaaannd commit!
+        $context->commit();
+        $this->assertFalse($context->hasToken());
+
+        $loadedOnceAgainLayout = $storage->load($editableLayout->getId());
+        $this->assertFalse($loadedOnceAgainLayout->getTopLevelContainer()->isEmpty());
+        // Token should have been deleted
+        try {
+            $context->setCurrentToken($token->getToken());
+            $this->fail();
+        } catch (InvalidTokenError $e) {
+            $this->assertTrue(true);
+        }
     }
 
     /**
@@ -175,7 +229,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         }
 
         try {
-            $context->setCurrentToken(new EditToken('test', []));
+            $context->setCurrentToken('test');
             $this->fail();
         } catch (GenericError $e) {
             $this->assertTrue(true);
@@ -194,9 +248,5 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($context->hasToken());
         $context->resetToken();
         $this->assertFalse($context->hasToken());
-
-        $newEditToken = new EditToken('testing', []);
-        $context->setCurrentToken($newEditToken);
-        $this->assertSame($newEditToken, $context->getCurrentToken());
     }
 }
