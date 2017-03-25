@@ -15,9 +15,17 @@ interface ItemInterface
     /**
      * For storage engine only
      *
+     * @param int $layoutId
      * @param int $id
      */
-    public function setStorageId(int $id);
+    public function setStorageId(int $layoutId, int $id);
+
+    /**
+     * For storage engine only
+     *
+     * @return int|null
+     */
+    public function getLayoutId();
 
     /**
      * For storage engine only

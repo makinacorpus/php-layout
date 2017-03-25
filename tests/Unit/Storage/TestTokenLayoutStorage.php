@@ -94,7 +94,7 @@ class TestTokenLayoutStorage implements TokenLayoutStorageInterface
     {
         $id = $item->getStorageId();
         if (!$id) {
-            $item->setStorageId($this->sequence++);
+            $item->setStorageId(1, $this->sequence++);
         }
 
         if ($item instanceof ContainerInterface) {

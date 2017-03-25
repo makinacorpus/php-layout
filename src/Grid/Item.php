@@ -7,6 +7,7 @@ namespace MakinaCorpus\Layout\Grid;
  */
 class Item implements ItemInterface
 {
+    private $layoutId;
     private $storageId;
     private $type;
     private $id;
@@ -30,19 +31,24 @@ class Item implements ItemInterface
     }
 
     /**
-     * For storage engine only
-     *
-     * @param int $id
+     * {@inheritdoc}
      */
-    public function setStorageId(int $id)
+    public function setStorageId(int $layoutId, int $id)
     {
+        $this->layoutId = $layoutId;
         $this->storageId = $id;
     }
 
     /**
-     * For storage engine only
-     *
-     * @return int|null
+     * {@inheritdoc}
+     */
+    public function getLayoutId()
+    {
+        return $this->layoutId;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getStorageId()
     {
