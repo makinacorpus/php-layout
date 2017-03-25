@@ -111,10 +111,6 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
         $tokenStorage->saveToken(new EditToken('testing', [7]));
         $layout = new TestLayout(7);
 
-        $testToken = $controller->loadTokenFromTokenString('testing');
-        $this->assertSame('testing', $testToken->getToken());
-        $this->assertSame([7], $testToken->getLayoutIdList());
-
         // Create the grid and keep object references, becaue we need their
         // storage identifiers to work with
         $topLevel = $layout->getTopLevelContainer();

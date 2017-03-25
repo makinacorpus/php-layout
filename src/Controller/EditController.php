@@ -5,6 +5,7 @@ namespace MakinaCorpus\Layout\Controller;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Error\OutOfBoundsError;
 use MakinaCorpus\Layout\Error\SecurityError;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
@@ -13,7 +14,6 @@ use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
-use MakinaCorpus\Layout\Grid\ColumnContainer;
 
 /**
  * Controller that should be suitable with most frameworks.
@@ -79,18 +79,6 @@ class EditController
         }
 
         return $layout;
-    }
-
-    /**
-     * Load token from token string
-     *
-     * @param string $token
-     *
-     * @return EditToken
-     */
-    public function loadTokenFromTokenString(string $token) : EditToken
-    {
-        return $this->storage->loadToken($token);
     }
 
     /**
