@@ -15,4 +15,29 @@ namespace MakinaCorpus\Layout\Grid;
  */
 class ColumnContainer extends VerticalContainer
 {
+    private $parent;
+
+    /**
+     * For internal use only
+     *
+     * @param HorizontalContainer $parent
+     */
+    public function setParent(HorizontalContainer $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * Get parent container
+     *
+     * @return HorizontalContainer
+     */
+    public function getParent() : HorizontalContainer
+    {
+        if (!$this->parent) {
+            throw new \BadMethodCallException("uninitialized column");
+        }
+
+        return $this->parent;
+    }
 }

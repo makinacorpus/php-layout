@@ -60,6 +60,12 @@ class HorizontalContainer extends Item implements ContainerInterface
     public function createColumnAt(int $position = -1, $id = null) : ColumnContainer
     {
         $container = new ColumnContainer($id);
+        $container->setParent($this);
+
+        // For edition scenarios, one must have a layout identifier
+        if ($layoutId = $this->getLayoutId()) {
+            $container->setLayoutId($layoutId);
+        }
 
         if (0 === $position) {
             array_unshift($this->items, $container);
@@ -124,5 +130,16 @@ class HorizontalContainer extends Item implements ContainerInterface
     public function appendColumn($id = null) : ColumnContainer
     {
         return $this->createColumnAt(-1, $id);
+    }
+
+    /**
+     * Pending unserialization, some references must be restored
+     */
+    public function __wakeUp()
+    {
+        /** @var \MakinaCorpus\Layout\Grid\ColumnContainer $item */
+        foreach ($this->items as $item) {
+            $item->setParent($this);
+        }
     }
 }

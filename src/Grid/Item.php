@@ -42,6 +42,14 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
+    public function setLayoutId(int $layoutId)
+    {
+        $this->layoutId = $layoutId;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getLayoutId()
     {
         return $this->layoutId;

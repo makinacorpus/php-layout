@@ -69,7 +69,7 @@ class EditController
      *
      * @return LayoutInterface
      */
-    private function loadLayoutOrDie(string $tokenString, int $layoutId) : LayoutInterface
+    protected function loadLayoutOrDie(string $tokenString, int $layoutId) : LayoutInterface
     {
         $token  = $this->storage->loadToken($tokenString);
         $layout = $this->storage->load($token->getToken(), $layoutId);

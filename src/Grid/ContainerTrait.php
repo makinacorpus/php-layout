@@ -7,7 +7,7 @@ namespace MakinaCorpus\Layout\Grid;
  */
 trait ContainerTrait
 {
-    private $items = [];
+    protected $items = [];
 
     /**
      * {@inheritdoc}
