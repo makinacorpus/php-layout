@@ -63,7 +63,8 @@ class HorizontalContainer extends Item implements ContainerInterface
         $container->setParent($this);
 
         // For edition scenarios, one must have a layout identifier
-        if ($layoutId = $this->getLayoutId()) {
+        $layoutId = $this->getLayoutId();
+        if ($layoutId) {
             $container->setLayoutId($layoutId);
         }
 
@@ -137,6 +138,8 @@ class HorizontalContainer extends Item implements ContainerInterface
      */
     public function __wakeUp()
     {
+        $this->restoreChildrenLayoutId();
+
         /** @var \MakinaCorpus\Layout\Grid\ColumnContainer $item */
         foreach ($this->items as $item) {
             $item->setParent($this);

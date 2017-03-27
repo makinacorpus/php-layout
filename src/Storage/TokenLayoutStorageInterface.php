@@ -7,6 +7,14 @@ use MakinaCorpus\Layout\Error\InvalidTokenError;
 
 /**
  * Very specific version of layout storage, used only for editing purposes
+ *
+ * VERY IMPORTANT NOTE: no matter how you store objects (you could serialize
+ * them or use any other storage mecanism) - you MUST give a tempory unique
+ * identifier to every item in the tree, else the EditController implementation
+ * will not be able to find items and containers in the tree.
+ *
+ * You also MUST propagate the layout identifier to all object either when
+ * storing or when loading the item tree.
  */
 interface TokenLayoutStorageInterface
 {

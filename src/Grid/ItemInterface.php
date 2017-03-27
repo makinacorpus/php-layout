@@ -23,6 +23,13 @@ interface ItemInterface
     /**
      * For storage engine only
      *
+     * @param int $layoutId
+     */
+    public function setLayoutId(int $layoutId);
+
+    /**
+     * For storage engine only
+     *
      * @return int|null
      */
     public function getLayoutId();

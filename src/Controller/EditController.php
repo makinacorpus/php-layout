@@ -136,6 +136,7 @@ class EditController
 
         $horizontal = new HorizontalContainer();
         $horizontal->setStyle($style);
+        $horizontal->setLayoutId($layout->getId());
 
         if (!$container instanceof VerticalContainer) {
             throw new GenericError("you cannot add items into a non-vertical container");
@@ -231,8 +232,9 @@ class EditController
      */
     public function addAction(string $tokenString, int $layoutId, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $item       = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
+        $layout = $this->loadLayoutOrDie($tokenString, $layoutId);
+        $item = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
+        $item->setLayoutId($layoutId);
 
         if ($containerId) {
             $container = $layout->findContainer($containerId);
