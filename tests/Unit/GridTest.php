@@ -22,6 +22,7 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('some_type', $item->getType());
         $this->assertSame('some_id', $item->getId());
         $this->assertSame(ItemInterface::STYLE_DEFAULT, $item->getStyle());
+        $this->assertFalse($item->isPermanent());
 
         $item = new Item('a', 'b', 'some_style');
         $this->assertSame('a', $item->getType());
@@ -30,6 +31,48 @@ class GridTest extends \PHPUnit_Framework_TestCase
 
         $item->setStyle('another_style');
         $this->assertSame('another_style', $item->getStyle());
+
+        $item->setStorageId(7, 12, true);
+        $this->assertSame(7, $item->getLayoutId());
+        $this->assertSame(12, $item->getStorageId());
+        $this->assertTrue($item->isPermanent());
+
+        $item->setLayoutId(43);
+        $this->assertSame(43, $item->getLayoutId());
+    }
+
+    /**
+     * Ensures that serializing the grid will keep everything ok
+     */
+    public function testGridSerialization()
+    {
+        $topLevel = new VerticalContainer();
+        $topLevel->setLayoutId(65);
+        $this->assertSame(65, $topLevel->getLayoutId());
+
+        $topLevel->addAt($horizontal = new HorizontalContainer());
+        $this->assertSame(65, $horizontal->getLayoutId());
+
+        $horizontal->appendColumn();
+        $column1 = $horizontal->getColumnAt(0);
+        $this->assertSame(65, $column1->getLayoutId());
+        $this->assertSame($horizontal, $column1->getParent());
+
+        $horizontal->appendColumn();
+        $column2 = $horizontal->getColumnAt(1);
+        $this->assertSame(65, $column2->getLayoutId());
+        $this->assertSame($horizontal, $column2->getParent());
+
+        // Now serialize it, and do the same checks
+        /** @var \MakinaCorpus\Layout\Grid\VerticalContainer $newTopLevel */
+        $newTopLevel = unserialize(serialize($topLevel));
+
+        $this->assertSame(65, $newTopLevel->getLayoutId());
+        $this->assertSame(65, $newTopLevel->getAt(0)->getLayoutId());
+        $this->assertSame(65, $newTopLevel->getAt(0)->getColumnAt(0)->getLayoutId());
+        $this->assertSame($newTopLevel->getAt(0), $newTopLevel->getAt(0)->getColumnAt(0)->getParent());
+        $this->assertSame(65, $newTopLevel->getAt(0)->getColumnAt(1)->getLayoutId());
+        $this->assertSame($newTopLevel->getAt(0), $newTopLevel->getAt(0)->getColumnAt(1)->getParent());
     }
 
     /**

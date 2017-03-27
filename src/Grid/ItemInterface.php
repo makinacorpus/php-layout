@@ -13,6 +13,13 @@ interface ItemInterface
     const STYLE_DEFAULT = '_default';
 
     /**
+     * Does this item already have been stored
+     *
+     * @return bool
+     */
+    public function isPermanent() : bool;
+
+    /**
      * For storage engine only
      *
      * @param int $layoutId

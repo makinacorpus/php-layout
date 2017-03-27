@@ -7,14 +7,15 @@ namespace MakinaCorpus\Layout\Grid;
  */
 class Item implements ItemInterface
 {
-    private $layoutId;
-    private $storageId;
-    private $type;
     private $id;
-    private $style;
-    private $position = 0;
-    private $updated = false;
+    private $isPermanent = false;
+    private $layoutId;
     private $options = [];
+    private $position = 0;
+    private $storageId;
+    private $style;
+    private $type;
+    private $updated = false;
 
     /**
      * Default constructor
@@ -33,10 +34,19 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setStorageId(int $layoutId, int $id)
+    public function isPermanent() : bool
+    {
+        return $this->isPermanent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStorageId(int $layoutId, int $id, bool $isPermanent = false)
     {
         $this->layoutId = $layoutId;
         $this->storageId = $id;
+        $this->isPermanent = $isPermanent;
     }
 
     /**

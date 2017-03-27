@@ -52,6 +52,10 @@ class VerticalContainer extends Item implements ContainerInterface
      */
     public function addAt(Item $item, int $position = -1) : VerticalContainer
     {
+        if ($layoutId = $this->getLayoutId()) {
+            $item->setLayoutId($layoutId);
+        }
+
         if (0 === $position) {
             array_unshift($this->items, $item);
         } else if ($position < 0) {
