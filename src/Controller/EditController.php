@@ -126,8 +126,13 @@ class EditController
      */
     public function addColumnContainerAction(string $tokenString, int $layoutId, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $container  = $layout->findContainer($containerId);
+        $layout = $this->loadLayoutOrDie($tokenString, $layoutId);
+
+        if ($containerId) {
+            $container = $layout->findContainer($containerId);
+        } else {
+            $container = $layout->getTopLevelContainer();
+        }
 
         $horizontal = new HorizontalContainer();
         $horizontal->setStyle($style);
@@ -227,8 +232,13 @@ class EditController
     public function addAction(string $tokenString, int $layoutId, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
     {
         $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $container  = $layout->findContainer($containerId);
         $item       = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
+
+        if ($containerId) {
+            $container = $layout->findContainer($containerId);
+        } else {
+            $container = $layout->getTopLevelContainer();
+        }
 
         if ($item instanceof ContainerInterface) {
             throw new GenericError("you cannot add a container into a container");
@@ -265,6 +275,12 @@ class EditController
         $parent     = $layout->findContainerOf($itemId);
         $item       = null;
         $position   = null;
+
+        if ($containerId) {
+            $container = $layout->findContainer($containerId);
+        } else {
+            $container = $layout->getTopLevelContainer();
+        }
 
         /** @var \MakinaCorpus\Layout\Grid\ItemInterface $item */
         foreach ($parent->getAllItems() as $index => $child) {

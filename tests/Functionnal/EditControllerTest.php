@@ -118,10 +118,6 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
         $topLevel->append($c1);
         $c11 = $c1->appendColumn('C11');
         $c12 = $c1->appendColumn('C12');
-        $a12 = $aType->create(12);
-        $b7_2 = $bType->create(7, 'bar');
-        $topLevel->append($a12);
-        $topLevel->append($b7_2);
 
         // We need to save the layout to have storage identifiers
         $tokenStorage->update('testing', $layout);
@@ -134,11 +130,34 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
     <column id="container:vbox"></column>
     <column id="container:vbox"></column>
   </horizontal>
+</vertical>
+EOT
+            , $renderer->render($layout->getTopLevelContainer())
+        );
+
+        // Now add stuff into the top level container
+        $this->assertResponseOk($controller->addAction('testing', 7, 0, 'a', 12, 1), <<<EOT
+<item id="leaf:a/12"/>
+EOT
+        );
+        $this->assertResponseOk($controller->addAction('testing', 7, 0, 'b', 7, 2, 'bar'), <<<EOT
+<item id="leaf:b/7" style="bar"/>
+EOT
+        );
+
+        // Assert our new grid
+        $this->assertSameRenderedGrid(
+            <<<EOT
+<vertical id="container:vbox">
+  <horizontal id="container:hbox">
+    <column id="container:vbox"></column>
+    <column id="container:vbox"></column>
+  </horizontal>
   <item id="leaf:a/12"/>
   <item id="leaf:b/7" style="bar"/>
 </vertical>
 EOT
-            , $renderer->render($layout->getTopLevelContainer())
+            , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
         );
 
         /*
