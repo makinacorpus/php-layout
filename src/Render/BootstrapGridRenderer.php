@@ -105,14 +105,18 @@ EOT;
      */
     public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string
     {
-        // @todo find a generic way to push column sizes into configuration
-        //   and the user customize it
-        $innerContainers = $container->getAllItems();
-        $defaultSize = floor(12 / count($innerContainers));
-
         $innerText = '';
-        foreach ($innerContainers as $child) {
-            $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child), $collection->identify($child));
+
+        if (!$container->isEmpty()) {
+            $innerContainers = $container->getAllItems();
+
+            // @todo find a generic way to push column sizes into configuration
+            //   and the user customize it
+            $defaultSize = floor(12 / count($innerContainers));
+
+            foreach ($innerContainers as $child) {
+                $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child), $collection->identify($child));
+            }
         }
 
         return $this->renderRow($innerText, $collection->identify($container));
