@@ -57,6 +57,14 @@ final class NullType implements ItemTypeInterface
     /**
      * {@inheritdoc}
      */
+    public function getAllowedStylesFor(ItemInterface $item) : array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
         $collection->setOutputFor($item, '');

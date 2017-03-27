@@ -28,6 +28,11 @@ class ItemAType implements ItemTypeInterface
     {
     }
 
+    public function getAllowedStylesFor(ItemInterface $item) : array
+    {
+        return [];
+    }
+
     public function renderItem(ItemInterface $item, RenderCollection $collection)
     {
         $style = $item->getStyle();

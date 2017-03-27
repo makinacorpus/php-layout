@@ -51,6 +51,22 @@ interface ItemTypeInterface
     public function preload(array $items);
 
     /**
+     * Get allowed style list for the given item
+     *
+     * Please note that you may include the default key, case in which you
+     * can set the label you wish to go along.
+     *
+     * @param ItemInterface $item
+     *
+     * @return string[]
+     *   Keys are style identifiers, values are style names
+     *
+     * @throws TypeMismatchError
+     *   In case one of the items has not the right type
+     */
+    public function getAllowedStylesFor(ItemInterface $item) : array;
+
+    /**
      * Render a single item
      *
      * Item must be set using RenderCollection::setOutputFor()
