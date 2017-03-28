@@ -32,11 +32,10 @@ interface ItemTypeInterface
      *
      * @param int|string $id
      * @param null|string $style
-     * @param string[] $options
      *
      * @return ItemInterface
      */
-    public function create(string $id, string $style = null, array $options = []) : ItemInterface;
+    public function create(string $id, string $style = null) : ItemInterface;
 
     /**
      * Preload items data if necessary, this will be call at runtime prior

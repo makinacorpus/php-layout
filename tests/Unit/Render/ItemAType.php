@@ -19,7 +19,7 @@ class ItemAType implements ItemTypeInterface
         return true;
     }
 
-    public function create(string $id, string $style = null, array $options = []) : ItemInterface
+    public function create(string $id, string $style = null) : ItemInterface
     {
         return new Item('a', $id, $style ?: ItemInterface::STYLE_DEFAULT);
     }
