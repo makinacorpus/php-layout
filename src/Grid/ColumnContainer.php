@@ -35,7 +35,9 @@ class ColumnContainer extends VerticalContainer
     public function getParent() : HorizontalContainer
     {
         if (!$this->parent) {
+            // @codeCoverageIgnoreStart
             throw new \BadMethodCallException("uninitialized column");
+            // @codeCoverageIgnoreEnd
         }
 
         return $this->parent;

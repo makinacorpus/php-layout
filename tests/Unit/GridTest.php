@@ -7,6 +7,7 @@ use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Error\GenericError;
 
 /**
  * Basic API-driven composition
@@ -39,6 +40,67 @@ class GridTest extends \PHPUnit_Framework_TestCase
 
         $item->setLayoutId(43);
         $this->assertSame(43, $item->getLayoutId());
+    }
+
+    /**
+     * Tests item options behavior
+     */
+    public function testItemOptions()
+    {
+        $item = new Item('a', 1);
+        $this->assertFalse($item->isUpdated());
+
+        $item->setOptions([
+            'a' => null,
+            'foo' => 'bar',
+            'test' => 42,
+        ]);
+
+        // Null values are dropped
+        $this->assertTrue($item->isUpdated());
+        $this->assertFalse($item->hasOption('a'));
+        $this->assertTrue($item->hasOption('foo'));
+        $this->assertTrue($item->hasOption('test'));
+        $this->assertSame('nope', $item->getOption('a', 'nope'));
+        $this->assertNull($item->getOption('a'));
+        $this->assertSame('bar', $item->getOption('foo', 'nope'));
+        $this->assertSame(42, $item->getOption('test', 'nope'));
+
+        // Null values are physically dropped from the array
+        $options = $item->getOptions();
+        $this->assertCount(2, $options);
+
+        // Setting options don't erase non setted ones
+        $item->setOptions([
+            'a' => 7,
+            'foo' => 'bar bar',
+        ]);
+        $this->assertTrue($item->hasOption('a'));
+        $this->assertTrue($item->hasOption('foo'));
+        $this->assertTrue($item->hasOption('test'));
+        $this->assertSame(7, $item->getOption('a', 'nope'));
+        $this->assertSame('bar bar', $item->getOption('foo', 'nope'));
+        $this->assertSame(42, $item->getOption('test', 'nope'));
+
+        // Also test with explicit clear parameter
+        $item->setOptions([
+            'a' => 13,
+            'baz' => 'pouet',
+        ], true);
+        $this->assertTrue($item->hasOption('a'));
+        $this->assertFalse($item->hasOption('foo'));
+        $this->assertFalse($item->hasOption('test'));
+        $this->assertTrue($item->hasOption('baz'));
+        $this->assertSame(13, $item->getOption('a', 'nope'));
+        $this->assertSame('pouet', $item->getOption('baz', 'nope'));
+
+        // And ensure errors with non scalar values
+        try {
+            $item->setOptions(['a' => []]);
+            $this->fail();
+        } catch (GenericError $e) {
+            $this->assertTrue(true);
+        }
     }
 
     /**
