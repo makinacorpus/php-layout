@@ -74,6 +74,22 @@ final class Context
     }
 
     /**
+     * Is there any editable layout in this context
+     *
+     * @return bool
+     */
+    public function containsEditableLayouts() : bool
+    {
+        foreach ($this->editableIndex as $value) {
+            if ($value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get all layouts
      *
      * @return LayoutInterface[]
