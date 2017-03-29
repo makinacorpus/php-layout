@@ -9,7 +9,7 @@ use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
@@ -91,7 +91,7 @@ class EditController
         $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
         $container  = $layout->findContainerOf($itemId);
 
-        if (!$container instanceof VerticalContainer) {
+        if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
             throw new GenericError("you cannot remove items from a non-vertical container");
         }
 
@@ -138,7 +138,7 @@ class EditController
         $horizontal->setStyle($style);
         $horizontal->setLayoutId($layout->getId());
 
-        if (!$container instanceof VerticalContainer) {
+        if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
             throw new GenericError("you cannot add items into a non-vertical container");
         }
         if (1 > $columnCount || 100 < $columnCount) {
@@ -245,7 +245,7 @@ class EditController
         if ($item instanceof ContainerInterface) {
             throw new GenericError("you cannot add a container into a container");
         }
-        if (!$container instanceof VerticalContainer) {
+        if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
             throw new GenericError("you cannot add items into a non-vertical container");
         }
 
@@ -296,13 +296,13 @@ class EditController
         if ($item instanceof ColumnContainer) {
             throw new GenericError("you cannot move a column");
         }
-        if (!$parent instanceof VerticalContainer) {
+        if (!$parent instanceof TopLevelContainer && !$parent instanceof ColumnContainer) {
             // @codeCoverageIgnoreStart
             // This is an impossible use case with non-broken data
             throw new GenericError("you cannot move items from a non-vertical container");
             // @codeCoverageIgnoreEnd
         }
-        if (!$container instanceof VerticalContainer) {
+        if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
             throw new GenericError("you cannot move items into a non-vertical container");
         }
 

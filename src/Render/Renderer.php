@@ -7,7 +7,7 @@ use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
 
 /**
@@ -69,12 +69,10 @@ class Renderer
      */
     private function renderContainer(ContainerInterface $container, RenderCollection $collection) : string
     {
-        // Column must be rendered before vertical, because they are
-        // VerticalContainer by inheritance, don't change the order.
         if ($container instanceof ColumnContainer) {
             $output = $this->gridRenderer->renderColumnContainer($container, $collection);
-        } else if ($container instanceof VerticalContainer) {
-            $output = $this->gridRenderer->renderVerticalContainer($container, $collection);
+        } else if ($container instanceof TopLevelContainer) {
+            $output = $this->gridRenderer->renderTopLevelContainer($container, $collection);
         } else if ($container instanceof HorizontalContainer) {
             $output = $this->gridRenderer->renderHorizontalContainer($container, $collection);
         } else {

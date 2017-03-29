@@ -6,8 +6,9 @@ use MakinaCorpus\Layout\Error\OutOfBoundsError;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 
 /**
  * Basic API-driven composition
@@ -108,7 +109,7 @@ class GridTest extends \PHPUnit_Framework_TestCase
      */
     public function testGridSerialization()
     {
-        $topLevel = new VerticalContainer();
+        $topLevel = new TopLevelContainer();
         $topLevel->setLayoutId(65);
         $this->assertSame(65, $topLevel->getLayoutId());
 
@@ -126,7 +127,7 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($horizontal, $column2->getParent());
 
         // Now serialize it, and do the same checks
-        /** @var \MakinaCorpus\Layout\Grid\VerticalContainer $newTopLevel */
+        /** @var \MakinaCorpus\Layout\Grid\TopLevelContainer $newTopLevel */
         $newTopLevel = unserialize(serialize($topLevel));
 
         $this->assertSame(65, $newTopLevel->getLayoutId());
@@ -140,14 +141,14 @@ class GridTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the vertical container
      */
-    public function testVerticalContainer()
+    public function testTopLevelContainer()
     {
-        $container = new VerticalContainer();
+        $container = new TopLevelContainer();
         $this->assertTrue($container->isEmpty());
         $this->assertFalse($container->isUpdated());
 
         $a = new Item('a', 11);
-        $b = new VerticalContainer(21);
+        $b = new TopLevelContainer(21);
         $c = new Item('c', 31);
         $d = new Item('d', 41);
         $e = new HorizontalContainer(51);
@@ -170,7 +171,13 @@ class GridTest extends \PHPUnit_Framework_TestCase
         // Move the others at the right position
         $container->addAt($c, 1);
         // Move at the same position as the other
-        $container->addAt($b, 1);
+        // But wait, you cannot append a top level container
+        try {
+            $container->addAt($b, 1);
+            $this->fail();
+        } catch (GenericError $exception) {
+            $this->assertTrue(true);
+        }
 
         // Updated state
         $container->toggleUpdateStatus(false);
@@ -178,24 +185,22 @@ class GridTest extends \PHPUnit_Framework_TestCase
 
         // Ensure order
         $items = $container->getAllItems();
-        $this->assertCount(7, $container);
-        $this->assertCount(7, $items);
+        $this->assertCount(6, $container);
+        $this->assertCount(6, $items);
 
         $this->assertSame($a, $items[0]);
-        $this->assertSame($b, $items[1]);
-        $this->assertSame($c, $items[2]);
-        $this->assertSame($d, $items[3]);
-        $this->assertSame($e, $items[4]);
-        $this->assertSame($f, $items[5]);
-        $this->assertSame($g, $items[6]);
+        $this->assertSame($c, $items[1]);
+        $this->assertSame($d, $items[2]);
+        $this->assertSame($e, $items[3]);
+        $this->assertSame($f, $items[4]);
+        $this->assertSame($g, $items[5]);
 
         $this->assertSame($a, $container->getAt(0));
-        $this->assertSame($b, $container->getAt(1));
-        $this->assertSame($c, $container->getAt(2));
-        $this->assertSame($d, $container->getAt(3));
-        $this->assertSame($e, $container->getAt(4));
-        $this->assertSame($f, $container->getAt(5));
-        $this->assertSame($g, $container->getAt(6));
+        $this->assertSame($c, $container->getAt(1));
+        $this->assertSame($d, $container->getAt(2));
+        $this->assertSame($e, $container->getAt(3));
+        $this->assertSame($f, $container->getAt(4));
+        $this->assertSame($g, $container->getAt(5));
 
         // Test errors
         try {
@@ -232,12 +237,11 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $container->removeAt(0);
         $container->removeAt(2);
         $container->removeAt(3);
-        $this->assertCount(4, $container);
+        $this->assertCount(3, $container);
 
-        $this->assertSame($b, $container->getAt(0));
-        $this->assertSame($c, $container->getAt(1));
-        $this->assertSame($e, $container->getAt(2));
-        $this->assertSame($g, $container->getAt(3));
+        $this->assertSame($c, $container->getAt(0));
+        $this->assertSame($d, $container->getAt(1));
+        $this->assertSame($f, $container->getAt(2));
 
         // Removal did change the updated status
         $this->assertTrue($container->isUpdated());
@@ -254,13 +258,13 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $container);
 
         $c = $container->appendColumn('31');
-        $this->assertInstanceOf(VerticalContainer::class, $c);
+        $this->assertInstanceOf(ColumnContainer::class, $c);
         $a = $container->prependColumn('11');
-        $this->assertInstanceOf(VerticalContainer::class, $a);
+        $this->assertInstanceOf(ColumnContainer::class, $a);
         $b = $container->createColumnAt(1, '21');
-        $this->assertInstanceOf(VerticalContainer::class, $b);
+        $this->assertInstanceOf(ColumnContainer::class, $b);
         $d = $container->createColumnAt(127, '41');
-        $this->assertInstanceOf(VerticalContainer::class, $d);
+        $this->assertInstanceOf(ColumnContainer::class, $d);
 
         // Updated state
         $container->toggleUpdateStatus(false);

@@ -3,26 +3,14 @@
 namespace MakinaCorpus\Layout\Grid;
 
 use MakinaCorpus\Layout\Error\OutOfBoundsError;
+use MakinaCorpus\Layout\Error\GenericError;
 
 /**
  * Vertical mutable item container
  */
-class VerticalContainer extends Item implements ContainerInterface
+trait VerticalContainerTrait
 {
     use ContainerTrait;
-
-    /**
-     * This type of item type string
-     */
-    const VERTICAL_CONTAINER = 'vbox';
-
-    /**
-     * Default constructor
-     */
-    public function __construct($id = null)
-    {
-        parent::__construct(self::VERTICAL_CONTAINER, $id ?: uniqid());
-    }
 
     /**
      * Get item at the given position
@@ -43,15 +31,16 @@ class VerticalContainer extends Item implements ContainerInterface
     /**
      * Add item at the specified position
      *
-     * @param Item $item
+     * @param ItemInterface $item
      * @param int $position
      *   If no position specified or int is higher to the higher bound,
      *   append the item, for prepending set 0
-     *
-     * @return $this
      */
-    public function addAt(Item $item, int $position = -1) : VerticalContainer
+    public function addAt(ItemInterface $item, int $position = -1)
     {
+        if ($item instanceof TopLevelContainer) {
+            throw new GenericError("you cannot nest a top level container");
+        }
         if ($layoutId = $this->getLayoutId()) {
             $item->setLayoutId($layoutId);
         }
@@ -75,10 +64,8 @@ class VerticalContainer extends Item implements ContainerInterface
      * Remove item at specified position
      *
      * @param int $position
-     *
-     * @return $this
      */
-    public function removeAt(int $position) : VerticalContainer
+    public function removeAt(int $position)
     {
         if (!isset($this->items[$position])) {
             throw new OutOfBoundsError(sprintf("%d is out of bounds, allowed: [%d-%d]", $position, 0, count($this->items) - 1));
@@ -96,11 +83,9 @@ class VerticalContainer extends Item implements ContainerInterface
     /**
      * Prepend item
      *
-     * @param Item $item
-     *
-     * @return $this
+     * @param ItemInterface $item
      */
-    public function prepend(Item $item) : VerticalContainer
+    public function prepend(ItemInterface $item)
     {
         $this->addAt($item, 0);
 
@@ -110,11 +95,9 @@ class VerticalContainer extends Item implements ContainerInterface
     /**
      * Append item
      *
-     * @param Item $item
-     *
-     * @return $this
+     * @param ItemInterface $item
      */
-    public function append(Item $item) : VerticalContainer
+    public function append(ItemInterface $item)
     {
         $this->addAt($item, -1);
 

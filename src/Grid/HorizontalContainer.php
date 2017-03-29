@@ -14,11 +14,6 @@ class HorizontalContainer extends Item implements ContainerInterface
     use ContainerTrait;
 
     /**
-     * This type of item type string
-     */
-    const HORIZONTAL_CONTAINER = 'hbox';
-
-    /**
      * Default constructor
      *
      * @param int|string $id
@@ -26,7 +21,7 @@ class HorizontalContainer extends Item implements ContainerInterface
      */
     public function __construct($id = null)
     {
-        parent::__construct(self::HORIZONTAL_CONTAINER, $id ?: uniqid());
+        parent::__construct(ContainerInterface::HORIZONTAL_CONTAINER, $id ?: uniqid());
     }
 
     /**

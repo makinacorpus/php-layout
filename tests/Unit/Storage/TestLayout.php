@@ -2,7 +2,7 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit\Storage;
 
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Storage\AbstractLayout;
 
 /**
@@ -16,7 +16,7 @@ class TestLayout extends AbstractLayout
     public function __construct(int $id)
     {
         $this->id = $id;
-        $this->container = new VerticalContainer('layout-' . $id);
+        $this->container = new TopLevelContainer('layout-' . $id);
     }
 
     /**
@@ -30,7 +30,7 @@ class TestLayout extends AbstractLayout
     /**
      * {@inheritdoc}
      */
-    public function getTopLevelContainer() : VerticalContainer
+    public function getTopLevelContainer() : TopLevelContainer
     {
         return $this->container;
     }

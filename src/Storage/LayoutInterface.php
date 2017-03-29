@@ -4,7 +4,7 @@ namespace MakinaCorpus\Layout\Storage;
 
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\ItemInterface;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 
 /**
  * Grid storage interface
@@ -21,9 +21,9 @@ interface LayoutInterface
     /**
      * Get top level container
      *
-     * @return VerticalContainer
+     * @return TopLevelContainer
      */
-    public function getTopLevelContainer() : VerticalContainer;
+    public function getTopLevelContainer() : TopLevelContainer;
 
     /**
      * Find the target item

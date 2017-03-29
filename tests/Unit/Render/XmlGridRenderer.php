@@ -5,7 +5,7 @@ namespace MakinaCorpus\Layout\Tests\Unit\Render;
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
 
@@ -38,7 +38,7 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderVerticalContainer(VerticalContainer $container, RenderCollection $collection) : string
+    public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
     {
         return $this->renderAsElement($container, $collection, 'vertical');
     }

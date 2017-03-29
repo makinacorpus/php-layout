@@ -102,7 +102,7 @@ And the associated PHP code for creating the container tree:
 $aType = new ItemAType();
 
 // Place a top level container and build layout (no items)
-$topLevel = new VerticalContainer('top-level');
+$topLevel = new TopLevelContainer('top-level');
 $c1 = new HorizontalContainer('C1');
 $topLevel->append($c1);
 $c11 = $c1->appendColumn('C11');
@@ -152,8 +152,6 @@ type handlers:
 ```php
 $itemTypeRegistry = new ItemTypeRegistry();
 $itemTypeRegistry->registerType($aType);
-$itemTypeRegistry->registerType($vboxType);
-$itemTypeRegistry->registerType($hboxType);
 ```
 
 Then render it:

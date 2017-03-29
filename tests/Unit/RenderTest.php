@@ -4,7 +4,7 @@ namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\BootstrapGridRenderer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
@@ -102,7 +102,7 @@ EOT;
         $bType = $typeRegistry->getType('b');
 
         // Place a top level container and build layout (no items)
-        $topLevel = new VerticalContainer('top-level');
+        $topLevel = new TopLevelContainer('top-level');
         $c1 = new HorizontalContainer('C1');
         $topLevel->append($c1);
         $c11 = $c1->appendColumn('C11');
@@ -223,7 +223,7 @@ EOT;
         $aType = $typeRegistry->getType('a');
 
         // Place a top level container and build layout (no items)
-        $topLevel = new VerticalContainer('top-level');
+        $topLevel = new TopLevelContainer('top-level');
         $c1 = new HorizontalContainer('C1');
         $topLevel->append($c1);
         $c11 = $c1->appendColumn('C11');
@@ -265,17 +265,20 @@ EOT;
     {
         // Creates two very simple layouts with containers that have the same
         // type and identifiers, but have different items inside
-        $topLevel1 = new VerticalContainer('top-level-1');
-        $topLevel1->append($vertical1 = new VerticalContainer('a'));
-        $vertical1->append(new Item('a', '1'));
+        $topLevel1 = new TopLevelContainer('top-level-1');
+        $topLevel1->append($vertical1 = new HorizontalContainer('a'));
+        $column1 = $vertical1->appendColumn();
+        $column1->append(new Item('a', '1'));
 
-        $topLevel2 = new VerticalContainer('top-level-2');
-        $topLevel2->append($vertical2 = new VerticalContainer('a'));
-        $vertical2->append(new Item('b', '2'));
+        $topLevel2 = new TopLevelContainer('top-level-2');
+        $topLevel2->append($vertical2 = new HorizontalContainer('a'));
+        $column2 = $vertical2->appendColumn();
+        $column2->append(new Item('b', '2'));
 
-        $topLevel3 = new VerticalContainer('top-level-2');
-        $topLevel3->append($vertical3 = new VerticalContainer('a'));
-        $vertical3->append(new Item('a', '1', 'foo'));
+        $topLevel3 = new TopLevelContainer('top-level-2');
+        $topLevel3->append($vertical3 = new HorizontalContainer('a'));
+        $column3 = $vertical3->appendColumn();
+        $column3->append(new Item('a', '1', 'foo'));
 
         $renderer = $this->createRenderer($this->createTypeRegistry(), new XmlGridRenderer());
         $ret = $renderer->renderAll([$topLevel1, $topLevel2, $topLevel3]);

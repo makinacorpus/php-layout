@@ -4,7 +4,7 @@ namespace MakinaCorpus\Layout\Render;
 
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
-use MakinaCorpus\Layout\Grid\VerticalContainer;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
@@ -16,12 +16,12 @@ interface GridRendererInterface
     /**
      * Render an vertical container
      *
-     * @param VerticalContainer $container
+     * @param TopLevelContainer $container
      * @param RenderCollection $collection
      *
      * @return string
      */
-    public function renderVerticalContainer(VerticalContainer $container, RenderCollection $collection) : string;
+    public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string;
 
     /**
      * Render an horizontal container single column

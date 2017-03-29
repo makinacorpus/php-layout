@@ -13,9 +13,22 @@ namespace MakinaCorpus\Layout\Grid;
  * People might want to differenciate types, they may, but it is not officialy
  * supported by this API and it doesn't guarantee it will work gracefully
  */
-class ColumnContainer extends VerticalContainer
+class ColumnContainer extends Item implements ContainerInterface
 {
+    use VerticalContainerTrait;
+
+    /**
+     * @var HorizontalContainer
+     */
     private $parent;
+
+    /**
+     * Default constructor
+     */
+    public function __construct($id = null)
+    {
+        parent::__construct(ContainerInterface::VERTICAL_CONTAINER, $id ?: uniqid());
+    }
 
     /**
      * For internal use only
