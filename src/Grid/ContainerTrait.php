@@ -22,6 +22,20 @@ trait ContainerTrait
     /**
      * {@inheritdoc}
      */
+    public function getIndexOf(ItemInterface $item) : int
+    {
+        foreach ($this->items as $position => $child) {
+            if ($child === $item) {
+                return $position;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isEmpty() : bool
     {
         return !$this->items;

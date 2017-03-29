@@ -25,6 +25,16 @@ interface ContainerInterface extends \Countable
     public function getAllItems() : array;
 
     /**
+     * Get index of item
+     *
+     * @param ItemInterface $item
+     *
+     * @return int
+     *   Returns -1 if item is not there
+     */
+    public function getIndexOf(ItemInterface $item) : int;
+
+    /**
      * Is this container empty
      *
      * @return bool

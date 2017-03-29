@@ -195,6 +195,14 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($f, $items[4]);
         $this->assertSame($g, $items[5]);
 
+        $this->assertSame(0, $container->getIndexOf($a));
+        $this->assertSame(1, $container->getIndexOf($c));
+        $this->assertSame(2, $container->getIndexOf($d));
+        $this->assertSame(3, $container->getIndexOf($e));
+        $this->assertSame(4, $container->getIndexOf($f));
+        $this->assertSame(5, $container->getIndexOf($g));
+        $this->assertSame(-1, $container->getIndexOf(new Item('foo', 'bar')));
+
         $this->assertSame($a, $container->getAt(0));
         $this->assertSame($c, $container->getAt(1));
         $this->assertSame($d, $container->getAt(2));
