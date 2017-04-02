@@ -1,5 +1,7 @@
 # PHP basic layout API
 
+[![Build Status](https://travis-ci.org/makinacorpus/php-layout.svg?branch=master)](https://travis-ci.org/makinacorpus/php-layout)
+
 Object representation of a display layout, based upon CSS basic functionnality:
 
  * all items are always stacked vertically in containers;
