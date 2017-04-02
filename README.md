@@ -37,30 +37,26 @@ what the bootstrap grid we want:
 ```html
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-12">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-6">
-            <item id="A1" />
-            <item id="A4" />
-          </div>
-          <div class="col-md-6">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-md-6">
-                  <item id="A2" />
-                  <item id="A5" />
-                </div>
-                <div class="col-md-6">
-                  <item id="A3" />
-                </div>
-              </div>
+    <div class="col-md-12" data-id="container:vbox/top-level" data-contains>
+      <div class="row" data-id="container:hbox/C1" data-contains>
+        <div class="col-md-6" data-id="container:vbox/C11" data-contains>
+          <item id="leaf:a/1" />
+          <item id="leaf:a/4" />
+        </div>
+        <div class="col-md-6" data-id="container:vbox/C12" data-contains>
+          <div class="row" data-id="container:hbox/C2" data-contains>
+            <div class="col-md-6" data-id="container:vbox/C21" data-contains>
+              <item id="leaf:a/2" />
+              <item id="leaf:a/5" />
+            </div>
+            <div class="col-md-6" data-id="container:vbox/C22" data-contains>
+              <item id="leaf:a/3" />
             </div>
           </div>
         </div>
       </div>
-      <item id="A6" />
-      <item id="A7" />
+      <item id="leaf:a/6" />
+      <item id="leaf:a/7" />
     </div>
   </div>
 </div>

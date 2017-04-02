@@ -191,23 +191,19 @@ EOT;
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-12" data-id="container:vbox/top-level" data-contains>
-      <div class="container-fluid" data-id="container:hbox/C1">
-        <div class="row" data-contains>
-          <div class="col-md-6" data-id="container:vbox/C11" data-contains>
-            <item id="leaf:a/1" />
-            <item id="leaf:a/4" />
-          </div>
-          <div class="col-md-6" data-id="container:vbox/C12" data-contains>
-            <div class="container-fluid" data-id="container:hbox/C2">
-              <div class="row" data-contains>
-                <div class="col-md-6" data-id="container:vbox/C21" data-contains>
-                  <item id="leaf:a/2" />
-                  <item id="leaf:a/5" />
-                </div>
-                <div class="col-md-6" data-id="container:vbox/C22" data-contains>
-                  <item id="leaf:a/3" />
-                </div>
-              </div>
+      <div class="row" data-id="container:hbox/C1" data-contains>
+        <div class="col-md-6" data-id="container:vbox/C11" data-contains>
+          <item id="leaf:a/1" />
+          <item id="leaf:a/4" />
+        </div>
+        <div class="col-md-6" data-id="container:vbox/C12" data-contains>
+          <div class="row" data-id="container:hbox/C2" data-contains>
+            <div class="col-md-6" data-id="container:vbox/C21" data-contains>
+              <item id="leaf:a/2" />
+              <item id="leaf:a/5" />
+            </div>
+            <div class="col-md-6" data-id="container:vbox/C22" data-contains>
+              <item id="leaf:a/3" />
             </div>
           </div>
         </div>

@@ -31,10 +31,8 @@ class BootstrapGridRenderer implements GridRendererInterface
         }
 
         return <<<EOT
-<div class="container-fluid"{$additional}>
-  <div class="row"{$container}>
-    {$innerText}
-  </div>
+<div class="row"{$additional}{$container}>
+  {$innerText}
 </div>
 EOT;
     }
@@ -84,7 +82,7 @@ EOT;
             $innerText .= $collection->getRenderedItem($child);
         }
 
-        return $this->renderRow($this->renderColumn(['md' => 12], $innerText, $collection->identify($container)));
+        return '<div class="container-fluid">' . $this->renderRow($this->renderColumn(['md' => 12], $innerText, $collection->identify($container))) . '</div>';
     }
 
     /**
