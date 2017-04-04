@@ -4,8 +4,11 @@ namespace MakinaCorpus\Layout\Render;
 
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
+use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Grid\Options;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\RenderCollection;
+use MakinaCorpus\Layout\Grid\NullOptions;
 
 /**
  * Bootstrap 3 compatible grid renderer.
@@ -13,21 +16,64 @@ use MakinaCorpus\Layout\Render\RenderCollection;
 class BootstrapGridRenderer implements GridRendererInterface
 {
     /**
-     * Render column
+     * Escape string
      *
-     * @param string $innerText
+     * @param string $string
      *
      * @return string
      */
-    private function renderRow(string $innerText, string $identifier = null) : string
+    protected function escape(string $string) : string
     {
-        if ($identifier) {
-            // @todo this should be escaped
-            $additional = ' data-id="' . $identifier . '"';
-            $container  = ' data-contains';
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * Render column
+     *
+     * @param string $innerText
+     * @param Options $options
+     *
+     * @return string
+     */
+    protected function renderContainer(string $innerText, Options $options = null) : string
+    {
+        $options = $options ?? new NullOptions();
+
+        if ($options->getOption('drop')) {
+            return $innerText;
+        }
+
+        if ($options->getOption('fluid')) {
+              $class = 'container-fluid';
         } else {
-            $additional = '';
-            $container  = '';
+            $class = 'container';
+        }
+
+        return <<<EOT
+<div class="{$class}">
+  {$innerText}
+</div>
+EOT;
+    }
+
+    /**
+     * Render column
+     *
+     * @param string $innerText
+     * @param Options $options
+     *
+     * @return string
+     */
+    protected function renderRow(string $innerText, string $identifier = null, Options $options = null) : string
+    {
+        $options = $options ?? new NullOptions();
+
+        $additional = '';
+        $container = '';
+
+        if ($identifier) {
+            $additional .= ' data-id="' . $this->escape($identifier) . '"';
+            $container  .= ' data-contains';
         }
 
         return <<<EOT
@@ -46,23 +92,24 @@ EOT;
      *   on the bootstrap grid for those medias.
      * @param string $innerText
      * @param string $identifier
+     * @param Options $options
      *
      * @return string
      */
-    private function renderColumn(array $sizes, string $innerText, string $identifier = null) : string
+    protected function renderColumn(array $sizes, string $innerText, string $identifier = null, Options $options = null) : string
     {
+        $options = $options ?? new NullOptions();
+
         $classes = [];
         foreach ($sizes as $media => $size) {
             $classes[] = 'col-' . $media . '-' . $size;
         }
 
         $classAttr = implode(' ', $classes);
+        $additional = '';
 
         if ($identifier) {
-            // @todo this should be escaped
-            $additional = ' data-id="' . $identifier . '" data-contains';
-        } else {
-            $additional = '';
+            $additional .= ' data-id="' . $this->escape($identifier) . '" data-contains';
         }
 
         return <<<EOT
@@ -73,16 +120,37 @@ EOT;
     }
 
     /**
+     * Render a single child
+     *
+     * @param ItemInterface $item
+     * @param RenderCollection $collection
+     *
+     * @return string
+     */
+    protected function renderChild(ItemInterface $item, RenderCollection $collection) : string
+    {
+        return $collection->getRenderedItem($item, false);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
     {
         $innerText = '';
         foreach ($container->getAllItems() as $child) {
-            $innerText .= $collection->getRenderedItem($child);
+            $innerText .= $this->renderChild($child, $collection);
         }
 
-        return '<div class="container-fluid">' . $this->renderRow($this->renderColumn(['md' => 12], $innerText, $collection->identify($container))) . '</div>';
+        return $this->renderContainer(
+            $this->renderRow(
+                $this->renderColumn(['md' => 12],
+                    $innerText,
+                    $collection->identify($container)
+                )
+            ),
+            $container
+        );
     }
 
     /**
@@ -92,7 +160,7 @@ EOT;
     {
         $innerText = '';
         foreach ($container->getAllItems() as $child) {
-            $innerText .= $collection->getRenderedItem($child);
+            $innerText .= $this->renderChild($child, $collection);
         }
 
         return $innerText;
@@ -113,10 +181,15 @@ EOT;
             $defaultSize = floor(12 / count($innerContainers));
 
             foreach ($innerContainers as $child) {
-                $innerText .= $this->renderColumn(['md' => $defaultSize], $collection->getRenderedItem($child), $collection->identify($child));
+                $innerText .= $this->renderColumn(
+                    ['md' => $defaultSize],
+                    $collection->getRenderedItem($child),
+                    $collection->identify($child),
+                    $child
+                );
             }
         }
 
-        return $this->renderRow($innerText, $collection->identify($container));
+        return $this->renderRow($innerText, $collection->identify($container), $container);
     }
 }

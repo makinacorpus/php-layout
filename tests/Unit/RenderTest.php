@@ -188,7 +188,7 @@ EOT;
 
         // This the HTML that should be generated:
         $representation = <<<EOT
-<div class="container-fluid">
+<div class="container">
   <div class="row">
     <div class="col-md-12" data-id="container:vbox/top-level" data-contains>
       <div class="row" data-id="container:hbox/C1" data-contains>

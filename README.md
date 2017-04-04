@@ -37,7 +37,7 @@ explain the layout we want to display, here is an HTML reprensentation of
 what the bootstrap grid we want:
 
 ```html
-<div class="container-fluid">
+<div class="container">
   <div class="row">
     <div class="col-md-12" data-id="container:vbox/top-level" data-contains>
       <div class="row" data-id="container:hbox/C1" data-contains>
