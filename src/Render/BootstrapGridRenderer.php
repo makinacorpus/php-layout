@@ -49,11 +49,7 @@ class BootstrapGridRenderer implements GridRendererInterface
             $class = 'container';
         }
 
-        return <<<EOT
-<div class="{$class}">
-  {$innerText}
-</div>
-EOT;
+        return '<div class="' . $class . '">' . $innerText . '</div>';
     }
 
     /**
@@ -76,11 +72,7 @@ EOT;
             $container  .= ' data-contains';
         }
 
-        return <<<EOT
-<div class="row"{$additional}{$container}>
-  {$innerText}
-</div>
-EOT;
+        return '<div class="row"'. $additional . $container . '>' . $innerText . '</div>';
     }
 
     /**
@@ -112,11 +104,7 @@ EOT;
             $additional .= ' data-id="' . $this->escape($identifier) . '" data-contains';
         }
 
-        return <<<EOT
-<div class="{$classAttr}"{$additional}>
-  {$innerText}
-</div>
-EOT;
+        return '<div class="' . $classAttr . '"' . $additional . '>' . $innerText . '</div>';
     }
 
     /**
