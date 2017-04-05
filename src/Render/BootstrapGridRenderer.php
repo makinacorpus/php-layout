@@ -39,11 +39,11 @@ class BootstrapGridRenderer implements GridRendererInterface
     {
         $options = $options ?? new NullOptions();
 
-        if ($options->getOption('drop')) {
+        if ($options->getOption('container-none')) {
             return $innerText;
         }
 
-        if ($options->getOption('fluid')) {
+        if ($options->getOption('container-fluid')) {
               $class = 'container-fluid';
         } else {
             $class = 'container';
