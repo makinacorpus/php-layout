@@ -37,14 +37,16 @@ class BootstrapGridRenderer implements GridRendererInterface
      */
     protected function doRenderTopLevelContainer(ContainerInterface $container, string $innerText = '', string $identifier = '') : string
     {
-        if ($container->getOption('container-none')) {
-            return $innerText;
-        }
+        $putContainer = false;
 
-        if ($container->getOption('container-fluid')) {
-            $class = 'container-fluid';
-        } else {
-            $class = 'container';
+        if (!$container->getOption('container-none')) {
+            $putContainer = true;
+
+            if ($container->getOption('container-fluid')) {
+                $class = 'container-fluid';
+            } else {
+                $class = 'container';
+            }
         }
 
         $additional = '';
@@ -55,7 +57,11 @@ class BootstrapGridRenderer implements GridRendererInterface
             $container  .= ' data-contains';
         }
 
-        return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . $container . '>' . $innerText . '</div></div></div>';
+        if ($putContainer) {
+            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . $container . '>' . $innerText . '</div></div></div>';
+        } else {
+            return '<div'. $additional . $container . '>' . $innerText . '</div>';
+        }
     }
 
     /**
@@ -132,11 +138,7 @@ class BootstrapGridRenderer implements GridRendererInterface
             $innerText .= $this->doRenderChild($child, $collection);
         }
 
-        return $this->doRenderTopLevelContainer(
-            $container,
-            $innerText,
-            $collection->identify($container)
-        );
+        return $this->doRenderTopLevelContainer($container, $innerText, $collection->identify($container));
     }
 
     /**
