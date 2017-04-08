@@ -199,7 +199,6 @@ final class Context
 
     /**
      * Save current work in progress
-
      */
     public function createSnapshot()
     {
