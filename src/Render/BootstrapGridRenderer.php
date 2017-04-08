@@ -54,7 +54,7 @@ class BootstrapGridRenderer implements GridRendererInterface
 
         if ($identifier) {
             $additional .= ' data-id="' . $this->escape($identifier) . '"';
-            $container  .= ' data-contains';
+            $container  .= ' data-contains=0';
         }
 
         if ($putContainer) {
@@ -109,7 +109,7 @@ class BootstrapGridRenderer implements GridRendererInterface
         $additional = '';
 
         if ($identifier) {
-            $additional .= ' data-id="' . $this->escape($identifier) . '" data-contains';
+            $additional .= ' data-id="' . $this->escape($identifier) . '" data-contains=1';
         }
 
         return '<div class="' . $classAttr . '"' . $additional . '>' . $innerText . '</div>';
