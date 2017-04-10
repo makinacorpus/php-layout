@@ -123,7 +123,7 @@ class BootstrapGridRenderer implements GridRendererInterface
      *
      * @return string
      */
-    protected function doRenderChild(ItemInterface $item, RenderCollection $collection) : string
+    protected function doRenderChild(ItemInterface $item, RenderCollection $collection, ContainerInterface $parent, int $currentPostion) : string
     {
         return $collection->getRenderedItem($item, false);
     }
@@ -134,8 +134,8 @@ class BootstrapGridRenderer implements GridRendererInterface
     public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
     {
         $innerText = '';
-        foreach ($container->getAllItems() as $child) {
-            $innerText .= $this->doRenderChild($child, $collection);
+        foreach ($container->getAllItems() as $position => $child) {
+            $innerText .= $this->doRenderChild($child, $collection, $container, $position);
         }
 
         return $this->doRenderTopLevelContainer($container, $innerText, $collection->identify($container));
@@ -147,8 +147,8 @@ class BootstrapGridRenderer implements GridRendererInterface
     public function renderColumnContainer(ColumnContainer $container, RenderCollection $collection) : string
     {
         $innerText = '';
-        foreach ($container->getAllItems() as $child) {
-            $innerText .= $this->doRenderChild($child, $collection);
+        foreach ($container->getAllItems() as $position => $child) {
+            $innerText .= $this->doRenderChild($child, $collection, $container, $position);
         }
 
         return $innerText;
