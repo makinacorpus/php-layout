@@ -16,6 +16,7 @@ class Item implements ItemInterface
     private $position = 0;
     private $storageId;
     private $style;
+    private $title = '';
     private $type;
     private $updated = false;
 
@@ -73,6 +74,22 @@ class Item implements ItemInterface
     public function getStorageId()
     {
         return $this->storageId;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle() : string
+    {
+        return $this->title;
     }
 
     /**

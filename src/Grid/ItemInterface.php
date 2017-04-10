@@ -49,6 +49,24 @@ interface ItemInterface extends Options
     public function getStorageId();
 
     /**
+     * Set human readable title
+     *
+     * Title has no business purpose, users might build an edit UI using it.
+     *
+     * @param string $title
+     */
+    public function setTitle(string $title);
+
+    /**
+     * Get human readable title
+     *
+     * Title has no business purpose, users might build an edit UI using it.
+     *
+     * @return string
+     */
+    public function getTitle() : string;
+
+    /**
      * Get node identifier
      *
      * @return int|string
