@@ -104,7 +104,6 @@ class Renderer
         // ordered, because we can have as many nested level of containers
         // as the user wants, but grouping them by type would bread the normal
         // bottom-top processing, so we must process them in an orderly fashion.
-        // @todo this imply we cannot preload the containers
         foreach ($collection->getAllContainers() as $container) {
             $this->renderContainer($container, $collection);
         }
@@ -112,6 +111,13 @@ class Renderer
 
     /**
      * Renders the full composition
+     *
+     * Beware that if you attempt to render a single item from here, you will
+     * loose the grid context, meaning the renderer cannot guess the container
+     * in which the item is being rendered, and any wrapper set by the
+     * MakinaCorpus\Layout\Render\GridRendererInterface::renderItem() method
+     * will be lost. In this very specific use case, prefer using the
+     * renderItemInContext() method directly.
      *
      * @param ItemInterface $item
      *
@@ -128,6 +134,30 @@ class Renderer
         $this->renderCollection($collection);
 
         return $collection->getRenderedItem($item);
+    }
+
+    /**
+     * Renders a single item, along with its context
+     *
+     * @param ItemInterface $item
+     * @param ContainerInterface $parent
+     * @param int $position
+     *
+     * @return string
+     */
+    public function renderItemInContext(ItemInterface $item, ContainerInterface $parent, int $position) : string
+    {
+        if ($item instanceof ContainerInterface) {
+            throw new GenericError(sprintf("you cannot render a container via this method"));
+        }
+
+        $collection = new RenderCollection($this->identifierStrategy);
+        $collection->addItem($item);
+
+        // Proceed to 2-passes collection render.
+        $this->renderCollection($collection);
+
+        return $this->gridRenderer->renderItem($item, $parent, $collection, $position);
     }
 
     /**

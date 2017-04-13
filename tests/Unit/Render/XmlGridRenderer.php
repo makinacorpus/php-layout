@@ -5,6 +5,7 @@ namespace MakinaCorpus\Layout\Tests\Unit\Render;
 use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
+use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\RenderCollection;
@@ -28,8 +29,8 @@ class XmlGridRenderer implements GridRendererInterface
     {
         $output = '<' . $element . ' id="' . $collection->identify($container) . '">';
 
-        foreach ($container->getAllItems() as $child) {
-            $output .= $collection->getRenderedItem($child, true);
+        foreach ($container->getAllItems() as $position => $child) {
+            $output .= $this->renderItem($child, $container, $collection, $position);
         }
 
         return $output . '</' . $element . '>';
@@ -57,5 +58,13 @@ class XmlGridRenderer implements GridRendererInterface
     public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string
     {
         return $this->renderAsElement($container, $collection, 'horizontal');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, RenderCollection $collection, int $position) : string
+    {
+        return $collection->getRenderedItem($item, true);
     }
 }

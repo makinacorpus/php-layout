@@ -253,7 +253,7 @@ class EditController
 
         $this->storage->update($tokenString, $layout);
 
-        return ['success' => true, 'output' => $this->renderer->render($item)];
+        return ['success' => true, 'output' => $this->renderer->renderItemInContext($item, $container, $position)];
     }
 
     /**
@@ -308,6 +308,7 @@ class EditController
 
         $parent->removeAt($position);
         $container->addAt($item, $newPosition);
+        $item->toggleUpdateStatus(true);
 
         $this->storage->update($tokenString, $layout);
 

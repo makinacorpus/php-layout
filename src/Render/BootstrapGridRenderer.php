@@ -116,26 +116,13 @@ class BootstrapGridRenderer implements GridRendererInterface
     }
 
     /**
-     * Render a single child
-     *
-     * @param ItemInterface $item
-     * @param RenderCollection $collection
-     *
-     * @return string
-     */
-    protected function doRenderChild(ItemInterface $item, RenderCollection $collection, ContainerInterface $parent, int $currentPostion) : string
-    {
-        return $collection->getRenderedItem($item, false);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
     {
         $innerText = '';
         foreach ($container->getAllItems() as $position => $child) {
-            $innerText .= $this->doRenderChild($child, $collection, $container, $position);
+            $innerText .= $this->renderItem($child, $container, $collection, $position);
         }
 
         return $this->doRenderTopLevelContainer($container, $innerText, $collection->identify($container));
@@ -148,7 +135,7 @@ class BootstrapGridRenderer implements GridRendererInterface
     {
         $innerText = '';
         foreach ($container->getAllItems() as $position => $child) {
-            $innerText .= $this->doRenderChild($child, $collection, $container, $position);
+            $innerText .= $this->renderItem($child, $container, $collection, $position);
         }
 
         return $innerText;
@@ -179,5 +166,13 @@ class BootstrapGridRenderer implements GridRendererInterface
         }
 
         return $this->doRenderHorizontalContainer($container, $innerText, $collection->identify($container));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, RenderCollection $collection, int $position) : string
+    {
+        return $collection->getRenderedItem($item, false);
     }
 }
