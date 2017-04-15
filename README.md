@@ -154,7 +154,7 @@ $itemTypeRegistry->registerType($aType);
 
 Then render it:
 ```php
-$renderer = new Renderer($itemTypeRegistry, $gridRenderer, new ItemIdentifierStrategy());
+$renderer = new Renderer($itemTypeRegistry, $gridRenderer);
 $string = $renderer->render($topLevel);
 ```
 

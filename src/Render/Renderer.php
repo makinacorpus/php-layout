@@ -15,7 +15,6 @@ use MakinaCorpus\Layout\Type\ItemTypeRegistry;
  */
 class Renderer
 {
-    private $identifierStrategy;
     private $typeRegistry;
     private $gridRenderer;
 
@@ -23,13 +22,11 @@ class Renderer
      * Default constructor
      *
      * @param ItemTypeRegistry $typeRegistry
-     * @param IdentifierStrategyInterface $identifierStrategy
      */
-    public function __construct(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer, IdentifierStrategyInterface $identifierStrategy)
+    public function __construct(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer)
     {
         $this->typeRegistry = $typeRegistry;
         $this->gridRenderer = $gridRenderer;
-        $this->identifierStrategy = $identifierStrategy;
     }
 
     /**
@@ -125,7 +122,7 @@ class Renderer
      */
     public function render(ItemInterface $item) : string
     {
-        $collection = new RenderCollection($this->identifierStrategy);
+        $collection = new RenderCollection();
 
         // First collect all items and categorize them
         $this->collect($item, $collection);
@@ -151,7 +148,7 @@ class Renderer
             throw new GenericError(sprintf("you cannot render a container via this method"));
         }
 
-        $collection = new RenderCollection($this->identifierStrategy);
+        $collection = new RenderCollection();
         $collection->addItem($item);
 
         // Proceed to 2-passes collection render.
@@ -178,7 +175,7 @@ class Renderer
         $ret = [];
 
         // First collect all items and categorize them
-        $collection = new RenderCollection($this->identifierStrategy);
+        $collection = new RenderCollection();
 
         // Collect from all given containers
         foreach ($items as $item) {

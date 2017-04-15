@@ -59,41 +59,41 @@ class RenderTest extends \PHPUnit_Framework_TestCase
 
         // This is pseudo XML reprensentation of what we are waiting for:
         $representation = <<<EOT
-<vertical id="container:vbox/top-level">
-    <horizontal id="container:hbox/C1">
-        <column id="container:vbox/C11">
-            <item id="leaf:a/1"/>
-            <item id="leaf:b/4" style="teaser"/>
+<vertical id="vbox-top-level">
+    <horizontal id="hbox-C1">
+        <column id="vbox-C11">
+            <item id="a-1"/>
+            <item id="b-4" style="teaser"/>
         </column>
-        <column id="container:vbox/C12">
-            <horizontal id="container:hbox/C2">
-                <column id="container:vbox/C21">
-                    <item id="leaf:a/2" />
-                    <item id="leaf:a/5" />
+        <column id="vbox-C12">
+            <horizontal id="hbox-C2">
+                <column id="vbox-C21">
+                    <item id="a-2" />
+                    <item id="a-5" />
                 </column>
-                <column id="container:vbox/C22">
-                    <item id="leaf:b/3" />
+                <column id="vbox-C22">
+                    <item id="b-3" />
                 </column>
             </horizontal>
         </column>
     </horizontal>
-    <horizontal id="container:hbox/C3">
-        <column id="container:vbox/C31">
-            <item id="leaf:a/6" />
-            <item id="leaf:a/9" />
+    <horizontal id="hbox-C3">
+        <column id="vbox-C31">
+            <item id="a-6" />
+            <item id="a-9" />
         </column>
-        <column id="container:vbox/C32">
-            <item id="leaf:b/7" />
-            <item id="leaf:b/10" />
+        <column id="vbox-C32">
+            <item id="b-7" />
+            <item id="b-10" />
         </column>
-        <column id="container:vbox/C33">
-            <item id="leaf:b/8" />
-            <item id="leaf:b/11" />
-            <item id="leaf:a/1" style="foo"/>
+        <column id="vbox-C33">
+            <item id="b-8" />
+            <item id="b-11" />
+            <item id="a-1" style="foo"/>
         </column>
     </horizontal>
-    <item id="leaf:a/12" />
-    <item id="leaf:b/7" style="bar"/>
+    <item id="a-12" />
+    <item id="b-7" style="bar"/>
 </vertical>
 EOT;
         // Create types
@@ -190,26 +190,26 @@ EOT;
         $representation = <<<EOT
 <div class="container">
   <div class="row">
-    <div class="col-md-12" data-id="container:vbox/top-level" data-contains=0>
-      <div class="row" data-id="container:hbox/C1">
-        <div class="col-md-6" data-id="container:vbox/C11" data-contains=1>
-          <item id="leaf:a/1" />
-          <item id="leaf:a/4" />
+    <div class="col-md-12" data-id="vbox-top-level" data-contains=0>
+      <div class="row" data-id="hbox-C1">
+        <div class="col-md-6" data-id="vbox-C11" data-contains=1>
+          <item id="a-1" />
+          <item id="a-4" />
         </div>
-        <div class="col-md-6" data-id="container:vbox/C12" data-contains=1>
-          <div class="row" data-id="container:hbox/C2">
-            <div class="col-md-6" data-id="container:vbox/C21" data-contains=1>
-              <item id="leaf:a/2" />
-              <item id="leaf:a/5" />
+        <div class="col-md-6" data-id="vbox-C12" data-contains=1>
+          <div class="row" data-id="hbox-C2">
+            <div class="col-md-6" data-id="vbox-C21" data-contains=1>
+              <item id="a-2" />
+              <item id="a-5" />
             </div>
-            <div class="col-md-6" data-id="container:vbox/C22" data-contains=1>
-              <item id="leaf:a/3" />
+            <div class="col-md-6" data-id="vbox-C22" data-contains=1>
+              <item id="a-3" />
             </div>
           </div>
         </div>
       </div>
-      <item id="leaf:a/6" />
-      <item id="leaf:a/7" />
+      <item id="a-6" />
+      <item id="a-7" />
     </div>
   </div>
 </div>

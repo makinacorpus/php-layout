@@ -29,13 +29,12 @@ class BootstrapGridRenderer implements GridRendererInterface
     /**
      * Render column
      *
-     * @param ContainerInterface $container
+     * @param TopLevelContainer $container
      * @param string $innerText
-     * @param string $identifier
      *
      * @return string
      */
-    protected function doRenderTopLevelContainer(ContainerInterface $container, string $innerText = '', string $identifier = '') : string
+    protected function doRenderTopLevelContainer(TopLevelContainer $container, string $innerText = '') : string
     {
         $putContainer = false;
 
@@ -49,16 +48,11 @@ class BootstrapGridRenderer implements GridRendererInterface
             }
         }
 
-        $additional = '';
-        $container = '';
-
-        if ($identifier) {
-            $additional .= ' data-id="' . $this->escape($identifier) . '"';
-            $container  .= ' data-contains=0';
-        }
+        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
+        $additional .= ' data-contains=0';
 
         if ($putContainer) {
-            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . $container . '>' . $innerText . '</div></div></div>';
+            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . '>' . $innerText . '</div></div></div>';
         } else {
             return '<div'. $additional . $container . '>' . $innerText . '</div>';
         }
@@ -67,38 +61,31 @@ class BootstrapGridRenderer implements GridRendererInterface
     /**
      * Render column
      *
-     * @param ContainerInterface $container
+     * @param HorizontalContainer $container
      * @param string $innerText
-     * @param string $identifier
      *
      * @return string
      */
-    protected function doRenderHorizontalContainer(ContainerInterface $container, string $innerText = '', string $identifier = '') : string
+    protected function doRenderHorizontalContainer(HorizontalContainer $container, string $innerText = '') : string
     {
-        $additional = '';
-        $container = '';
+        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
 
-        if ($identifier) {
-            $additional .= ' data-id="' . $this->escape($identifier) . '"';
-        }
-
-        return '<div class="row"'. $additional . $container . '>' . $innerText . '</div>';
+        return '<div class="row"'. $additional . '>' . $innerText . '</div>';
     }
 
     /**
      * Render column
      *
-     * @param ContainerInterface $container
+     * @param ColumnContainer $container
      * @param string[] $sizes
      *   An array of size, keys are media display identifiers mapping to
      *   bootstrap own prefixes (xs, sm, md, lg) and values are the width
      *   on the bootstrap grid for those medias.
      * @param string $innerText
-     * @param string $identifier
      *
      * @return string
      */
-    protected function doRenderColumn(ContainerInterface $container, array $sizes, string $innerText = '', string $identifier = '') : string
+    protected function doRenderColumn(ColumnContainer $container, array $sizes, string $innerText = '') : string
     {
         $classes = [];
         foreach ($sizes as $media => $size) {
@@ -106,11 +93,7 @@ class BootstrapGridRenderer implements GridRendererInterface
         }
 
         $classAttr = implode(' ', $classes);
-        $additional = '';
-
-        if ($identifier) {
-            $additional .= ' data-id="' . $this->escape($identifier) . '" data-contains=1';
-        }
+        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '" data-contains=1';
 
         return '<div class="' . $classAttr . '"' . $additional . '>' . $innerText . '</div>';
     }
@@ -125,7 +108,7 @@ class BootstrapGridRenderer implements GridRendererInterface
             $innerText .= $this->renderItem($child, $container, $collection, $position);
         }
 
-        return $this->doRenderTopLevelContainer($container, $innerText, $collection->identify($container));
+        return $this->doRenderTopLevelContainer($container, $innerText);
     }
 
     /**
@@ -159,13 +142,12 @@ class BootstrapGridRenderer implements GridRendererInterface
                 $innerText .= $this->doRenderColumn(
                     $child,
                     ['md' => $defaultSize],
-                    $collection->getRenderedItem($child),
-                    $collection->identify($child)
+                    $collection->getRenderedItem($child)
                 );
             }
         }
 
-        return $this->doRenderHorizontalContainer($container, $innerText, $collection->identify($container));
+        return $this->doRenderHorizontalContainer($container, $innerText);
     }
 
     /**

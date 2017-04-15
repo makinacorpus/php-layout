@@ -9,7 +9,6 @@ use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\ComparisonTestTrait;
-use MakinaCorpus\Layout\Tests\Unit\Render\NoIdIdentifierStrategy;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
@@ -100,7 +99,7 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
         // Create the environment
         $tokenStorage = new TestTokenLayoutStorage();
         $typeRegistry = $this->createTypeRegistry();
-        $renderer     = new Renderer($typeRegistry, new XmlGridRenderer(), new NoIdIdentifierStrategy());
+        $renderer     = new Renderer($typeRegistry, new XmlGridRenderer());
         $controller   = new EditController($tokenStorage, $typeRegistry, $renderer);
         $aType        = $typeRegistry->getType('a');
         $bType        = $typeRegistry->getType('b');
@@ -125,10 +124,10 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
         // Just for fun, this out starting grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox"></column>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4"></column>
   </horizontal>
 </vertical>
 EOT
@@ -137,24 +136,24 @@ EOT
 
         // Now add stuff into the top level container
         $this->assertResponseOk($controller->addAction('testing', 7, 0, 'a', 12, 1), <<<EOT
-<item id="leaf:a/12"/>
+<item id="5"/>
 EOT
         );
         $this->assertResponseOk($controller->addAction('testing', 7, 0, 'b', 7, 2, 'bar'), <<<EOT
-<item id="leaf:b/7" style="bar"/>
+<item id="6" style="bar"/>
 EOT
         );
 
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox"></column>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4"></column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -166,9 +165,9 @@ EOT
 
         // And now go for it, every operation on the layout via the controller
         $this->assertResponseOk($controller->addColumnContainerAction('testing', 7, $c12->getStorageId(), 0, 2), <<<EOT
-<horizontal id="container:hbox">
-  <column id="container:vbox"></column>
-  <column id="container:vbox"></column>
+<horizontal id="7">
+  <column id="8"></column>
+  <column id="9"></column>
 </horizontal>
 EOT
         );
@@ -176,18 +175,18 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox"></column>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9"></column>
       </horizontal>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -205,34 +204,34 @@ EOT
 
         // Append
         $this->assertResponseOk($controller->addAction('testing', 7, $c22->getStorageId(), 'a', 5, 0), <<<EOT
-<item id="leaf:a/5"/>
+<item id="10"/>
 EOT
         );
 
         // Prepend
         $this->assertResponseOk($controller->addAction('testing', 7, $c22->getStorageId(), 'b', 12, 0), <<<EOT
-<item id="leaf:b/12"/>
+<item id="11"/>
 EOT
         );
 
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/5"/>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -250,7 +249,7 @@ EOT
         $this->assertTrue($c3_2 instanceof ColumnContainer);
 
         $this->assertResponseOk($controller->addColumnAction('testing', 7, $c3->getStorageId(), 0), <<<EOT
-<column id="container:vbox"></column>
+<column id="14"></column>
 EOT
         );
         $c3_1 = $c3->getColumnAt(0);
@@ -267,27 +266,27 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/5"/>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox"></column>
-    <column id="container:vbox"></column>
-    <column id="container:vbox"></column>
+  <horizontal id="12">
+    <column id="14"></column>
+    <column id="13"></column>
+    <column id="16"></column>
+    <column id="15"></column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -320,43 +319,43 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/5"/>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <horizontal id="container:hbox">
-    <column id="container:vbox">
-      <item id="leaf:a/6"/>
-      <item id="leaf:b/12"/>
-      <item id="leaf:a/9"/>
+  <horizontal id="12">
+    <column id="14">
+      <item id="17"/>
+      <item id="11"/>
+      <item id="19"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/7"/>
-      <item id="leaf:b/52"/>
-      <item id="leaf:b/10"/>
+    <column id="13">
+      <item id="22"/>
+      <item id="20"/>
+      <item id="21"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/8"/>
-      <item id="leaf:b/11"/>
-      <item id="leaf:a/1" style="foo"/>
+    <column id="16">
+      <item id="27"/>
+      <item id="26"/>
+      <item id="28" style="foo"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:a/12"/>
-      <item id="leaf:b/32"/>
-      <item id="leaf:a/54"/>
+    <column id="15">
+      <item id="25"/>
+      <item id="24"/>
+      <item id="23"/>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="25"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -379,41 +378,41 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/5"/>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <horizontal id="container:hbox">
-    <column id="container:vbox">
-      <item id="leaf:a/6"/>
-      <item id="leaf:a/9"/>
+  <horizontal id="12">
+    <column id="14">
+      <item id="17"/>
+      <item id="19"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/7"/>
-      <item id="leaf:b/10"/>
+    <column id="13">
+      <item id="22"/>
+      <item id="21"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/8"/>
-      <item id="leaf:b/11"/>
-      <item id="leaf:a/1" style="foo"/>
+    <column id="16">
+      <item id="27"/>
+      <item id="26"/>
+      <item id="28" style="foo"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:a/12"/>
-      <item id="leaf:b/32"/>
-      <item id="leaf:a/54"/>
+    <column id="15">
+      <item id="25"/>
+      <item id="24"/>
+      <item id="23"/>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="25"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -428,36 +427,36 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/5"/>
+<vertical id="1">
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <horizontal id="container:hbox">
-    <column id="container:vbox">
-      <item id="leaf:a/6"/>
-      <item id="leaf:a/9"/>
+  <horizontal id="12">
+    <column id="14">
+      <item id="17"/>
+      <item id="19"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/7"/>
-      <item id="leaf:b/10"/>
+    <column id="13">
+      <item id="22"/>
+      <item id="21"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/8"/>
-      <item id="leaf:b/11"/>
-      <item id="leaf:a/1" style="foo"/>
+    <column id="16">
+      <item id="27"/>
+      <item id="26"/>
+      <item id="28" style="foo"/>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())
@@ -492,36 +491,36 @@ EOT
         // Assert our new grid
         $this->assertSameRenderedGrid(
             <<<EOT
-<vertical id="container:vbox">
-  <horizontal id="container:hbox">
-    <column id="container:vbox">
-      <item id="leaf:a/6"/>
-      <item id="leaf:a/9"/>
+<vertical id="1">
+  <horizontal id="12">
+    <column id="14">
+      <item id="17"/>
+      <item id="19"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/7"/>
-      <item id="leaf:b/10"/>
+    <column id="13">
+      <item id="22"/>
+      <item id="21"/>
     </column>
-    <column id="container:vbox">
-      <item id="leaf:b/11"/>
-      <item id="leaf:b/8"/>
+    <column id="16">
+      <item id="26"/>
+      <item id="27"/>
     </column>
   </horizontal>
-  <horizontal id="container:hbox">
-    <column id="container:vbox"></column>
-    <column id="container:vbox">
-      <horizontal id="container:hbox">
-        <column id="container:vbox"></column>
-        <column id="container:vbox">
-          <item id="leaf:b/12"/>
-          <item id="leaf:a/1" style="foo"/>
-          <item id="leaf:a/5"/>
+  <horizontal id="2">
+    <column id="3"></column>
+    <column id="4">
+      <horizontal id="7">
+        <column id="8"></column>
+        <column id="9">
+          <item id="11"/>
+          <item id="28" style="foo"/>
+          <item id="10"/>
         </column>
       </horizontal>
     </column>
   </horizontal>
-  <item id="leaf:a/12"/>
-  <item id="leaf:b/7" style="bar"/>
+  <item id="5"/>
+  <item id="6" style="bar"/>
 </vertical>
 EOT
             , $renderer->render($tokenStorage->load('testing', 7)->getTopLevelContainer())

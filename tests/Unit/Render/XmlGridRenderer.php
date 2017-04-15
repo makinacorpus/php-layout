@@ -27,7 +27,13 @@ class XmlGridRenderer implements GridRendererInterface
      */
     private function renderAsElement(ContainerInterface $container, RenderCollection $collection, string $element) : string
     {
-        $output = '<' . $element . ' id="' . $collection->identify($container) . '">';
+        if ($container instanceof ItemInterface) {
+            $identifier = $container->getGridIdentifier();
+        } else {
+            $identifier = 'container';
+        }
+
+        $output = '<' . $element . ' id="' . $identifier . '">';
 
         foreach ($container->getAllItems() as $position => $child) {
             $output .= $this->renderItem($child, $container, $collection, $position);

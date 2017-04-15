@@ -42,7 +42,7 @@ class ItemAType implements ItemTypeInterface
             $styleAttr = ' style="' . $style . '"';
         }
 
-        $collection->setOutputFor($item, '<item id="' . $collection->identify($item) . '"' . $styleAttr . '/>');
+        $collection->setOutputFor($item, '<item id="' . $item->getGridIdentifier() . '"' . $styleAttr . '/>');
     }
 
     public function renderAllItems(array $items, RenderCollection $collection)

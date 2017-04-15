@@ -3,7 +3,6 @@
 namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Render\GridRendererInterface;
-use MakinaCorpus\Layout\Render\ItemIdentifierStrategy;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
@@ -34,7 +33,7 @@ trait ComparisonTestTrait
      */
     protected function createRenderer(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer) : Renderer
     {
-        return new Renderer($typeRegistry, $gridRenderer, new ItemIdentifierStrategy());
+        return new Renderer($typeRegistry, $gridRenderer);
     }
 
     /**

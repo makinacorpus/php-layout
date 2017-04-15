@@ -58,6 +58,13 @@ interface ItemInterface extends Options
     public function setTitle(string $title);
 
     /**
+     * Get item grid identifier
+     *
+     * @return string
+     */
+    public function getGridIdentifier() : string;
+
+    /**
      * Get human readable title
      *
      * Title has no business purpose, users might build an edit UI using it.

@@ -79,6 +79,18 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
+    public function getGridIdentifier() : string
+    {
+        if ($this->storageId) {
+            return $this->storageId;
+        }
+
+        return $this->type . '-' . $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setTitle(string $title)
     {
         $this->title = $title;
