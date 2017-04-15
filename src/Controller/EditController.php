@@ -253,7 +253,7 @@ class EditController
 
         $this->storage->update($tokenString, $layout);
 
-        return ['success' => true, 'output' => $this->renderer->renderItemInContext($item, $container, $position)];
+        return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)];
     }
 
     /**

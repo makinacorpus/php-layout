@@ -117,7 +117,7 @@ class Renderer
      * in which the item is being rendered, and any wrapper set by the
      * MakinaCorpus\Layout\Render\GridRendererInterface::renderItem() method
      * will be lost. In this very specific use case, prefer using the
-     * renderItemInContext() method directly.
+     * renderItemIn() method directly.
      *
      * @param ItemInterface $item
      *
@@ -145,7 +145,7 @@ class Renderer
      *
      * @return string
      */
-    public function renderItemInContext(ItemInterface $item, ContainerInterface $parent, int $position) : string
+    public function renderItemIn(ItemInterface $item, ContainerInterface $parent, int $position) : string
     {
         if ($item instanceof ContainerInterface) {
             throw new GenericError(sprintf("you cannot render a container via this method"));
