@@ -8,7 +8,6 @@ use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\GridRendererInterface;
-use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
  * Unit test only container renderer: outputs simple XML like string to allow
@@ -20,12 +19,12 @@ class XmlGridRenderer implements GridRendererInterface
      * Render as XML element
      *
      * @param ContainerInterface $container
-     * @param RenderCollection $collection
+     * @param string $innerHtml
      * @param string $element
      *
      * @return string
      */
-    private function renderAsElement(ContainerInterface $container, RenderCollection $collection, string $element) : string
+    private function renderAsElement(ContainerInterface $container, string $innerHtml, string $element) : string
     {
         if ($container instanceof ItemInterface) {
             $identifier = $container->getGridIdentifier();
@@ -33,44 +32,38 @@ class XmlGridRenderer implements GridRendererInterface
             $identifier = 'container';
         }
 
-        $output = '<' . $element . ' id="' . $identifier . '">';
-
-        foreach ($container->getAllItems() as $position => $child) {
-            $output .= $this->renderItem($child, $container, $collection, $position);
-        }
-
-        return $output . '</' . $element . '>';
+        return '<' . $element . ' id="' . $identifier . '">' . $innerHtml . '</' . $element . '>';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
+    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string
     {
-        return $this->renderAsElement($container, $collection, 'vertical');
+        return $this->renderAsElement($container, $innerHtml, 'vertical');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderColumnContainer(ColumnContainer $container, RenderCollection $collection) : string
+    public function renderColumnContainer(ColumnContainer $container, string $innerHtml) : string
     {
-        return $this->renderAsElement($container, $collection, 'column');
+        return $this->renderAsElement($container, $innerHtml, 'column');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string
+    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml) : string
     {
-        return $this->renderAsElement($container, $collection, 'horizontal');
+        return $this->renderAsElement($container, implode('', $columnsHtml), 'horizontal');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, ContainerInterface $parent, RenderCollection $collection, int $position) : string
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position) : string
     {
-        return $collection->getRenderedItem($item, true);
+        return $innerHtml;
     }
 }

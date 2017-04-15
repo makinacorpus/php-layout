@@ -7,7 +7,6 @@ use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
-use MakinaCorpus\Layout\Render\RenderCollection;
 
 /**
  * Bootstrap 3 compatible grid renderer.
@@ -21,7 +20,7 @@ class BootstrapGridRenderer implements GridRendererInterface
      *
      * @return string
      */
-    protected function escape(string $string) : string
+    private function escape(string $string) : string
     {
         return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
     }
@@ -29,12 +28,32 @@ class BootstrapGridRenderer implements GridRendererInterface
     /**
      * Render column
      *
-     * @param TopLevelContainer $container
+     * @param ColumnContainer $container
+     * @param string[] $sizes
+     *   An array of size, keys are media display identifiers mapping to
+     *   bootstrap own prefixes (xs, sm, md, lg) and values are the width
+     *   on the bootstrap grid for those medias.
      * @param string $innerText
      *
      * @return string
      */
-    protected function doRenderTopLevelContainer(TopLevelContainer $container, string $innerText = '') : string
+    private function doRenderColumn(ColumnContainer $container, array $sizes, string $innerText = '') : string
+    {
+        $classes = [];
+        foreach ($sizes as $media => $size) {
+            $classes[] = 'col-' . $media . '-' . $size;
+        }
+
+        $classAttr = implode(' ', $classes);
+        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '" data-contains=1';
+
+        return '<div class="' . $classAttr . '"' . $additional . '>' . $innerText . '</div>';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string
     {
         $putContainer = false;
 
@@ -52,82 +71,24 @@ class BootstrapGridRenderer implements GridRendererInterface
         $additional .= ' data-contains=0';
 
         if ($putContainer) {
-            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . '>' . $innerText . '</div></div></div>';
+            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . '>' . $innerHtml . '</div></div></div>';
         } else {
-            return '<div'. $additional . $container . '>' . $innerText . '</div>';
+            return '<div'. $additional . '>' . $innerHtml . '</div>';
         }
-    }
-
-    /**
-     * Render column
-     *
-     * @param HorizontalContainer $container
-     * @param string $innerText
-     *
-     * @return string
-     */
-    protected function doRenderHorizontalContainer(HorizontalContainer $container, string $innerText = '') : string
-    {
-        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
-
-        return '<div class="row"'. $additional . '>' . $innerText . '</div>';
-    }
-
-    /**
-     * Render column
-     *
-     * @param ColumnContainer $container
-     * @param string[] $sizes
-     *   An array of size, keys are media display identifiers mapping to
-     *   bootstrap own prefixes (xs, sm, md, lg) and values are the width
-     *   on the bootstrap grid for those medias.
-     * @param string $innerText
-     *
-     * @return string
-     */
-    protected function doRenderColumn(ColumnContainer $container, array $sizes, string $innerText = '') : string
-    {
-        $classes = [];
-        foreach ($sizes as $media => $size) {
-            $classes[] = 'col-' . $media . '-' . $size;
-        }
-
-        $classAttr = implode(' ', $classes);
-        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '" data-contains=1';
-
-        return '<div class="' . $classAttr . '"' . $additional . '>' . $innerText . '</div>';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderTopLevelContainer(TopLevelContainer $container, RenderCollection $collection) : string
+    public function renderColumnContainer(ColumnContainer $container, string $innerHtml) : string
     {
-        $innerText = '';
-        foreach ($container->getAllItems() as $position => $child) {
-            $innerText .= $this->renderItem($child, $container, $collection, $position);
-        }
-
-        return $this->doRenderTopLevelContainer($container, $innerText);
+        return $innerHtml;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderColumnContainer(ColumnContainer $container, RenderCollection $collection) : string
-    {
-        $innerText = '';
-        foreach ($container->getAllItems() as $position => $child) {
-            $innerText .= $this->renderItem($child, $container, $collection, $position);
-        }
-
-        return $innerText;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function renderHorizontalContainer(HorizontalContainer $container, RenderCollection $collection) : string
+    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml) : string
     {
         $innerText = '';
 
@@ -138,23 +99,25 @@ class BootstrapGridRenderer implements GridRendererInterface
             //   and the user customize it
             $defaultSize = floor(12 / count($innerContainers));
 
-            foreach ($innerContainers as $child) {
+            foreach ($innerContainers as $position => $child) {
                 $innerText .= $this->doRenderColumn(
                     $child,
                     ['md' => $defaultSize],
-                    $collection->getRenderedItem($child)
+                    $columnsHtml[$position]
                 );
             }
         }
 
-        return $this->doRenderHorizontalContainer($container, $innerText);
+        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
+
+        return '<div class="row"'. $additional . '>' . $innerText . '</div>';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, ContainerInterface $parent, RenderCollection $collection, int $position) : string
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position) : string
     {
-        return $collection->getRenderedItem($item, false);
+        return $innerHtml;
     }
 }

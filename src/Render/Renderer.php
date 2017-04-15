@@ -57,6 +57,42 @@ class Renderer
     }
 
     /**
+     * Render container children
+     *
+     * @param ContainerInterface $container
+     *
+     * @return string
+     */
+    private function renderContainerChildren(ContainerInterface $container, RenderCollection $collection) : string
+    {
+        $output = '';
+
+        foreach ($container->getAllItems() as $position => $item) {
+            $output .= $this->gridRenderer->renderItem($item, $container, $collection->getRenderedItem($item), $position);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Render horizontal container columns
+     *
+     * @param ContainerInterface $container
+     *
+     * @return string[]
+     */
+    private function renderHorizontalContainerChildren(HorizontalContainer $container, RenderCollection $collection) : array
+    {
+        $ret = [];
+
+        foreach ($container->getAllItems() as $position => $column) {
+            $ret[$position] = $this->renderContainer($column, $collection);
+        }
+
+        return $ret;
+    }
+
+    /**
      * Render a single container
      *
      * @param ContainerInterface $container
@@ -67,11 +103,11 @@ class Renderer
     private function renderContainer(ContainerInterface $container, RenderCollection $collection) : string
     {
         if ($container instanceof ColumnContainer) {
-            $output = $this->gridRenderer->renderColumnContainer($container, $collection);
+            $output = $this->gridRenderer->renderColumnContainer($container, $this->renderContainerChildren($container, $collection));
         } else if ($container instanceof TopLevelContainer) {
-            $output = $this->gridRenderer->renderTopLevelContainer($container, $collection);
+            $output = $this->gridRenderer->renderTopLevelContainer($container, $this->renderContainerChildren($container, $collection));
         } else if ($container instanceof HorizontalContainer) {
-            $output = $this->gridRenderer->renderHorizontalContainer($container, $collection);
+            $output = $this->gridRenderer->renderHorizontalContainer($container, $this->renderHorizontalContainerChildren($container, $collection));
         } else {
             throw new GenericError(sprintf("%s: invalid container class", HorizontalContainer::class));
         }
@@ -154,7 +190,7 @@ class Renderer
         // Proceed to 2-passes collection render.
         $this->renderCollection($collection);
 
-        return $this->gridRenderer->renderItem($item, $parent, $collection, $position);
+        return $this->gridRenderer->renderItem($item, $parent, $collection->getRenderedItem($item), $position);
     }
 
     /**
