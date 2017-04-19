@@ -312,7 +312,7 @@ class EditController
 
         $this->storage->update($tokenString, $layout);
 
-        return ['success' => true];
+        return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)];
     }
 
     /**
