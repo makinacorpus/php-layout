@@ -13,11 +13,11 @@ class DefaultTokenGenerator implements TokenGeneratorInterface
      */
     public function create() : string
     {
-        return preg_replace('/[^a-zA-Z0-9]+/', '', base64_encode(hash_hmac(
-            'sha512',
+        return hash_hmac(
+            'md5',
             random_bytes(64),
             random_bytes(64),
-            true
-        )));
+            false
+        );
     }
 }
