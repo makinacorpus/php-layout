@@ -15,6 +15,18 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
 interface GridRendererInterface
 {
     /**
+     * Get allowed column styles
+     *
+     * It may return an empty array if there is no specific styles for columns.
+     *
+     * @return string[]
+     *   Keys are internal names, values are human readable descriptions,
+     *   responsability of translating them goes to the using framework or
+     *   application
+     */
+    public function getColumnStyles() : array;
+
+    /**
      * Render an vertical container
      *
      * @param TopLevelContainer $container

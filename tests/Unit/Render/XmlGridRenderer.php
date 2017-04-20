@@ -38,6 +38,14 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
+    public function getColumnStyles() : array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string
     {
         return $this->renderAsElement($container, $innerHtml, 'vertical');
