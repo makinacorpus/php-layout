@@ -180,10 +180,6 @@ class Renderer
      */
     public function renderItemIn(ItemInterface $item, ContainerInterface $parent, int $position) : string
     {
-        if ($item instanceof ContainerInterface) {
-            throw new GenericError(sprintf("you cannot render a container via this method"));
-        }
-
         $collection = new RenderCollection();
         $collection->addItem($item);
 
