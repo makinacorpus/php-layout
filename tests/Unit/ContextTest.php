@@ -100,7 +100,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($context->isEditable($layout5));
         $this->assertFalse($context->isEditable($layout6));
 
-        $token = $context->createEditToken([
+        $token = $context->createEditToken([], [
             'user_id' => 7,
             'foo'     => 'bar',
             'null'    => null,
@@ -122,11 +122,47 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * When you set a token, context must reload layouts from the temp storage
+     * When creating a token, you may either edit them all, or specify a list of layout identifiers
      */
-    public function testTransparentTokenLoad()
+    public function testTokenStoresLayoutIdIfSpecified()
     {
+        $context = $this->createContext();
 
+        $layouts = [];
+        $layouts[1] = $layout1 = new TestLayout(1);
+        $layouts[2] = $layout2 = new TestLayout(2);
+        $layouts[3] = $layout3 = new TestLayout(3);
+        $layouts[4] = $layout4 = new TestLayout(4);
+        $layouts[5] = $layout5 = new TestLayout(5);
+
+        $context->add([$layout1, $layout2, $layout3], true);
+        $context->add([$layout4, $layout5], false);
+
+        // Do not specify: edit them all
+        $token = $context->createEditToken([]);
+        $this->assertTrue($token->contains($layouts[1]));
+        $this->assertTrue($token->contains($layouts[2]));
+        $this->assertTrue($token->contains($layouts[3]));
+        $this->assertFalse($token->contains($layouts[4]));
+        $this->assertFalse($token->contains($layouts[5]));
+
+        // Specify a list of layouts to edit
+        $context->rollback();
+        $token = $context->createEditToken([1, 3]);
+        $this->assertTrue($token->contains($layouts[1]));
+        $this->assertFalse($token->contains($layouts[2]));
+        $this->assertTrue($token->contains($layouts[3]));
+        $this->assertFalse($token->contains($layouts[4]));
+        $this->assertFalse($token->contains($layouts[5]));
+
+        // Specify a list of layouts to edit, including non editable ones
+        $context->rollback();
+        $token = $context->createEditToken([3, 5]);
+        $this->assertFalse($token->contains($layouts[1]));
+        $this->assertFalse($token->contains($layouts[2]));
+        $this->assertTrue($token->contains($layouts[3]));
+        $this->assertFalse($token->contains($layouts[4]));
+        $this->assertFalse($token->contains($layouts[5]));
     }
 
     /**

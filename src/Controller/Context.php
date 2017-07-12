@@ -177,19 +177,28 @@ final class Context
     /**
      * Create edit token
      *
+     * @param string[] $layoutId
+     *   List of layouts to switch to edit mode, empty array means edit them all
      * @param string[] $additional
      *   Arbitrary information to store and fetch along for security or other
      *   business purpose
      *
      * @return EditToken
      */
-    public function createEditToken(array $additional = [])
+    public function createEditToken(array $layoutId = [], array $additional = [])
     {
         if ($this->currentToken) {
             throw new GenericError("you cannot create a new token, context is already in edit mode");
         }
 
-        $this->currentToken = new EditToken($this->getTokenGenerator()->create(), array_keys(array_filter($this->editableIndex)), $additional);
+        $allowed = array_keys(array_filter($this->editableIndex));
+        if ($layoutId) {
+            $layoutId = array_intersect($allowed, $layoutId);
+        } else {
+            $layoutId = $allowed;
+        }
+
+        $this->currentToken = new EditToken($this->getTokenGenerator()->create(), $layoutId, $additional);
         $this->tokenStorage->saveToken($this->currentToken);
 
         $this->createSnapshot();
