@@ -11,10 +11,12 @@
             "email": "pierre.rineau@makina-corpus.com"
         }
     ],
-    "minimum-stability" : "dev",
-    "prefer-stable" : true,
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "symfony/dependency-injection": "^3",
+        "symfony/http-kernel": "^3"
     },
     "autoload": {
         "psr-4": {

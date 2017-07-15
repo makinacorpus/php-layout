@@ -142,6 +142,18 @@ final class Context
     }
 
     /**
+     * Get permanenet object storage
+     *
+     * @return TokenLayoutStorageInterface
+     *
+     * @internal
+     */
+    public function getTokenStorage() : TokenLayoutStorageInterface
+    {
+        return $this->tokenStorage;
+    }
+
+    /**
      * Set current context edit token
      *
      * @param string $tokenString

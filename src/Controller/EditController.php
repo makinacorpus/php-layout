@@ -64,32 +64,30 @@ class EditController
     /**
      * Load layout or die
      *
-     * @param string $tokenString
-     * @param int $layoutId
-     *
-     * @return LayoutInterface
+     * @param EditToken $token
+     *   Current edit context
+     * @param LayoutInterface $layout
+     *   Layout
      */
-    public function loadLayoutOrDie(string $tokenString, int $layoutId) : LayoutInterface
+    public function ensureLayout(EditToken $token, LayoutInterface $layout)
     {
-        $token  = $this->storage->loadToken($tokenString);
-        $layout = $this->storage->load($token->getToken(), $layoutId);
-
         if (!$token->contains($layout)) {
-            throw new SecurityError(sprintf("%d layout is not attached to token %s", $layoutId, $tokenString));
+            throw new SecurityError(sprintf("%d layout is not attached to token %s", $layout->getId(), $token->getToken()));
         }
-
-        return $layout;
     }
 
     /**
      * Remove an item or container, and all its descendents
      *
-     * @param string $tokenString
+     * @param EditToken $token
+     *   Current edit context
+     * @param LayoutInterface $layout
+     *   Layout
      */
-    public function removeAction(string $tokenString, int $layoutId, int $itemId)
+    public function removeAction(EditToken $token, LayoutInterface $layout, int $itemId)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $container  = $layout->findContainerOf($itemId);
+        $this->ensureLayout($token, $layout);
+        $container = $layout->findContainerOf($itemId);
 
         if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
             throw new GenericError("you cannot remove items from a non-vertical container");
@@ -103,7 +101,7 @@ class EditController
             }
         }
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true];
     }
@@ -113,8 +111,8 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $layoutId
-     *   Layout identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param int $containerId
      *   Container storage identifier
      * @param int $position
@@ -124,9 +122,9 @@ class EditController
      * @param string $style
      *   Item style, if none use default
      */
-    public function addColumnContainerAction(string $tokenString, int $layoutId, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addColumnContainerAction(EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
     {
-        $layout = $this->loadLayoutOrDie($tokenString, $layoutId);
+        $this->ensureLayout($token, $layout);
 
         if ($containerId) {
             $container = $layout->findContainer($containerId);
@@ -151,7 +149,7 @@ class EditController
 
         $container->addAt($horizontal, $position);
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->render($horizontal)];
     }
@@ -161,17 +159,17 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $layoutId
-     *   Layout identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param int $containerId
      *   Container storage identifier
      * @param int $position
      *   Position
      */
-    public function addColumnAction(string $tokenString, int $layoutId, int $containerId, int $position = 0)
+    public function addColumnAction(EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $container  = $layout->findContainer($containerId);
+        $this->ensureLayout($token, $layout);
+        $container = $layout->findContainer($containerId);
 
         if (!$container instanceof HorizontalContainer) {
             throw new GenericError("you cannot add columns into a non-horizontal container");
@@ -179,7 +177,7 @@ class EditController
 
         $column = $container->createColumnAt($position);
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->render($column)];
     }
@@ -189,17 +187,17 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $layoutId
-     *   Layout identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param int $containerId
      *   Container storage identifier
      * @param int $position
      *   Position
      */
-    public function removeColumnAction(string $tokenString, int $layoutId, int $containerId, int $position = 0)
+    public function removeColumnAction(EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
-        $container  = $layout->findContainer($containerId);
+        $this->ensureLayout($token, $layout);
+        $container = $layout->findContainer($containerId);
 
         if (!$container instanceof HorizontalContainer) {
             throw new GenericError("you cannot add columns into a non-horizontal container");
@@ -207,7 +205,7 @@ class EditController
 
         $container->removeColumnAt($position);
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true];
     }
@@ -217,8 +215,8 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $layoutId
-     *   Layout identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param int $containerId
      *   Container storage identifier
      * @param string $itemType
@@ -230,11 +228,11 @@ class EditController
      * @param string $style
      *   Item style, if none use default
      */
-    public function addAction(string $tokenString, int $layoutId, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addAction(EditToken $token, LayoutInterface $layout, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
     {
-        $layout = $this->loadLayoutOrDie($tokenString, $layoutId);
+        $this->ensureLayout($token, $layout);
         $item = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
-        $item->setLayoutId($layoutId);
+        $item->setLayoutId($layout->getId());
 
         if ($containerId) {
             $container = $layout->findContainer($containerId);
@@ -251,7 +249,7 @@ class EditController
 
         $container->addAt($item, $position);
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)];
     }
@@ -261,8 +259,8 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $containerId
-     *   Container storage identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param string $itemType
      *   Item type
      * @param string $itemId
@@ -270,9 +268,10 @@ class EditController
      * @param int $position
      *   Position
      */
-    public function moveAction(string $tokenString, int $layoutId, int $containerId, int $itemId, int $newPosition)
+    public function moveAction(EditToken $token, LayoutInterface $layout, int $containerId, int $itemId, int $newPosition)
     {
-        $layout     = $this->loadLayoutOrDie($tokenString, $layoutId);
+        $this->ensureLayout($token, $layout);
+
         $container  = $layout->findContainer($containerId);
         $parent     = $layout->findContainerOf($itemId);
         $item       = null;
@@ -310,7 +309,7 @@ class EditController
         $container->addAt($item, $newPosition);
         $item->toggleUpdateStatus(true);
 
-        $this->storage->update($tokenString, $layout);
+        $this->storage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)];
     }
@@ -320,8 +319,8 @@ class EditController
      *
      * @param EditToken $token
      *   Current edit context
-     * @param int $containerId
-     *   Container storage identifier
+     * @param LayoutInterface $layout
+     *   Layout
      * @param string $itemType
      *   Item type
      * @param string $itemId
@@ -329,7 +328,7 @@ class EditController
      * @param int $position
      *   Position
      */
-    public function moveOutsideAction(string $tokenString)
+    public function moveOutsideAction(EditToken $token)
     {
         throw new GenericError("this is not implemented yet");
     }
