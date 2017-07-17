@@ -35,7 +35,7 @@ class EditController
     /**
      * @var TokenLayoutStorageInterface
      */
-    private $storage;
+    private $tokenStorage;
 
     /**
      * @var ItemTypeRegistry
@@ -54,9 +54,9 @@ class EditController
      * @param ItemTypeRegistry $typeRegistry
      * @param Renderer $renderer
      */
-    public function __construct(TokenLayoutStorageInterface $storage, ItemTypeRegistry $typeRegistry, Renderer $renderer)
+    public function __construct(TokenLayoutStorageInterface $tokenStorage, ItemTypeRegistry $typeRegistry, Renderer $renderer)
     {
-        $this->storage = $storage;
+        $this->tokenStorage = $tokenStorage;
         $this->typeRegistry = $typeRegistry;
         $this->renderer = $renderer;
     }
@@ -101,7 +101,7 @@ class EditController
             }
         }
 
-        $this->storage->update($token->getToken(), $layout);
+        $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true];
     }
@@ -149,7 +149,7 @@ class EditController
 
         $container->addAt($horizontal, $position);
 
-        $this->storage->update($token->getToken(), $layout);
+        $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->render($horizontal)];
     }
@@ -177,7 +177,7 @@ class EditController
 
         $column = $container->createColumnAt($position);
 
-        $this->storage->update($token->getToken(), $layout);
+        $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->render($column)];
     }
@@ -205,7 +205,7 @@ class EditController
 
         $container->removeColumnAt($position);
 
-        $this->storage->update($token->getToken(), $layout);
+        $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true];
     }
@@ -249,7 +249,7 @@ class EditController
 
         $container->addAt($item, $position);
 
-        $this->storage->update($token->getToken(), $layout);
+        $token = $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)];
     }
@@ -309,7 +309,7 @@ class EditController
         $container->addAt($item, $newPosition);
         $item->toggleUpdateStatus(true);
 
-        $this->storage->update($token->getToken(), $layout);
+        $this->tokenStorage->update($token->getToken(), $layout);
 
         return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)];
     }
