@@ -89,4 +89,16 @@ interface TokenLayoutStorageInterface
      *   If the menu does not exist
      */
     public function update(string $token, LayoutInterface $layout);
+
+    /**
+     * Remove a single layout
+     *
+     * Be silent if layout was not in the token
+     *
+     * @param string $token
+     *   String token identifier
+     * @param int $id
+     *   Layout instance to remove
+     */
+    public function remove(string $token, int $id);
 }

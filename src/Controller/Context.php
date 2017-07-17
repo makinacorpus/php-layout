@@ -3,6 +3,7 @@
 namespace MakinaCorpus\Layout\Controller;
 
 use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Error\SecurityError;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\LayoutStorageInterface;
 use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
@@ -230,6 +231,60 @@ final class Context
         foreach ($this->currentToken->getLayoutIdList() as $id) {
             $this->tokenStorage->update($this->currentToken->getToken(), $this->layouts[$id]);
         }
+    }
+
+    /**
+     * Partially commit the current token
+     *
+     * @param LayoutInterface[] $layouts
+     */
+    public function partialCommit(array $layouts)
+    {
+        if (!$this->currentToken) {
+            throw new GenericError("you cannot commit without a token");
+        }
+
+        $current = $this->currentToken->getLayoutIdList();
+        $removed = [];
+
+        foreach ($layouts as $layout) {
+            if (!$this->currentToken->contains($layout)) {
+                throw new SecurityError(sprintf("token does not contain the %s layout", $layout->getId()));
+            }
+
+            $removed[] = $layoutId = $layout->getId();
+
+            $temporaryLayout = $this->tokenStorage->load($this->currentToken, $layoutId);
+            $this->storage->update($temporaryLayout);
+            $this->tokenStorage->remove($this->currentToken, $layoutId);
+        }
+
+        $this->currentToken = new EditToken($this->currentToken->getToken(), array_diff($current, $removed));
+    }
+
+    /**
+     * Partially rollback the current token
+     *
+     * @param LayoutInterface[] $layouts
+     */
+    public function partialRollback(array $layouts)
+    {
+        if (!$this->currentToken) {
+            throw new GenericError("you cannot commit without a token");
+        }
+
+        $current = $this->currentToken->getLayoutIdList();
+        $removed = [];
+
+        foreach ($layouts as $layout) {
+            $removed[] = $layoutId = $layout->getId();
+
+            if (!$this->currentToken->contains($layout)) {
+                $this->tokenStorage->remove($this->currentToken, $layoutId);
+            }
+        }
+
+        $this->currentToken = new EditToken($this->currentToken->getToken(), array_diff($current, $removed));
     }
 
     /**

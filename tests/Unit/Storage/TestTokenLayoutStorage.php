@@ -113,4 +113,12 @@ class TestTokenLayoutStorage implements TokenLayoutStorageInterface
 
         $this->layouts[$token][$layout->getId()] = $layout;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove(string $token, int $id)
+    {
+        unset($this->layouts[$token][$id]);
+    }
 }
