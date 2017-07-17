@@ -37,7 +37,9 @@ class LayoutArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return LayoutInterface::class === $argument->getType();
+        $name = $argument->getName();
+
+        return LayoutInterface::class === $argument->getType() && ($request->query->has($name) || $request->request->has($name));
     }
 
     /**

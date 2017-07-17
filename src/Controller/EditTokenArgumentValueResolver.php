@@ -29,7 +29,9 @@ class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return EditToken::class === $argument->getType();
+        $name = $argument->getName();
+
+        return EditToken::class === $argument->getType() && ($request->query->has($name) || $request->request->has($name));
     }
 
     /**
@@ -42,5 +44,7 @@ class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
         if ($tokenString) {
             yield $this->tokenStorage->loadToken($tokenString);
         }
+
+        throw new \InvalidArgumentException();
     }
 }
