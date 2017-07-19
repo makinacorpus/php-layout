@@ -16,7 +16,7 @@ use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
  * When the user switches to edit mode, you may use this instance to create the
  * edition context.
  */
-final class Context
+final class LegacyContext
 {
     private $currentToken;
     private $editableIndex = [];
@@ -37,16 +37,6 @@ final class Context
         $this->storage = $storage;
         $this->tokenStorage = $tokenStorage;
         $this->tokenGenerator = $tokenGenerator;
-    }
-
-    /**
-     * Get token generator
-     *
-     * @return TokenGeneratorInterface
-     */
-    public function getTokenGenerator() : TokenGeneratorInterface
-    {
-        return $this->tokenGenerator;
     }
 
     /**
@@ -211,7 +201,7 @@ final class Context
             $layoutId = $allowed;
         }
 
-        $this->currentToken = new EditToken($this->getTokenGenerator()->create(), $layoutId, $additional);
+        $this->currentToken = new EditToken($this->tokenGenerator->create(), $layoutId, $additional);
         $this->tokenStorage->saveToken($this->currentToken);
 
         $this->createSnapshot();
@@ -231,6 +221,31 @@ final class Context
         foreach ($this->currentToken->getLayoutIdList() as $id) {
             $this->tokenStorage->update($this->currentToken->getToken(), $this->layouts[$id]);
         }
+    }
+
+    /**
+     * Add layout to current token
+     *
+     * @param array $layoutId
+     */
+    public function addLayoutToCurrentToken(array $layoutId = [])
+    {
+        if ($this->currentToken) {
+            throw new GenericError("you cannot create a new token, context is already in edit mode");
+        }
+
+        $layout = $this->storage->load($layoutId);
+
+        if ($this->currentToken->contains($layout)) {
+            return;
+        }
+
+        $allowed = array_keys(array_filter($this->editableIndex));
+        $layoutId = array_intersect($allowed, $layoutId);
+
+        // I am so, so, sorry for this
+        $this->tokenStorage->update($this->currentToken->getToken(), $layout);
+        $this->currentToken = new EditToken($this->currentToken->getToken(), array_merge($this->currentToken->getLayoutIdList(), [$layoutId]));
     }
 
     /**

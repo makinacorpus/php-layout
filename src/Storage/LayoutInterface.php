@@ -19,6 +19,13 @@ interface LayoutInterface
     public function getId() : int;
 
     /**
+     * Is layout temporary
+     *
+     * @return bool
+     */
+    public function isTemporary() : bool;
+
+    /**
      * Get top level container
      *
      * @return TopLevelContainer

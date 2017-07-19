@@ -2,10 +2,9 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
-use MakinaCorpus\Layout\Controller\EditToken;
+use MakinaCorpus\Layout\Context\EditToken;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
-use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
 use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
 

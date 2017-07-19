@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /**
  * This implementation is suitable for Symfony <= 3 and Drupal <= 8.
  */
-class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
+class ContextArgumentValueResolver implements ArgumentValueResolverInterface
 {
     private $context;
 
@@ -29,7 +29,7 @@ class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return EditToken::class && $this->context->hasToken();
+        return Context::class;
     }
 
     /**
@@ -37,6 +37,6 @@ class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
-        yield $this->context->getToken();
+        yield $this->context;
     }
 }

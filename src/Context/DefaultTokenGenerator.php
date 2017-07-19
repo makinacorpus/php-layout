@@ -1,6 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Controller;
+namespace MakinaCorpus\Layout\Context;
 
 /**
  * Default implementation for testing purpose, creates tokens with an overkill

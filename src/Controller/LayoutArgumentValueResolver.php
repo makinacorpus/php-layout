@@ -2,7 +2,7 @@
 
 namespace MakinaCorpus\Layout\Controller;
 
-use MakinaCorpus\Layout\Error\GenericError;
+use MakinaCorpus\Layout\Context\Context;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\LayoutStorageInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class LayoutArgumentValueResolver implements ArgumentValueResolverInterface
     {
         $name = $argument->getName();
 
-        return LayoutInterface::class === $argument->getType() && ($request->query->has($name) || $request->request->has($name));
+        return LayoutInterface::class === $argument->getType() && ($request->query->has($name) || $request->request->has($name) || $request->attributes->has($name));
     }
 
     /**
@@ -47,25 +47,17 @@ class LayoutArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
-        $layoutId = $request->get($argument->getName());
+        $name = $argument->getName();
+        $id = $request->attributes->get($name, $request->get($name));
 
-        if (!$layoutId) {
+        if (!$id) {
             return;
         }
 
-        if ($this->context->hasToken()) {
-            try {
-                $token = $this->context->getCurrentToken();
-
-                yield $this->context->getTokenStorage()->load($token->getToken(), $layoutId);
-
-            } catch (GenericError $e) {
-                // In case we have any error, just let the algorithm continue
-                // with a normal load attempt: it's the controllers responsability
-                // to ensure that layout is contained by the token
-            }
+        if ($this->context->has($id)) {
+            yield $this->context->getLayout($id);
         }
 
-        yield $this->layoutStorage->load($layoutId);
+        yield $this->layoutStorage->load($id);
     }
 }

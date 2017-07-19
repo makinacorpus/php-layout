@@ -1,6 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Controller;
+namespace MakinaCorpus\Layout\Context;
 
 /**
  * Unique token generator

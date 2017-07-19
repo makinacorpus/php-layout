@@ -1,8 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Controller;
-
-use MakinaCorpus\Layout\Storage\LayoutInterface;
+namespace MakinaCorpus\Layout\Context;
 
 /**
  * Edition token, this object is meant to be stored at the backend level
@@ -62,13 +60,13 @@ final class EditToken
     /**
      * Is layout editable in this context
      *
-     * @param LayoutInterface $layout
+     * @param int $layoutId
      *
      * @return bool
      */
-    public function contains(LayoutInterface $layout) : bool
+    public function contains(int $layoutId) : bool
     {
-        return in_array($layout->getId(), $this->layoutIdList);
+        return in_array($layoutId, $this->layoutIdList);
     }
 
     /**

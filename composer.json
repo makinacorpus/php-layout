@@ -16,7 +16,9 @@
     "require": {
         "php": ">=7.0",
         "symfony/dependency-injection": "^3",
-        "symfony/http-kernel": "^3"
+        "symfony/event-dispatcher": "^3",
+        "symfony/http-kernel": "^3",
+        "symfony/security": "^3"
     },
     "autoload": {
         "psr-4": {

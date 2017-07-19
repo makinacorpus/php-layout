@@ -2,7 +2,7 @@
 
 namespace MakinaCorpus\Layout\Storage;
 
-use MakinaCorpus\Layout\Controller\EditToken;
+use MakinaCorpus\Layout\Context\EditToken;
 use MakinaCorpus\Layout\Error\InvalidTokenError;
 
 /**

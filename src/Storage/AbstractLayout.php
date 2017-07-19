@@ -11,6 +11,18 @@ use MakinaCorpus\Layout\Grid\ItemInterface;
  */
 abstract class AbstractLayout implements LayoutInterface
 {
+    private $temporary = false;
+
+    /**
+     * Is layout temporary
+     *
+     * @return bool
+     */
+    public function isTemporary() : bool
+    {
+        return $this->temporary;
+    }
+
     /**
      * Recursion for findItemIn()
      *

@@ -2,7 +2,7 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit\Storage;
 
-use MakinaCorpus\Layout\Controller\EditToken;
+use MakinaCorpus\Layout\Context\EditToken;
 use MakinaCorpus\Layout\Error\InvalidTokenError;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\ItemInterface;
