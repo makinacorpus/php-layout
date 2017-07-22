@@ -15,6 +15,9 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Controller that should be suitable with most frameworks.
@@ -33,21 +36,12 @@ use MakinaCorpus\Layout\Type\ItemTypeRegistry;
  */
 class EditController
 {
-    /**
-     * @var ItemTypeRegistry
-     */
+    private $renderer;
+    private $testMode = false;
     private $typeRegistry;
 
     /**
-     * @var Renderer
-     */
-    private $renderer;
-
-    /**
      * Default constructor
-     *
-     * @param ItemTypeRegistry $typeRegistry
-     * @param Renderer $renderer
      */
     public function __construct(ItemTypeRegistry $typeRegistry, Renderer $renderer)
     {
@@ -56,14 +50,17 @@ class EditController
     }
 
     /**
-     * Load layout or die
-     *
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
+     * Toggle test mode: will return arrays instead of returning responses.
      */
-    public function ensureLayout(EditToken $token, LayoutInterface $layout)
+    public function toggleTestMode(bool $toggle = true)
+    {
+        $this->testMode = $toggle;
+    }
+
+    /**
+     * Load layout or die
+     */
+    protected function ensureLayout(EditToken $token, LayoutInterface $layout)
     {
         if (!$token->contains($layout->getId())) {
             throw new SecurityError(sprintf("layout %d is not temporary or not attached to token %s", $layout->getId(), $token->getToken()));
@@ -71,16 +68,27 @@ class EditController
     }
 
     /**
-     * Remove an item or container, and all its descendents
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
+     * Handle edit controller response
      */
-    public function removeAction(Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    protected function handleResponse(Request $request, array $ret)
+    {
+        if ($this->testMode) {
+            return $ret;
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse($ret);
+        }
+
+        // Handle redirect gracefully
+        //   @todo the php-calista redirect router would be perfect...
+        return new Response();
+    }
+
+    /**
+     * Remove an item or container, and all its descendents
+     */
+    public function removeAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
     {
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainerOf($itemId);
@@ -99,28 +107,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true];
+        return $this->handleResponse($request, ['success' => true]);
     }
 
     /**
      * Add column container into another container
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param int $containerId
-     *   Container storage identifier
-     * @param int $position
-     *   Position
-     * @param int $columnCount
-     *   Default column count
-     * @param string $style
-     *   Item style, if none use default
      */
-    public function addColumnContainerAction(Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addColumnContainerAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
     {
         $this->ensureLayout($token, $layout);
 
@@ -149,24 +142,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true, 'output' => $this->renderer->render($horizontal)];
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($horizontal)]);
     }
 
     /**
      * Add column to horizontal container
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param int $containerId
-     *   Container storage identifier
-     * @param int $position
-     *   Position
      */
-    public function addColumnAction(Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
+    public function addColumnAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
     {
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainer($containerId);
@@ -179,24 +161,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true, 'output' => $this->renderer->render($column)];
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($column)]);
     }
 
     /**
      * Remove column to horizontal container
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param int $containerId
-     *   Container storage identifier
-     * @param int $position
-     *   Position
      */
-    public function removeColumnAction(Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
+    public function removeColumnAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
     {
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainer($containerId);
@@ -209,30 +180,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true];
+        return $this->handleResponse($request, ['success' => true]);
     }
 
     /**
      * Add an item into another
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param int $containerId
-     *   Container storage identifier
-     * @param string $itemType
-     *   Item type
-     * @param string $itemId
-     *   Item identifier
-     * @param int $position
-     *   Position
-     * @param string $style
-     *   Item style, if none use default
      */
-    public function addAction(Context $context, EditToken $token, LayoutInterface $layout, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
     {
         $this->ensureLayout($token, $layout);
         $item = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
@@ -255,26 +209,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)];
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)]);
     }
 
     /**
      * Add an item from a container to any other container within the same layout
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param string $itemType
-     *   Item type
-     * @param string $itemId
-     *   Item identifier
-     * @param int $position
-     *   Position
      */
-    public function moveAction(Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $itemId, int $newPosition)
+    public function moveAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $itemId, int $newPosition)
     {
         $this->ensureLayout($token, $layout);
 
@@ -317,26 +258,13 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
-        return ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)];
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)]);
     }
 
     /**
      * Add an item from a position to another position
-     *
-     * @param Context $context
-     *   Current context
-     * @param EditToken $token
-     *   Current edit context
-     * @param LayoutInterface $layout
-     *   Layout
-     * @param string $itemType
-     *   Item type
-     * @param string $itemId
-     *   Item identifier
-     * @param int $position
-     *   Position
      */
-    public function moveOutsideAction(Context $context, EditToken $token)
+    public function moveOutsideAction(Request $request, Context $context, EditToken $token)
     {
         throw new GenericError("this is not implemented yet");
     }
