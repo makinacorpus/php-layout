@@ -85,7 +85,7 @@ class ArgumentResolverTest extends \PHPUnit_Framework_TestCase
         }
 
         // And now it will resolve
-        $editToken = $context->createEditToken();
+        $editToken = $context->createEditToken([]);
         $this->assertTrue($resolver->supports($request, $argument));
 
         $count = 0;
@@ -116,8 +116,6 @@ class ArgumentResolverTest extends \PHPUnit_Framework_TestCase
 
         // Create a token, but add only one of them into it
         $context->addLayoutList([$layout1->getId(), $layout2->getId()]);
-        $context->toggleEditable([$layout1->getId()], false);
-        $context->toggleEditable([$layout2->getId()], true);
         $context->createEditToken([$layout2->getId()]);
 
         // First argument will be the first layout, should return the permanent one

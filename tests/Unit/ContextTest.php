@@ -78,12 +78,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($context->isEditable($layout));
         }
 
-        $context->toggleEditable([$layout1->getId(), $layout3->getId()]);
-        $this->assertTrue($context->isEditable($layout1));
-        $this->assertFalse($context->isEditable($layout2));
-        $this->assertTrue($context->isEditable($layout3));
-        $this->assertFalse($context->isEditable($layout4));
-
         $loaded = $context->getAllLayouts();
         foreach ($layouts as $layout) {
             $this->assertArrayHasKey($layout->getId(), $loaded);
@@ -106,16 +100,13 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $layoutId2 = $storage->create()->getId();
         $layoutId3 = $storage->create()->getId();
 
-        $context->addLayoutList([$layoutId1, $layoutId3]);
-        $context->toggleEditable([$layoutId1, $layoutId3]);
-        $context->addLayoutList([$layoutId2]);
-        $context->toggleEditable([$layoutId2], false);
+        $context->addLayoutList([$layoutId1, $layoutId2, $layoutId3]);
 
         // Do not specify: edit them all
-        $token = $context->createEditToken();
-        $this->assertTrue($token->contains($layoutId1));
+        $token = $context->createEditToken([]);
+        $this->assertFalse($token->contains($layoutId1));
         $this->assertFalse($token->contains($layoutId2));
-        $this->assertTrue($token->contains($layoutId3));
+        $this->assertFalse($token->contains($layoutId3));
 
         // Specify a list of layouts to edit
         $context->rollback();
@@ -124,11 +115,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($token->contains($layoutId2));
         $this->assertTrue($token->contains($layoutId3));
 
-        // Specify a list of layouts to edit, including non editable ones
+        // Specify a list of layouts to edit (another)
         $context->rollback();
         $token = $context->createEditToken([$layoutId1, $layoutId2]);
         $this->assertTrue($token->contains($layoutId1));
-        $this->assertFalse($token->contains($layoutId2));
+        $this->assertTrue($token->contains($layoutId2));
         $this->assertFalse($token->contains($layoutId3));
     }
 
@@ -146,11 +137,9 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $nonEditableId = $nonEditableLayout->getId();
 
         $context->addLayoutList([$editableId, $nonEditableId]);
-        $context->toggleEditable([$editableId], true);
-        $context->toggleEditable([$nonEditableId], false);
 
         // Go to temporary mode and edit the layout
-        $token = $context->createEditToken();
+        $token = $context->createEditToken([$editableId]);
         $editableLayout->getTopLevelContainer()->append(new Item('a', 1));
         $nonEditableLayout->getTopLevelContainer()->append(new Item('a', 1));
 
@@ -174,7 +163,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         }
 
         // Start again but we'll commit this time
-        $token = $context->createEditToken();
+        $token = $context->createEditToken([$editableId]);
         $newLayout = $context->getAllLayouts()[$editableId];
         $this->assertTrue($newLayout->getTopLevelContainer()->isEmpty());
 
@@ -224,12 +213,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(true);
         }
 
-        $editToken = $context->createEditToken();
+        $editToken = $context->createEditToken([]);
         $this->assertTrue($context->hasToken());
         $this->assertSame($editToken, $context->getToken());
 
         try {
-            $context->createEditToken();
+            $context->createEditToken([]);
             $this->fail();
         } catch (GenericError $e) {
             $this->assertTrue(true);
@@ -245,13 +234,13 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $context->commit();
         $this->assertFalse($context->hasToken());
 
-        $context->createEditToken();
+        $context->createEditToken([]);
         $this->assertTrue($context->hasToken());
 
         $context->rollback();
         $this->assertFalse($context->hasToken());
 
-        $context->createEditToken();
+        $context->createEditToken([]);
         $this->assertTrue($context->hasToken());
         $context->resetToken();
         $this->assertFalse($context->hasToken());

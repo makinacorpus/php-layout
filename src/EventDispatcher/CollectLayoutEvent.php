@@ -2,8 +2,7 @@
 
 namespace MakinaCorpus\Layout\EventDispatcher;
 
-use MakinaCorpus\Layout\Storage\LayoutInterface;
-use MakinaCorpus\Layout\Storage\LayoutStorageInterface;
+use MakinaCorpus\Layout\Context\Context;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -16,37 +15,39 @@ class CollectLayoutEvent extends Event
      */
     const EVENT_NAME = 'php_layout:collect';
 
+    private $context;
     private $layoutIdList = [];
-    private $editableIndex = [];
 
     /**
      * Default constructor
-     *
-     * @param LayoutStorageInterface $storage
      */
-    public function __construct(LayoutStorageInterface $storage)
+    public function __construct(Context $context)
     {
-        $this->storage = $storage;
+        $this->context = $context;
+    }
+
+    /**
+     * Get context
+     */
+    public function getContext() : Context
+    {
+        return $this->context;
     }
 
     /**
      * Add layout to the current page
-     *
-     * @param LayoutInterface $layout
      */
-    public function addLayout($id)
+    public function addLayout(int $id)
     {
-        $this->layouts[$id] = $id;
+        $this->context->addLayout($id);
     }
 
     /**
      * Add more than one layouts to the current page
-     *
-     * @param array $idList
      */
     public function addLayoutList(array $idList)
     {
-
+        $this->context->addLayoutList($idList);
     }
 
     /**

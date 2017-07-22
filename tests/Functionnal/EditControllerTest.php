@@ -111,8 +111,7 @@ class EditControllerTest extends \PHPUnit_Framework_TestCase
         // token instance because from a functionnal standpoint, we only have
         // the token string on the front side.
         $layout = $context->getLayoutStorage()->create();
-        $context->addLayout($layout->getId());
-        $context->toggleEditable([$layout->getId()]);
+        //$context->addLayout($layout->getId());
         $editToken = $context->createEditToken([$layout->getId()]);
 
         // Create the grid and keep object references, becaue we need their

@@ -12,6 +12,11 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
 interface LayoutInterface
 {
     /**
+     * Layout edit permission string
+     */
+    const PERMISSION_EDIT = 'edit';
+
+    /**
      * Get layout identifier
      *
      * @return int

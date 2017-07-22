@@ -42,25 +42,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *   - Final rendering MUST happen AFTER token is set and every layout is loaded
  *     and MUST use this context to load layouts to display: hence the temporary
  *     versions will be correctly selected automatically for rendering.
- *
- * @todo testing
- *   - layout lazy load
- *   - reset() method, should also reset loaded layouts when temporary
- *   - setToken() (with and without already set)
- *   - getToken() (with and without already set)
- *   - setToken() with editable: load layouts first, then reload them after, ensure they are temporary
- *   - isEditable() with and without manual toggleEditable() being called: ensure authorization checker is called or not
- *   - snapshot() commit() and rollback() are trivial to test
  */
 final class Context
 {
-    /**
-     * Layout edit permission string
-     */
-    const PERMISSION_EDIT = 'edit';
-
     private $authorizationChecker;
-    private $editableIndex = [];
     private $editToken;
     private $eventDispatcher;
     private $layoutIndex = [];
@@ -138,24 +123,18 @@ final class Context
      * Create edit token
      *
      * @param string[] $layoutIdList
-     *   List of layouts to switch to edit mode, empty array means edit them all
+     *   List of layouts to switch to edit mode, it's up to the business
+     *   controller to check for edit permissions
      * @param string[] $additional
      *   Arbitrary information to store and fetch along for security or other
      *   business purpose
      *
      * @return EditToken
      */
-    public function createEditToken(array $layoutIdList = [], array $additional = [])
+    public function createEditToken(array $layoutIdList, array $additional = [])
     {
         if ($this->editToken) {
             throw new GenericError("you cannot create a new token, context is already in edit mode");
-        }
-
-        $allowed = array_keys(array_filter($this->editableIndex));
-        if ($layoutIdList) {
-            $layoutIdList = array_intersect($allowed, $layoutIdList);
-        } else {
-            $layoutIdList = $allowed;
         }
 
         $this->editToken = new EditToken($this->tokenGenerator->create(), $layoutIdList, $additional);
@@ -219,34 +198,15 @@ final class Context
     }
 
     /**
-     * Is there any editable layout in this context
-     *
-     * @return bool
-     */
-    public function containsEditableLayouts() : bool
-    {
-        return !empty($this->editableIndex);
-    }
-
-    /**
      * Is layout editable
      */
     public function isEditable(LayoutInterface $layout)
     {
-        $id = $layout->getId();
-
-        // Layout might have been manually set to editable by any business code
-        // case in which using the authorization checker is useless, and should
-        // be bypassed.
-        if (isset($this->editableIndex[$id])) {
-            return $this->editableIndex[$id];
-        }
-
         if ($this->authorizationChecker) {
-            return $this->authorizationChecker->isGranted(self::PERMISSION_EDIT, $layout);
+            return $this->authorizationChecker->isGranted(LayoutInterface::PERMISSION_EDIT, $layout);
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -267,23 +227,6 @@ final class Context
     public function addLayoutList(array $idList)
     {
         $this->layoutIndex = array_unique(array_merge($this->layoutIndex, $idList));
-    }
-
-    /**
-     * Toggle layouts as editable
-     *
-     * @param int[] $layoutIdList
-     * @param bool $editable
-     */
-    public function toggleEditable(array $layoutIdList, bool $editable = true)
-    {
-        foreach ($layoutIdList as $id) {
-            if (!in_array($id, $this->layoutIndex)) {
-                throw new GenericError(sprintf("layout %d is not in context", $id));
-            }
-
-            $this->editableIndex[$id] = $editable;
-        }
     }
 
     /**
