@@ -30,7 +30,7 @@ class EditTokenValueResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return EditToken::class && $this->context->hasToken();
+        return EditToken::class === $argument->getType() && $this->context->hasToken();
     }
 
     /**

@@ -261,7 +261,18 @@ final class Context
     }
 
     /**
-     * Get a single layout from context
+     * Get all layout identifier list
+     *
+     * @return int[]
+     *   Loaded layouts or temporary layouts, keys are their identifiers
+     */
+    public function getAllLayoutIdList() : array
+    {
+        return $this->layoutIndex;
+    }
+
+    /**
+     * Get all layouts
      *
      * @return LayoutInterface[]
      *   Loaded layouts or temporary layouts, keys are their identifiers

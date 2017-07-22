@@ -20,3 +20,9 @@ services:
         public: false
         arguments: ["@php_layout.context"]
         tags: [{name: controller.argument_value_resolver, priority: 128}]
+
+    php_layout.kernel_event_subscriber:
+        public: true
+        class: MakinaCorpus\Layout\EventDispatcher\KernelEventSubscriber
+        arguments: ['@php_layout.context', '@event_dispatcher']
+        tags: [{name: kernel.event_subscriber}]
