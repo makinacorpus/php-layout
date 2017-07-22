@@ -151,7 +151,7 @@ final class Context
             throw new GenericError("you cannot create a new token, context is already in edit mode");
         }
 
-        $allowed = array_filter($this->editableIndex);
+        $allowed = array_keys(array_filter($this->editableIndex));
         if ($layoutIdList) {
             $layoutIdList = array_intersect($allowed, $layoutIdList);
         } else {
@@ -405,7 +405,14 @@ final class Context
             throw new GenericError("context token was not set, did you forget to call setToken()?");
         }
 
-        throw new GenericError("Not implemented yet");
+        // Save all temporary layouts in permanent storage and update this
+        // object's internals at the same time
+        foreach ($this->tokenStorage->loadMultiple($this->editToken->getToken(), $this->editToken->getLayoutIdList()) as $layout) {
+            $this->layoutStorage->update($layout);
+        }
+
+        $this->tokenStorage->deleteAll($this->editToken->getToken());
+        $this->resetToken();
     }
 
     /**
@@ -417,6 +424,7 @@ final class Context
             throw new GenericError("context token was not set, did you forget to call setToken()?");
         }
 
-        throw new GenericError("Not implemented yet");
+        $this->tokenStorage->deleteAll($this->editToken->getToken());
+        $this->resetToken();
     }
 }

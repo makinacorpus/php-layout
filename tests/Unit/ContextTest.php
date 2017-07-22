@@ -99,45 +99,37 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testTokenBehaviors()
     {
-        $this->markTestSkipped("fix me");
-
         $context = $this->createContext();
+        $storage = $context->getLayoutStorage();
 
-        $layouts = [];
-        $layouts[1] = $layout1 = new TestLayout(1);
-        $layouts[2] = $layout2 = new TestLayout(2);
-        $layouts[3] = $layout3 = new TestLayout(3);
-        $layouts[4] = $layout4 = new TestLayout(4);
-        $layouts[5] = $layout5 = new TestLayout(5);
+        $layoutId1 = $storage->create()->getId();
+        $layoutId2 = $storage->create()->getId();
+        $layoutId3 = $storage->create()->getId();
 
-        $context->add([$layout1, $layout2, $layout3], true);
-        $context->add([$layout4, $layout5], false);
+        $context->addLayoutList([$layoutId1, $layoutId3]);
+        $context->toggleEditable([$layoutId1, $layoutId3]);
+        $context->addLayoutList([$layoutId2]);
+        $context->toggleEditable([$layoutId2], false);
 
         // Do not specify: edit them all
-        $token = $context->createEditToken([]);
-        $this->assertTrue($token->contains($layouts[1]));
-        $this->assertTrue($token->contains($layouts[2]));
-        $this->assertTrue($token->contains($layouts[3]));
-        $this->assertFalse($token->contains($layouts[4]));
-        $this->assertFalse($token->contains($layouts[5]));
+        $token = $context->createEditToken();
+        $this->assertTrue($token->contains($layoutId1));
+        $this->assertFalse($token->contains($layoutId2));
+        $this->assertTrue($token->contains($layoutId3));
 
         // Specify a list of layouts to edit
         $context->rollback();
-        $token = $context->createEditToken([1, 3]);
-        $this->assertTrue($token->contains($layouts[1]));
-        $this->assertFalse($token->contains($layouts[2]));
-        $this->assertTrue($token->contains($layouts[3]));
-        $this->assertFalse($token->contains($layouts[4]));
-        $this->assertFalse($token->contains($layouts[5]));
+        $token = $context->createEditToken([$layoutId3]);
+        $this->assertFalse($token->contains($layoutId1));
+        $this->assertFalse($token->contains($layoutId2));
+        $this->assertTrue($token->contains($layoutId3));
 
         // Specify a list of layouts to edit, including non editable ones
         $context->rollback();
-        $token = $context->createEditToken([3, 5]);
-        $this->assertFalse($token->contains($layouts[1]));
-        $this->assertFalse($token->contains($layouts[2]));
-        $this->assertTrue($token->contains($layouts[3]));
-        $this->assertFalse($token->contains($layouts[4]));
-        $this->assertFalse($token->contains($layouts[5]));
+        $token = $context->createEditToken([$layoutId1, $layoutId2]);
+        $this->assertTrue($token->contains($layoutId1));
+        $this->assertFalse($token->contains($layoutId2));
+        $this->assertFalse($token->contains($layoutId3));
     }
 
     /**
@@ -145,15 +137,17 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testCommitRollback()
     {
-        $this->markTestSkipped("fix me");
-
         $context = $this->createContext();
-        $storage = $context->getStorage();
+        $storage = $context->getLayoutStorage();
 
         $editableLayout = $storage->create();
+        $editableId = $editableLayout->getId();
         $nonEditableLayout = $storage->create();
-        $context->add([$editableLayout], true);
-        $context->add([$nonEditableLayout], false);
+        $nonEditableId = $nonEditableLayout->getId();
+
+        $context->addLayoutList([$editableId, $nonEditableId]);
+        $context->toggleEditable([$editableId], true);
+        $context->toggleEditable([$nonEditableId], false);
 
         // Go to temporary mode and edit the layout
         $token = $context->createEditToken();
@@ -173,7 +167,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($loadedLayout->getTopLevelContainer()->isEmpty());
         // Token should have been deleted
         try {
-            $context->setCurrentToken($token->getToken());
+            $context->setToken($token->getToken());
             $this->fail();
         } catch (InvalidTokenError $e) {
             $this->assertTrue(true);
@@ -181,7 +175,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
         // Start again but we'll commit this time
         $token = $context->createEditToken();
-        $newLayout = $context->getAll()[$editableLayout->getId()];
+        $newLayout = $context->getAllLayouts()[$editableId];
         $this->assertTrue($newLayout->getTopLevelContainer()->isEmpty());
 
         $newLayout->getTopLevelContainer()->append(new Item('a', 1));
@@ -191,11 +185,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $context->commit();
         $this->assertFalse($context->hasToken());
 
-        $loadedOnceAgainLayout = $storage->load($editableLayout->getId());
+        $loadedOnceAgainLayout = $storage->load($editableId);
         $this->assertFalse($loadedOnceAgainLayout->getTopLevelContainer()->isEmpty());
         // Token should have been deleted
         try {
-            $context->setCurrentToken($token->getToken());
+            $context->setToken($token->getToken());
             $this->fail();
         } catch (InvalidTokenError $e) {
             $this->assertTrue(true);
@@ -207,12 +201,10 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testErrorHandler()
     {
-        $this->markTestSkipped("fix me");
-
         $context = $this->createContext();
 
         try {
-            $context->getCurrentToken();
+            $context->getToken();
             $this->fail();
         } catch (GenericError $e) {
             $this->assertTrue(true);
@@ -234,7 +226,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
         $editToken = $context->createEditToken();
         $this->assertTrue($context->hasToken());
-        $this->assertSame($editToken, $context->getCurrentToken());
+        $this->assertSame($editToken, $context->getToken());
 
         try {
             $context->createEditToken();
@@ -244,7 +236,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         }
 
         try {
-            $context->setCurrentToken('test');
+            $context->setToken('test');
             $this->fail();
         } catch (GenericError $e) {
             $this->assertTrue(true);
