@@ -287,6 +287,18 @@ final class Context
     }
 
     /**
+     * Is layout in context
+     *
+     * @param int $id
+     *
+     * @return bool
+     */
+    public function hasLayout(int $id)
+    {
+        return isset($this->layoutIndex[$id]);
+    }
+
+    /**
      * Get a single layout from context
      *
      * @param int $id
@@ -294,7 +306,7 @@ final class Context
      * @return LayoutInterface
      *   Loaded layout or temporary layout
      */
-    public function getLayout($id) : LayoutInterface
+    public function getLayout(int $id) : LayoutInterface
     {
         $this->loadLayouts();
 

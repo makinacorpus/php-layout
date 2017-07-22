@@ -18,7 +18,6 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 class LayoutValueResolver implements ArgumentValueResolverInterface
 {
     private $context;
-    private $layoutStorage;
 
     /**
      * Default constructor
@@ -26,10 +25,9 @@ class LayoutValueResolver implements ArgumentValueResolverInterface
      * @param Context $context
      * @param LayoutStorageInterface $layoutStorage
      */
-    public function __construct(Context $context, LayoutStorageInterface $layoutStorage)
+    public function __construct(Context $context)
     {
         $this->context = $context;
-        $this->layoutStorage = $layoutStorage;
     }
 
     /**
@@ -54,10 +52,10 @@ class LayoutValueResolver implements ArgumentValueResolverInterface
             return;
         }
 
-        if ($this->context->has($id)) {
+        if ($this->context->hasLayout($id)) {
             yield $this->context->getLayout($id);
+        } else {
+            yield $this->context->getLayoutStorage()->load($id);
         }
-
-        yield $this->layoutStorage->load($id);
     }
 }

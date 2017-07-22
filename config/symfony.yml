@@ -12,11 +12,11 @@ services:
     php_layout.argument_value_resolver.edit_token:
         class: MakinaCorpus\Layout\Controller\ArgumentResolver\EditTokenValueResolver
         public: false
-        arguments: ["@php_layout.token_storage"]
+        arguments: ["@php_layout.context"]
         tags: [{name: controller.argument_value_resolver, priority: 128}]
 
     php_layout.argument_value_resolver.layout:
         class: MakinaCorpus\Layout\Controller\ArgumentResolver\LayoutValueResolver
         public: false
-        arguments: ["@php_layout.context", "@php_layout.storage"]
+        arguments: ["@php_layout.context"]
         tags: [{name: controller.argument_value_resolver, priority: 128}]

@@ -29,7 +29,7 @@ class ContextValueResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return Context::class;
+        return Context::class === $argument->getType();
     }
 
     /**
