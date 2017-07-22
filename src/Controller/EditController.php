@@ -68,6 +68,13 @@ class EditController
     }
 
     /**
+     * Allow specific implementations to prepare environment before rendering response
+     */
+    protected function prepareResponse(Request $request, Context $context, EditToken $token)
+    {
+    }
+
+    /**
      * Handle edit controller response
      */
     protected function handleResponse(Request $request, array $ret)
@@ -107,6 +114,8 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
+        $this->prepareResponse($request, $context, $token);
+
         return $this->handleResponse($request, ['success' => true]);
     }
 
@@ -142,6 +151,8 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
+        $this->prepareResponse($request, $context, $token);
+
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($horizontal)]);
     }
 
@@ -161,6 +172,8 @@ class EditController
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
 
+        $this->prepareResponse($request, $context, $token);
+
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($column)]);
     }
 
@@ -179,6 +192,8 @@ class EditController
         $container->removeColumnAt($position);
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
+
+        $this->prepareResponse($request, $context, $token);
 
         return $this->handleResponse($request, ['success' => true]);
     }
@@ -208,6 +223,8 @@ class EditController
         $container->addAt($item, $position);
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
+
+        $this->prepareResponse($request, $context, $token);
 
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $position)]);
     }
@@ -257,6 +274,8 @@ class EditController
         $item->toggleUpdateStatus(true);
 
         $context->getTokenStorage()->update($token->getToken(), $layout);
+
+        $this->prepareResponse($request, $context, $token);
 
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)]);
     }
