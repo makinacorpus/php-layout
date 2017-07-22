@@ -1,8 +1,9 @@
 <?php
 
-namespace MakinaCorpus\Layout\Controller;
+namespace MakinaCorpus\Layout\Controller\ArgumentResolver;
 
 use MakinaCorpus\Layout\Context\Context;
+use MakinaCorpus\Layout\Context\EditToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -10,7 +11,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /**
  * This implementation is suitable for Symfony <= 3 and Drupal <= 8.
  */
-class EditTokenArgumentValueResolver implements ArgumentValueResolverInterface
+class EditTokenValueResolver implements ArgumentValueResolverInterface
 {
     private $context;
 

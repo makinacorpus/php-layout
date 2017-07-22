@@ -18,12 +18,12 @@ services:
 
     php_layout.token_generator:
         public: false
-        class: MakinaCorpus\Layout\Controller\DefaultTokenGenerator
+        class: MakinaCorpus\Layout\Context\DefaultTokenGenerator
 
     php_layout.context:
         public: true
-        class: MakinaCorpus\Layout\Controller\Context
-        arguments: ['@php_layout.storage', '@php_layout.token_storage', '@php_layout.token_generator']
+        class: MakinaCorpus\Layout\Context\Context
+        arguments: ['@php_layout.storage', '@php_layout.token_storage', '@?security.authorization_checker', '@event_dispatcher', '@php_layout.token_generator']
 
     php_layout.edit_controller:
         # Drupal 8 form implementation needs this to be public

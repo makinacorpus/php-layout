@@ -1,6 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Controller;
+namespace MakinaCorpus\Layout\Controller\ArgumentResolver;
 
 use MakinaCorpus\Layout\Context\Context;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
  * Beware that this implementation will substitute layouts with temporary ones
  * as soon as the layout exists in current context.
  */
-class LayoutArgumentValueResolver implements ArgumentValueResolverInterface
+class LayoutValueResolver implements ArgumentValueResolverInterface
 {
     private $context;
     private $layoutStorage;
