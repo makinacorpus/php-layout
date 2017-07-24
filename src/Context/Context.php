@@ -223,7 +223,7 @@ final class Context
      */
     public function addLayout(int $id)
     {
-        $this->addLayoutList([$id]);
+        $this->layoutIndex[$id] = $id;
     }
 
     /**
@@ -233,7 +233,9 @@ final class Context
      */
     public function addLayoutList(array $idList)
     {
-        $this->layoutIndex = array_unique(array_merge($this->layoutIndex, $idList));
+        $idList = array_merge($this->layoutIndex, $idList);
+
+        $this->layoutIndex = array_combine($idList, $idList);
     }
 
     /**
@@ -289,6 +291,19 @@ final class Context
         $this->loadLayouts();
 
         return $this->layouts;
+    }
+
+    /**
+     * Get all layouts
+     *
+     * @return LayoutInterface[]
+     *   Loaded layouts or temporary layouts, keys are their identifiers
+     */
+    public function getPageLayouts() : array
+    {
+        $this->loadLayouts();
+
+        return array_intersect_key($this->layouts, $this->layoutIndex);
     }
 
     /**
