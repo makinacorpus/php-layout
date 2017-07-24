@@ -102,9 +102,16 @@ final class Context
 
         foreach ($this->layoutIndex as $layoutId) {
             if ($this->editToken && $this->editToken->contains($layoutId)) {
-                $fromToken[] = $layoutId;
+                $fromToken[$layoutId] = $layoutId;
             } else {
-                $fromStorage[] = $layoutId;
+                $fromStorage[$layoutId] = $layoutId;
+            }
+        }
+        // This is ugly, but we need the context to be able to transparently
+        // load layouts that are not in page, but are in the temporary token
+        if ($this->editToken) {
+            foreach ($this->editToken->getLayoutIdList() as $layoutId) {
+                $fromToken[$layoutId] = $layoutId;
             }
         }
 
@@ -317,7 +324,8 @@ final class Context
         $this->editToken = $this->tokenStorage->loadToken($tokenString);
 
         // If some layouts are set in the current token, reset them from the
-        // preloaded context layouts
+        // preloaded context layouts; also register them as being current
+        // context layout
         foreach ($this->editToken->getLayoutIdList() as $id) {
             unset($this->layouts[$id]);
         }

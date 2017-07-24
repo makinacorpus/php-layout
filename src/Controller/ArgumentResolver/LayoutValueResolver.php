@@ -52,7 +52,7 @@ class LayoutValueResolver implements ArgumentValueResolverInterface
             return;
         }
 
-        if ($this->context->hasLayout($id)) {
+        if ($this->context->hasToken() && $this->context->getToken()->contains($id)) {
             yield $this->context->getLayout($id);
         } else {
             yield $this->context->getLayoutStorage()->load($id);
