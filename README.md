@@ -39,19 +39,19 @@ what the bootstrap grid we want:
 ```html
 <div class="container">
   <div class="row">
-    <div class="col-md-12" data-id="container:vbox/top-level" data-layout>
+    <div class="col-md-12" data-id="container:vbox/top-level">
       <div class="row" data-id="container:hbox/C1">
-        <div class="col-md-6" data-id="container:vbox/C11" data-container>
+        <div class="col-md-6" data-id="container:vbox/C11">
           <item id="leaf:a/1" />
           <item id="leaf:a/4" />
         </div>
-        <div class="col-md-6" data-id="container:vbox/C12" data-container>
+        <div class="col-md-6" data-id="container:vbox/C12">
           <div class="row" data-id="container:hbox/C2">
-            <div class="col-md-6" data-id="container:vbox/C21" data-container>
+            <div class="col-md-6" data-id="container:vbox/C21">
               <item id="leaf:a/2" />
               <item id="leaf:a/5" />
             </div>
-            <div class="col-md-6" data-id="container:vbox/C22" data-container>
+            <div class="col-md-6" data-id="container:vbox/C22">
               <item id="leaf:a/3" />
             </div>
           </div>

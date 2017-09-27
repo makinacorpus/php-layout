@@ -193,17 +193,25 @@ EOT;
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-6">
-          <item id="a-1" />
-          <item id="a-4" />
+          <div>
+            <item id="a-1" />
+            <item id="a-4" />
+          </div>
         </div>
         <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-6">
-              <item id="a-2" />
-              <item id="a-5" />
-            </div>
-            <div class="col-md-6">
-              <item id="a-3" />
+          <div>
+            <div class="row">
+              <div class="col-md-6">
+                <div>
+                  <item id="a-2" />
+                  <item id="a-5" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div>
+                  <item id="a-3" />
+                 </div>
+              </div>
             </div>
           </div>
         </div>

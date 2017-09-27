@@ -177,11 +177,7 @@ class BootstrapGridRenderer implements GridRendererInterface
      */
     public function renderColumnContainer(ColumnContainer $container, string $innerHtml, array $attributes = []) : string
     {
-        if ($attributes) {
-            return $this->injectHtml($innerHtml, '', $attributes);
-        }
-
-        return $innerHtml;
+        return '<div'.$this->renderAttributes($attributes).'>'.$innerHtml.'</div>';
     }
 
     /**
