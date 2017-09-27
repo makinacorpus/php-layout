@@ -16,18 +16,6 @@ class BootstrapGridRenderer implements GridRendererInterface
     use HtmlInjectionTrait;
 
     /**
-     * Escape string
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    private function escape(string $string) : string
-    {
-        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-    }
-
-    /**
      * Render column
      *
      * @param ColumnContainer $container
@@ -44,8 +32,6 @@ class BootstrapGridRenderer implements GridRendererInterface
         } else {
             $attributes['class'] = $classes;
         }
-        $attributes['data-id'] = $container->getGridIdentifier();
-        $attributes['data-container'] = '';
 
         return '<div'.$this->renderAttributes($attributes).'>'.$innerText.'</div>';
     }
@@ -178,8 +164,6 @@ class BootstrapGridRenderer implements GridRendererInterface
                 $attributes['class'] = 'col-md-12';
             }
         }
-        $attributes['data-id'] = $container->getGridIdentifier();
-        $attributes['data-layout'] = '';
 
         if ($putContainer) {
             return '<div class="'.$containerClass.'"><div class="row"><div'.$this->renderAttributes($attributes).'>' . $innerHtml . '</div></div></div>';
@@ -226,7 +210,6 @@ class BootstrapGridRenderer implements GridRendererInterface
         } else {
             $attributes['class'] = 'row';
         }
-        $attributes['data-id'] = $container->getGridIdentifier();
 
         return '<div'.$this->renderAttributes($attributes).'>'.$innerText.'</div>';
     }

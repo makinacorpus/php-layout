@@ -8,13 +8,15 @@ namespace MakinaCorpus\Layout\Render;
 trait HtmlInjectionTrait
 {
     /**
+     * Escape string
+     */
+    private function escape(string $string) : string
+    {
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
      * Render given attributes
-     *
-     * @param string[] $attributes
-     *   Arbitrary attributes to display
-     *
-     * @return string
-     *   Attributes as a string
      */
     private function renderAttributes(array $attributes): string
     {
@@ -34,17 +36,7 @@ trait HtmlInjectionTrait
     }
 
     /**
-     * Arbitrary inject HTML into the first div found
-     *
-     * @param string $input
-     *   Rendered HTML item from the nested renderer
-     * @param string $addition
-     *   HTML to inject
-     * @param string[] $attributes
-     *   Arbitrary attributes to inject
-     *
-     * @return string
-     *   Rendered HTML with injected content
+     * Arbitrary inject HTML into the first tag found
      */
     private function injectHtml(string $input, string $addition, array $attributes = []) : string
     {
@@ -63,14 +55,15 @@ trait HtmlInjectionTrait
                 // We have no choice than to add an extra div, since we have none otherwise
                 return '<div'.$this->renderAttributes($attributes).'>'.$input.'</div>';
             }
-            return $addition . $input;
+            return '<div>' . $addition . $input . '</div>';
         }
 
-        if ($attributes) {
-            $input = substr_replace($input, $this->renderAttributes($attributes), $index - 1, 0);
-        }
+        // Addition always first, else it will move index offset
         if ($addition) {
             $input = substr_replace($input, $addition, $index + 1, 0);
+        }
+        if ($attributes) {
+            $input = substr_replace($input, $this->renderAttributes($attributes), $index, 0);
         }
 
         return $input;
