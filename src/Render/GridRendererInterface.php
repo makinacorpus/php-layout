@@ -31,10 +31,11 @@ interface GridRendererInterface
      *
      * @param TopLevelContainer $container
      * @param string $innerHtml
+     * @param string[] $attributes
      *
      * @return string
      */
-    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string;
+    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml, array $attributes = []) : string;
 
     /**
      * Render an horizontal container single column
@@ -44,7 +45,7 @@ interface GridRendererInterface
      *
      * @return string
      */
-    public function renderColumnContainer(ColumnContainer $container, string $innerHtml) : string;
+    public function renderColumnContainer(ColumnContainer $container, string $innerHtml, array $attributes = []) : string;
 
     /**
      * Render an horizontal container
@@ -54,7 +55,7 @@ interface GridRendererInterface
      *
      * @return string
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml) : string;
+    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml, array $attributes = []) : string;
 
     /**
      * Render an item
@@ -66,5 +67,5 @@ interface GridRendererInterface
      *
      * @return string
      */
-    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position) : string;
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position, array $attributes = []) : string;
 }

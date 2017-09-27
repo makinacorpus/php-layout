@@ -375,6 +375,8 @@ final class Context
             throw new GenericError("context token was not set, did you forget to call setToken()?");
         }
 
+        $this->loadLayouts();
+
         // This will only store layouts if they already have been loaded, if not
         // it means that they cannot have been modified by the user, hence there
         // is no need in storing them if unchanged
@@ -393,6 +395,8 @@ final class Context
         if (!$this->editToken) {
             throw new GenericError("context token was not set, did you forget to call setToken()?");
         }
+
+        $this->loadLayouts();
 
         // Save all temporary layouts in permanent storage and update this
         // object's internals at the same time

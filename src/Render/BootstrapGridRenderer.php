@@ -13,6 +13,8 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
  */
 class BootstrapGridRenderer implements GridRendererInterface
 {
+    use HtmlInjectionTrait;
+
     /**
      * Escape string
      *
@@ -34,11 +36,18 @@ class BootstrapGridRenderer implements GridRendererInterface
      *
      * @return string
      */
-    private function doRenderColumn(ColumnContainer $container, string $classes = '', string $innerText = '') : string
+    private function doRenderColumn(ColumnContainer $container, string $classes = '', string $innerText = ''): string
     {
-        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '" data-contains=1';
+        $attributes = [];
+        if (isset($attributes['class'])) {
+            $attributes['class'] .= ' '.$classes;
+        } else {
+            $attributes['class'] = $classes;
+        }
+        $attributes['data-id'] = $container->getGridIdentifier();
+        $attributes['data-container'] = '';
 
-        return '<div class="' . $classes . '"' . $additional . '>' . $innerText . '</div>';
+        return '<div'.$this->renderAttributes($attributes).'>'.$innerText.'</div>';
     }
 
     /**
@@ -148,7 +157,7 @@ class BootstrapGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string
+    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml, array $attributes = []) : string
     {
         $putContainer = false;
 
@@ -156,34 +165,45 @@ class BootstrapGridRenderer implements GridRendererInterface
             $putContainer = true;
 
             if ($container->getOption('container-fluid')) {
-                $class = 'container-fluid';
+                $containerClass = 'container-fluid';
             } else {
-                $class = 'container';
+                $containerClass = 'container';
             }
         }
 
-        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
-        $additional .= ' data-contains=0';
+        if ($putContainer) {
+            if (isset($attributes['class'])) {
+                $attributes['class'] .= ' col-md-12';
+            } else {
+                $attributes['class'] = 'col-md-12';
+            }
+        }
+        $attributes['data-id'] = $container->getGridIdentifier();
+        $attributes['data-layout'] = '';
 
         if ($putContainer) {
-            return '<div class="' . $class . '"><div class="row"><div class="col-md-12"'. $additional . '>' . $innerHtml . '</div></div></div>';
+            return '<div class="'.$containerClass.'"><div class="row"><div'.$this->renderAttributes($attributes).'>' . $innerHtml . '</div></div></div>';
         } else {
-            return '<div'. $additional . '>' . $innerHtml . '</div>';
+            return '<div'.$this->renderAttributes($attributes).'>' . $innerHtml . '</div>';
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderColumnContainer(ColumnContainer $container, string $innerHtml) : string
+    public function renderColumnContainer(ColumnContainer $container, string $innerHtml, array $attributes = []) : string
     {
+        if ($attributes) {
+            return $this->injectHtml($innerHtml, '', $attributes);
+        }
+
         return $innerHtml;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml) : string
+    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml, array $attributes = []) : string
     {
         $innerText = '';
 
@@ -201,16 +221,25 @@ class BootstrapGridRenderer implements GridRendererInterface
             }
         }
 
-        $additional = ' data-id="' . $this->escape($container->getGridIdentifier()) . '"';
+        if (isset($attributes['class'])) {
+            $attributes['class'] .= ' row';
+        } else {
+            $attributes['class'] = 'row';
+        }
+        $attributes['data-id'] = $container->getGridIdentifier();
 
-        return '<div class="row"'. $additional . '>' . $innerText . '</div>';
+        return '<div'.$this->renderAttributes($attributes).'>'.$innerText.'</div>';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position) : string
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position, array $attributes = []) : string
     {
+        if ($attributes) {
+            return $this->injectHtml($innerHtml, '', $attributes);
+        }
+
         return $innerHtml;
     }
 }

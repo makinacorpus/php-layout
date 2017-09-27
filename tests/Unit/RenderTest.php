@@ -190,19 +190,19 @@ EOT;
         $representation = <<<EOT
 <div class="container">
   <div class="row">
-    <div class="col-md-12" data-id="vbox-top-level" data-contains=0>
+    <div class="col-md-12" data-id="vbox-top-level" data-layout>
       <div class="row" data-id="hbox-C1">
-        <div class="col-md-6" data-id="vbox-C11" data-contains=1>
+        <div class="col-md-6" data-id="vbox-C11" data-container>
           <item id="a-1" />
           <item id="a-4" />
         </div>
-        <div class="col-md-6" data-id="vbox-C12" data-contains=1>
+        <div class="col-md-6" data-id="vbox-C12" data-container>
           <div class="row" data-id="hbox-C2">
-            <div class="col-md-6" data-id="vbox-C21" data-contains=1>
+            <div class="col-md-6" data-id="vbox-C21" data-container>
               <item id="a-2" />
               <item id="a-5" />
             </div>
-            <div class="col-md-6" data-id="vbox-C22" data-contains=1>
+            <div class="col-md-6" data-id="vbox-C22" data-container>
               <item id="a-3" />
             </div>
           </div>

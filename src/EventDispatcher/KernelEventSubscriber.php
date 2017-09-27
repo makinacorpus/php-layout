@@ -45,16 +45,29 @@ class KernelEventSubscriber implements EventSubscriberInterface
     {
         $collectEvent = new CollectLayoutEvent($this->context);
         $this->dispatcher->dispatch(CollectLayoutEvent::EVENT_NAME, $collectEvent);
+        $tokenFound = false;
+        $request = $event->getRequest();
 
         // By setting the token after the event has run and context has been
         // populated, we ensure that any accidental layout load in the context
         // that might have happened will be reset to allow transparent editable
         // temporary tokens to be loaded instead.
-        if ($tokenString = $event->getRequest()->get(PHP_LAYOUT_TOKEN_PARAMETER)) {
+        if ($tokenString = $request->get(PHP_LAYOUT_TOKEN_PARAMETER)) {
             try {
                 $this->context->setToken($tokenString);
+                $tokenFound = true;
             } catch (InvalidTokenError $e) {
                 // Fallback on non-edit mode
+            }
+        }
+
+        if (!$tokenFound && $request->isXmlHttpRequest()) {
+            if ($tokenString = $request->get('token')) {
+                try {
+                    $this->context->setToken($tokenString);
+                } catch (InvalidTokenError $e) {
+                    // Fallback on non-edit mode
+                }
             }
         }
     }

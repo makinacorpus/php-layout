@@ -46,7 +46,7 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml) : string
+    public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml, array $attributes = []) : string
     {
         return $this->renderAsElement($container, $innerHtml, 'vertical');
     }
@@ -54,7 +54,7 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderColumnContainer(ColumnContainer $container, string $innerHtml) : string
+    public function renderColumnContainer(ColumnContainer $container, string $innerHtml, array $attributes = []) : string
     {
         return $this->renderAsElement($container, $innerHtml, 'column');
     }
@@ -62,7 +62,7 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml) : string
+    public function renderHorizontalContainer(HorizontalContainer $container, array $columnsHtml, array $attributes = []) : string
     {
         return $this->renderAsElement($container, implode('', $columnsHtml), 'horizontal');
     }
@@ -70,7 +70,7 @@ class XmlGridRenderer implements GridRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position) : string
+    public function renderItem(ItemInterface $item, ContainerInterface $parent, string $innerHtml, int $position, array $attributes = []) : string
     {
         return $innerHtml;
     }
