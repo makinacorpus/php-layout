@@ -36,4 +36,4 @@ services:
         # Drupal 8 form implementation needs this to be public
         # All other implementations won't care a bit
         public: true
-        class: MakinaCorpus\Layout\Render\BootstrapGridRenderer
+        class: MakinaCorpus\Layout\Render\FlexGridRenderer

@@ -8,6 +8,7 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\BootstrapGridRenderer;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
+use MakinaCorpus\Layout\Render\FlexGridRenderer;
 
 /**
  * Render test, ensures the bottom-top rendering of elements
@@ -250,6 +251,97 @@ EOT;
         $topLevel->append($a7);
 
         $renderer = $this->createRenderer($typeRegistry, new BootstrapGridRenderer());
+        $string = $renderer->render($topLevel);
+        $this->assertSameRenderedGrid($representation, $string);
+    }
+
+    /**
+     * Tests the item base class
+     */
+    public function testFlexGridRenderer()
+    {
+        /**
+         *             TOP LEVEL
+         * +-----------------------------+
+         * | 2 columns, with nested:     |
+         * |   C1                        |
+         * |   C11           C12         |
+         * | +-----------+-------------+ |
+         * | |           |  C2         | |
+         * | |           |  C21  C22   | |
+         * | |           | +----+----+ | |
+         * | | A1        | | A2 | A3 | | |
+         * | | A4        | | A5 |    | | |
+         * | |           | +----+----+ | |
+         * | +-----+-----+-------------+ |
+         * |  A6                         |
+         * |  A7                         |
+         * +-----------------------------+
+         *
+         * C: Container
+         * A: Item of type A
+         */
+
+        // This the HTML that should be generated:
+        $representation = <<<EOT
+<div>
+  <div class="layout-container">
+    <div>
+      <item id="a-1" />
+      <item id="a-4" />
+    </div>
+    <div>
+      <div class="layout-container">
+        <div>
+          <item id="a-2" />
+          <item id="a-5" />
+        </div>
+        <div>
+          <item id="a-3" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <item id="a-6" />
+  <item id="a-7" />
+</div>
+EOT;
+        // Create types
+        $typeRegistry = $this->createTypeRegistry();
+        $aType = $typeRegistry->getType('a');
+
+        // Place a top level container and build layout (no items)
+        $topLevel = new TopLevelContainer('top-level');
+        $c1 = new HorizontalContainer('C1');
+        $topLevel->append($c1);
+        $c11 = $c1->appendColumn('C11');
+        $c12 = $c1->appendColumn('C12');
+        $c2 = new HorizontalContainer('C2');
+        $c12->append($c2);
+        $c21 = $c2->appendColumn('C21');
+        $c22 = $c2->appendColumn('C22');
+
+        // Now place all items
+        $a1  = $aType->create(1);
+        $a2  = $aType->create(2);
+        $a3  = $aType->create(3);
+        $a4  = $aType->create(4);
+        $a5  = $aType->create(5);
+        $a6  = $aType->create(6);
+        $a7  = $aType->create(7);
+
+        $c11->append($a1);
+        $c11->append($a4);
+
+        $c21->append($a2);
+        $c21->append($a5);
+
+        $c22->append($a3);
+
+        $topLevel->append($a6);
+        $topLevel->append($a7);
+
+        $renderer = $this->createRenderer($typeRegistry, new FlexGridRenderer());
         $string = $renderer->render($topLevel);
         $this->assertSameRenderedGrid($representation, $string);
     }
