@@ -100,14 +100,18 @@ class EditController
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainerOf($itemId);
 
-        if (!$container instanceof TopLevelContainer && !$container instanceof ColumnContainer) {
-            throw new GenericError("you cannot remove items from a non-vertical container");
+        if (!$container instanceof ContainerInterface) {
+            throw new GenericError("you cannot remove items from a non-container");
         }
 
         /** @var \MakinaCorpus\Layout\Grid\ItemInterface $child */
         foreach ($container->getAllItems() as $position => $child) {
             if ($child->getStorageId() == $itemId) {
-                $container->removeAt($position);
+                if ($container instanceof HorizontalContainer) {
+                    $container->removeColumnAt($position);
+                } else {
+                    $container->removeAt($position);
+                }
                 break;
             }
         }
@@ -175,27 +179,6 @@ class EditController
         $this->prepareResponse($request, $context, $token);
 
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($column)]);
-    }
-
-    /**
-     * Remove column to horizontal container
-     */
-    public function removeColumnAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
-    {
-        $this->ensureLayout($token, $layout);
-        $container = $layout->findContainer($containerId);
-
-        if (!$container instanceof HorizontalContainer) {
-            throw new GenericError("you cannot add columns into a non-horizontal container");
-        }
-
-        $container->removeColumnAt($position);
-
-        $context->getTokenStorage()->update($token->getToken(), $layout);
-
-        $this->prepareResponse($request, $context, $token);
-
-        return $this->handleResponse($request, ['success' => true]);
     }
 
     /**
