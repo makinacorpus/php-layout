@@ -10,6 +10,15 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
 
 /**
  * Bootstrap 3 compatible grid renderer.
+ *
+ * Please note that it will NOT play well with JS UI - mostly because
+ * Bootstrap 3 does not support automatic column sizing, which means that
+ * whenever you dynamically remove a column using JS, it will keep its
+ * col-md-* original class and let empty space remain.
+ *
+ * It is recommended that, whenever you target decent browsers, you should
+ * use the FlexGridRenderer instead that will guarantee the exact same result
+ * using much less HTML cruft and much a more simpler CSS ruleset.
  */
 class BootstrapGridRenderer implements GridRendererInterface
 {
