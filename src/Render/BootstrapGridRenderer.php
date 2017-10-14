@@ -16,27 +16,6 @@ class BootstrapGridRenderer implements GridRendererInterface
     use HtmlInjectionTrait;
 
     /**
-     * Render column
-     *
-     * @param ColumnContainer $container
-     * @param string $classes
-     * @param string $innerText
-     *
-     * @return string
-     */
-    private function doRenderColumn(ColumnContainer $container, string $classes = '', string $innerText = ''): string
-    {
-        $attributes = [];
-        if (isset($attributes['class'])) {
-            $attributes['class'] .= ' '.$classes;
-        } else {
-            $attributes['class'] = $classes;
-        }
-
-        return '<div'.$this->renderAttributes($attributes).'>'.$innerText.'</div>';
-    }
-
-    /**
      * Compute columns sizes
      *
      * I am not proud of this method, but it should work.
@@ -188,16 +167,14 @@ class BootstrapGridRenderer implements GridRendererInterface
         $innerText = '';
 
         if (!$container->isEmpty()) {
-            $innerContainers = $container->getAllItems();
-
             $styles = $this->computeSizes($container);
 
-            foreach ($innerContainers as $position => $child) {
-                $innerText .= $this->doRenderColumn(
-                    $child,
-                    $styles[$position] ?? '',
-                    $columnsHtml[$position]
-                );
+            foreach ($columnsHtml as $position => $singleColumnHtml) {
+                if (empty($styles[$position])) {
+                    $innerText .= $singleColumnHtml;
+                } else {
+                    $innerText .= $this->injectHtml($columnsHtml[$position], '', ['class' => $styles[$position]]);
+                }
             }
         }
 
