@@ -143,6 +143,16 @@ class Renderer
     }
 
     /**
+     * Get grid renderer
+     *
+     * @return GridRendererInterface
+     */
+    public function getGridRenderer() : GridRendererInterface
+    {
+        return $this->gridRenderer;
+    }
+
+    /**
      * Renders the full composition
      *
      * Beware that if you attempt to render a single item from here, you will

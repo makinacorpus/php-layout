@@ -41,6 +41,10 @@ use MakinaCorpus\Layout\Grid\TopLevelContainer;
  *   flex: initial;
  *   width: 66%;
  * }
+ * // This last one may save your user from having some kind of trouble
+ * .layout-container img {
+ *   max-width: 100%;
+ * }
  * @endcode
  */
 class FlexGridRenderer implements GridRendererInterface

@@ -93,6 +93,57 @@ class EditController
     }
 
     /**
+     * Get allowed styles for item type and identifier
+     */
+    public function getAllowedStylesAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    {
+        $this->ensureLayout($token, $layout);
+        $item = $layout->findItem($itemId);
+
+        if ($item instanceof ContainerInterface) {
+            if ($item instanceof ColumnContainer) {
+                $this->renderer->getGridRenderer()->getColumnStyles();
+            } else {
+                $allowedStyles = ["default" => "default"];
+            }
+        } else {
+            $allowedStyles = $this->typeRegistry->getType($item->getType())->getAllowedStylesFor($item);
+        }
+
+        $this->prepareResponse($request, $context, $token);
+
+        return $this->handleResponse($request, ['success' => true, 'styles'  => $allowedStyles]);
+    }
+
+    /**
+     * Set option
+     */
+    public function setStyleAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId, string $style)
+    {
+        $this->ensureLayout($token, $layout);
+        $item = $layout->findItem($itemId);
+
+        $item->setStyle($style);
+
+        $context->getTokenStorage()->update($token->getToken(), $layout);
+
+        $this->prepareResponse($request, $context, $token);
+
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($item)]);
+    }
+
+    /**
+     * Rerender an item or container
+     */
+    public function renderAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    {
+        $this->ensureLayout($token, $layout);
+        $item = $layout->findItem($itemId);
+
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($item)]);
+    }
+
+    /**
      * Remove an item or container, and all its descendents
      */
     public function removeAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
@@ -261,13 +312,5 @@ class EditController
         $this->prepareResponse($request, $context, $token);
 
         return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $container, $newPosition)]);
-    }
-
-    /**
-     * Add an item from a position to another position
-     */
-    public function moveOutsideAction(Request $request, Context $context, EditToken $token)
-    {
-        throw new GenericError("this is not implemented yet");
     }
 }
