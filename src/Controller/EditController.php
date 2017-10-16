@@ -118,10 +118,11 @@ class EditController
     /**
      * Set option
      */
-    public function setStyleAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId, string $style)
+    public function setStyleAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId, string $style = ItemInterface::STYLE_DEFAULT)
     {
         $this->ensureLayout($token, $layout);
         $item = $layout->findItem($itemId);
+        $parent = $layout->findContainerOf($itemId);
 
         $item->setStyle($style);
 
@@ -129,7 +130,7 @@ class EditController
 
         $this->prepareResponse($request, $context, $token);
 
-        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($item)]);
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $parent, 0)]);
     }
 
     /**
@@ -139,8 +140,11 @@ class EditController
     {
         $this->ensureLayout($token, $layout);
         $item = $layout->findItem($itemId);
+        $parent = $layout->findContainerOf($itemId);
 
-        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->render($item)]);
+        $this->prepareResponse($request, $context, $token);
+
+        return $this->handleResponse($request, ['success' => true, 'output' => $this->renderer->renderItemIn($item, $parent, 0)]);
     }
 
     /**
