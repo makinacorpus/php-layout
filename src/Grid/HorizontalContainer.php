@@ -19,9 +19,9 @@ class HorizontalContainer extends Item implements ContainerInterface
      * @param int|string $id
      *   Can be null
      */
-    public function __construct($id = null)
+    public function __construct($id = null, $style = null)
     {
-        parent::__construct(ContainerInterface::HORIZONTAL_CONTAINER, $id ?: uniqid());
+        parent::__construct(ContainerInterface::HORIZONTAL_CONTAINER, $id ?: uniqid(), $style ?? ItemInterface::STYLE_DEFAULT);
     }
 
     /**

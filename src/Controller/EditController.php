@@ -102,7 +102,7 @@ class EditController
 
         if ($item instanceof ContainerInterface) {
             if ($item instanceof ColumnContainer) {
-                $this->renderer->getGridRenderer()->getColumnStyles();
+                $allowedStyles = $this->renderer->getGridRenderer()->getColumnStyles();
             } else {
                 $allowedStyles = ["default" => "default"];
             }
@@ -112,7 +112,7 @@ class EditController
 
         $this->prepareResponse($request, $context, $token);
 
-        return $this->handleResponse($request, ['success' => true, 'styles'  => $allowedStyles]);
+        return $this->handleResponse($request, ['success' => true, 'current' => $item->getStyle(), 'styles'  => $allowedStyles]);
     }
 
     /**

@@ -25,9 +25,9 @@ class ColumnContainer extends Item implements ContainerInterface
     /**
      * Default constructor
      */
-    public function __construct($id = null)
+    public function __construct($id = null, $style = null)
     {
-        parent::__construct(ContainerInterface::VERTICAL_CONTAINER, $id ?: uniqid());
+        parent::__construct(ContainerInterface::VERTICAL_CONTAINER, $id ?: uniqid(), $style ?? ItemInterface::STYLE_DEFAULT);
     }
 
     /**
