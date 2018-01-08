@@ -15,10 +15,10 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.0",
-        "symfony/dependency-injection": "^3",
-        "symfony/event-dispatcher": "^3",
-        "symfony/http-kernel": "^3.1 <4",
-        "symfony/security": "^3"
+        "symfony/dependency-injection": "^3 || ^4",
+        "symfony/event-dispatcher": "^3 || ^4",
+        "symfony/http-kernel": "^3.1 || ^4",
+        "symfony/security": "^3 || ^4"
     },
     "autoload": {
         "psr-4": {
