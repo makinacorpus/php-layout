@@ -1,0 +1,224 @@
+.layout-container {
+  display: flex;
+  flex-flow: row;
+  margin: 0 -15px;
+}
+.layout-container > div {
+  position: relative;
+  flex: auto;
+  flex-basis: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.layout-container .layout-column-4 {
+  flex: initial;
+  width: 25%;
+}
+.layout-container .layout-column-3 {
+  flex: initial;
+  width: 33%;
+}
+.layout-container .layout-column-2 {
+  flex: initial;
+  width: 50%;
+}
+.layout-container .layout-column-3-2 {
+  flex: initial;
+  width: 66%;
+}
+.layout-container img {
+  max-width: 100%;
+}
+/* Matches hovered containers */
+[data-container]:hover,
+[data-container]:hover > [data-container] {
+  outline: 1px red dotted;
+}
+[data-item-id]:hover {
+  outline: 1px green dotted;
+}
+[data-container].droppable {
+  min-height: 100px !important;
+}
+/* Disable all links within items, even thought we have JS for that */
+[data-item-id] a,
+[data-item-id] .layout-menu a[role=drag] {
+  pointer-events: none;
+}
+[data-item-id] .layout-menu a {
+  cursor: pointer;
+  pointer-events: auto;
+}
+[data-item-id] {
+  cursor: move;
+}
+[data-item-id]:not([data-id]) {
+  cursor: copy;
+}
+/* When in edit mode, force menu to NOT be movable also ensures that all
+ * containers have a minimum size to drop more easily */
+[data-container],
+[data-id] {
+  position: relative;
+  padding-top: 32px;
+}
+[data-container] > .layout-menu,
+[data-id] > .layout-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+/* Collapse behaviour */
+[data-container].collapsed,
+[data-id].collapsed {
+  border-bottom: 2px dashed #e4e4e4;
+}
+[data-container].collapsed > *:not(.layout-menu),
+[data-id].collapsed > *:not(.layout-menu) {
+  display: none;
+  visibility: hidden;
+}
+.layout-menu a[role=drag] {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.layout-menu:hover > a {
+  opacity: 1;
+  color: #5a5a5a;
+  text-decoration: none;
+}
+.layout-menu {
+  position: relative;
+}
+.layout-menu > a {
+  display: block;
+  text-align: center;
+  opacity: .3;
+  position: relative;
+  padding: 5px;
+  z-index: 1100;
+  color: #5a5a5a;
+  font-size: 14px;
+  text-decoration: none;
+}
+.layout-menu a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: #b4b4b4;
+}
+.layout-menu > a > .glyphicon,
+.layout-menu > a > .fa {
+  top: 2px;
+}
+.layout-menu > a:focus {
+  outline: 0;
+}
+.layout-menu > ul {
+  z-index: 1102;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  background-color: white;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  z-index: 1101;
+  position: absolute;
+  top: 120%;
+  display: none;
+  float: left;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  list-style: none;
+}
+.layout-menu > ul .divider {
+  height: 1px;
+  margin: 4px 0;
+  overflow: hidden;
+  background-color: #e4e4e4;
+}
+.layout-menu > ul > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 2em;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #5a5a5a;
+}
+.layout-menu > ul > li > a:hover {
+  text-decoration: none;
+}
+/* Just for fun */
+.layout-menu > ul:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent white transparent;
+  z-index: 1103;
+}
+.layout-menu > ul:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -13px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 13px 13px 13px;
+  border-color: transparent transparent #e4e4e4 transparent;
+  z-index: 1102;
+}
+/* dialogs */
+.layout-modal {
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  background-color: white;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  z-index: 1102;
+  padding: 20px;
+}
+.layout-modal.open {
+  transition: all .5s ease;
+}
+.layout-modal .modal-title {
+  margin-bottom: 15px;
+}
+.layout-modal [name="close"] {
+  background: transparent;
+  position: absolute;
+  border: 0;
+  padding: 0;
+  width: 25px;
+  height: 25px;
+  right: 20px;
+  top: 20px;
+  font-size: 16px;
+}
+.layout-modal [name="close"]:hover {
+  background: #e4e4e4;
+}

@@ -1,0 +1,64 @@
+<h2>{{ "Page layouts"|trans }}</h2>
+
+{#
+ # @todo
+ #  - write callbacks
+ #  - use ajax
+ #  - disable "normal" form
+ #}
+
+{% for layout in layouts %}
+  <div class="btn-group">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {% if layout.editable %}
+        <span aria-hidden="true" class="fa fa-th-large"></span>
+      {% else %}
+        <span aria-hidden="true" class="fa fa-minus"></span>
+      {% endif %}
+      {{ layout.title|e }} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      {% if layout.editable %}
+        {% if 1 < editableCount %}
+          <li>
+            <a href="{{ path('layout/callback/control/commit-one', {'layout-edit': token, layout: layout.id, from: destination, csrf: csrfToken}) }}">
+              Save only this one
+            </a>
+          </li>
+        {% endif %}
+        <li>
+          <a href="{{ path('layout/callback/control/rollback-one', {'layout-edit': token, layout: layout.id, from: destination, csrf: csrfToken}) }}">
+            Cancel changes
+          </a>
+        </li>
+      {% else %}
+        <li>
+         <a  href="{{ path('layout/callback/control/edit-one', {'layout-edit': token, layout: layout.id, from: destination, csrf: csrfToken}) }}">
+           Edit
+         </a>
+        </li>
+        {#
+        {% if editableCount %}
+          <li>
+            <a href="{{ path('layout/callback/edit-commit', {id: layout.id, destination: destination, csrf: csrfToken}) }}">
+              Edit and close others
+            </a>
+          </li>
+        {% endif %}
+         #}
+      {% endif %}
+    </ul>
+  </div>
+  <br/>
+{% else %}
+  <li><p>{{ "There is no layout on this page." }}</p></li>
+{% endfor %}
+{% if editableCount %}
+  <hr/>
+  <a class="btn btn-success" type="button"  href="{{ path('layout/callback/control/commit', {'layout-edit': token, from: destination, csrf: csrfToken}) }}">
+    {{ "Save all"|trans }}
+  </a>
+  <a class="btn btn-danger" type="button"  href="{{ path('layout/callback/control/rollback', {'layout-edit': token, from: destination, csrf: csrfToken}) }}">
+    {{ "Cancel all"|trans }}
+  </a>
+{% endif %}

@@ -4,13 +4,13 @@ namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Context\Context;
 use MakinaCorpus\Layout\Context\DefaultTokenGenerator;
+use MakinaCorpus\Layout\Driver\Memory\LayoutStorage;
+use MakinaCorpus\Layout\Driver\Memory\TokenLayoutStorage;
 use MakinaCorpus\Layout\Render\GridRendererInterface;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\Context\FooAuthorizationChecker;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemAType;
 use MakinaCorpus\Layout\Tests\Unit\Render\ItemBType;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayoutStorage;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -26,8 +26,8 @@ trait ComparisonTestTrait
      */
     protected function createContext() : Context
     {
-        $storage = new TestLayoutStorage();
-        $tokenStorage = new TestTokenLayoutStorage();
+        $storage = new LayoutStorage();
+        $tokenStorage = new TokenLayoutStorage();
         $tokenGenerator = new DefaultTokenGenerator();
         $context = new Context($storage, $tokenStorage, new FooAuthorizationChecker(), new EventDispatcher(), $tokenGenerator);
 

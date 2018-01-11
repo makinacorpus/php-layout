@@ -5,13 +5,62 @@ namespace MakinaCorpus\Layout\Storage;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\ItemInterface;
+use MakinaCorpus\Layout\Grid\TopLevelContainer;
 
 /**
  * Base implementation for abstract layout
  */
-abstract class AbstractLayout implements LayoutInterface
+class DefaultLayout implements LayoutInterface
 {
+    private $id;
+    private $container;
     private $temporary = false;
+
+    /**
+     * Default constructor
+     */
+    public function __construct(int $id = null)
+    {
+        if ($id) { // prevent late object construct after hydration erasing current id
+            $this->id = $id;
+        }
+        if (!$this->id) {
+            $this->id = 0;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId() : int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Create top level container
+     *
+     * @return TopLevelContainer
+     */
+    private function createTopLevelContainer() : TopLevelContainer
+    {
+        $instance = new TopLevelContainer($this->id);
+        $instance->setStorageId($this->id, $this->id, false);
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTopLevelContainer() : TopLevelContainer
+    {
+        if (!$this->container) {
+            $this->container = $this->createTopLevelContainer();
+        }
+
+        return $this->container;
+    }
 
     /**
      * Is layout temporary

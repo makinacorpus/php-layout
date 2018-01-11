@@ -1,15 +1,18 @@
 <?php
 
-namespace MakinaCorpus\Layout\Tests\Unit\Storage;
+namespace MakinaCorpus\Layout\Driver\Memory;
 
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Storage\LayoutStorageInterface;
+use MakinaCorpus\Layout\Storage\DefaultLayout;
 
 /**
  * Very specific version of layout storage, used only for testing purposes
+ *
+ * @codeCoverageIgnore
  */
-class TestLayoutStorage implements LayoutStorageInterface
+class LayoutStorage implements LayoutStorageInterface
 {
     private $id = 1;
     private $layouts = [];
@@ -79,7 +82,7 @@ class TestLayoutStorage implements LayoutStorageInterface
      */
     public function create(array $values = []) : LayoutInterface
     {
-        $layout = new TestLayout($this->id++);
+        $layout = new DefaultLayout($this->id++);
 
         $this->layouts[$layout->getId()] = $layout;
 

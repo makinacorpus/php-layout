@@ -20,6 +20,9 @@
         <testsuite name="Basic functionnal testing">
             <directory>./tests/Functionnal</directory>
         </testsuite>
+        <testsuite name="Goat driver">
+            <directory>./tests/Driver/Goat</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
@@ -37,5 +40,11 @@
     </filter>
 
     <php>
+        <!--
+          @todo make this work more dynamically with other drivers
+        <env name="EXT_PGSQL_DSN" value="ext_pgsql://192.168.57.102/chlovet2" />
+        <env name="EXT_PGSQL_PASSWORD" value="chlovet2" />
+        <env name="EXT_PGSQL_USERNAME" value="chlovet2" />
+         -->
     </php>
 </phpunit>

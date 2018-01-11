@@ -12,6 +12,7 @@ use MakinaCorpus\Layout\Grid\ContainerInterface;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
+use MakinaCorpus\Layout\Render\EditRendererDecorator;
 use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
 use MakinaCorpus\Layout\Type\ItemTypeRegistry;
@@ -36,6 +37,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EditController
 {
+    private $editGridRenderer;
     private $renderer;
     private $testMode = false;
     private $typeRegistry;
@@ -43,10 +45,11 @@ class EditController
     /**
      * Default constructor
      */
-    public function __construct(ItemTypeRegistry $typeRegistry, Renderer $renderer)
+    public function __construct(EditRendererDecorator $editGridRenderer, ItemTypeRegistry $typeRegistry, Renderer $renderer)
     {
-        $this->typeRegistry = $typeRegistry;
+        $this->editGridRenderer = $editGridRenderer;
         $this->renderer = $renderer;
+        $this->typeRegistry = $typeRegistry;
     }
 
     /**
@@ -68,10 +71,15 @@ class EditController
     }
 
     /**
-     * Allow specific implementations to prepare environment before rendering response
+     * {@inheritdoc}
      */
     protected function prepareResponse(Request $request, Context $context, EditToken $token)
     {
+        // Force context to be set in AJAX queries in order for the rendering
+        // to include all meta-information necessary.
+        if ($request->isXmlHttpRequest()) {
+            $this->editGridRenderer->setCurrentToken($context->getToken());
+        }
     }
 
     /**

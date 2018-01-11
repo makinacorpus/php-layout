@@ -10,11 +10,12 @@ use MakinaCorpus\Layout\Render\Renderer;
 use MakinaCorpus\Layout\Tests\Unit\ComparisonTestTrait;
 use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Layout lookup test
  */
-class EditControllerTest extends \PHPUnit_Framework_TestCase
+class EditControllerTest extends TestCase
 {
     use ComparisonTestTrait;
 

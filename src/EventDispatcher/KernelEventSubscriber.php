@@ -52,7 +52,7 @@ class KernelEventSubscriber implements EventSubscriberInterface
         // populated, we ensure that any accidental layout load in the context
         // that might have happened will be reset to allow transparent editable
         // temporary tokens to be loaded instead.
-        if ($tokenString = $request->get(PHP_LAYOUT_TOKEN_PARAMETER)) {
+        if ($tokenString = $request->get(Context::LAYOUT_TOKEN_PARAM)) {
             try {
                 $this->context->setToken($tokenString);
                 $tokenFound = true;

@@ -2,18 +2,19 @@
 
 namespace MakinaCorpus\Layout\Tests\Unit;
 
+use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Error\OutOfBoundsError;
+use MakinaCorpus\Layout\Grid\ColumnContainer;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\ItemInterface;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
-use MakinaCorpus\Layout\Error\GenericError;
-use MakinaCorpus\Layout\Grid\ColumnContainer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Basic API-driven composition
  */
-class GridTest extends \PHPUnit_Framework_TestCase
+class GridTest extends TestCase
 {
     /**
      * Tests the item base class

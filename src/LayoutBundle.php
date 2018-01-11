@@ -3,6 +3,7 @@
 namespace MakinaCorpus\Layout;
 
 use MakinaCorpus\Layout\DependencyInjection\LayoutExtension;
+use MakinaCorpus\Layout\DependencyInjection\Compiler\ItemTypeRegisterPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -16,6 +17,7 @@ class LayoutBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new ItemTypeRegisterPass());
     }
 
     /**
@@ -23,8 +25,6 @@ class LayoutBundle extends Bundle
      */
     public function getContainerExtension()
     {
-        // I seriously do not believe in autodiscovery, and I wanted the class
-        // names to be consistent. This is explicit: make peace with it.
         return new LayoutExtension();
     }
 }

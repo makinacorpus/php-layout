@@ -1,0 +1,90 @@
+#
+# Core API services, without any concrete implementation
+#
+# Those two services needs to be defined by your business API:
+#   - php_layout.token_storage : TokenLayoutStorageInterface
+#   - php_layout.storage : LayoutStorageInterface
+#
+services:
+
+    php_layout.storage:
+        public: false
+        alias: php_layout.storage.memory
+
+    php_layout.token_storage:
+        public: false
+        alias: php_layout.token_storage.memory
+
+    php_layout.storage.memory:
+        public: false
+        class: MakinaCorpus\Layout\Driver\Memory\LayoutStorage
+
+    php_layout.token_storage.memory:
+        public: false
+        class: MakinaCorpus\Layout\Driver\Memory\TokenLayoutStorage
+
+    php_layout.type_registry:
+        public: false
+        class: MakinaCorpus\Layout\Type\ItemTypeRegistry
+
+    php_layout.renderer:
+        public: true
+        class: MakinaCorpus\Layout\Render\Renderer
+        arguments: ['@php_layout.type_registry', '@php_layout.grid_renderer']
+
+    php_layout.token_generator:
+        public: false
+        class: MakinaCorpus\Layout\Context\DefaultTokenGenerator
+
+    php_layout.context:
+        public: true
+        class: MakinaCorpus\Layout\Context\Context
+        arguments: ['@php_layout.storage', '@php_layout.token_storage', '@?security.authorization_checker', '@event_dispatcher', '@php_layout.token_generator']
+
+    php_layout.grid_renderer_decorator:
+        public: false
+        decorates: php_layout.grid_renderer
+        class: MakinaCorpus\Drupal\Layout\Render\EditRendererDecorator
+        arguments: ['@php_layout.grid_renderer_decorator.inner']
+
+    php_layout.edit_controller:
+        # Drupal 8 form implementation needs this to be public
+        # All other implementations won't care a bit
+        public: true
+        class: MakinaCorpus\Layout\Controller\EditController
+        arguments: ['@php_layout.grid_renderer_decorator', '@php_layout.token_storage', '@php_layout.type_registry', '@php_layout.renderer']
+
+    php_layout.admin_controller:
+        public: true
+        class: MakinaCorpus\Drupal\Layout\Controller\AdminController
+        arguments: ['@router']
+
+    php_layout.grid_renderer:
+        # Drupal 8 form implementation needs this to be public
+        # All other implementations won't care a bit
+        public: true
+        class: MakinaCorpus\Layout\Render\FlexGridRenderer
+
+    php_layout.argument_value_resolver.context:
+        class: MakinaCorpus\Layout\Controller\ArgumentResolver\ContextValueResolver
+        public: false
+        arguments: ["@php_layout.context"]
+        tags: [{name: controller.argument_value_resolver, priority: 128}]
+
+    php_layout.argument_value_resolver.edit_token:
+        class: MakinaCorpus\Layout\Controller\ArgumentResolver\EditTokenValueResolver
+        public: false
+        arguments: ["@php_layout.context"]
+        tags: [{name: controller.argument_value_resolver, priority: 128}]
+
+    php_layout.argument_value_resolver.layout:
+        class: MakinaCorpus\Layout\Controller\ArgumentResolver\LayoutValueResolver
+        public: false
+        arguments: ["@php_layout.context"]
+        tags: [{name: controller.argument_value_resolver, priority: 128}]
+
+    php_layout.kernel_event_subscriber:
+        public: true
+        class: MakinaCorpus\Layout\EventDispatcher\KernelEventSubscriber
+        arguments: ['@php_layout.context', '@event_dispatcher']
+        tags: [{name: kernel.event_subscriber}]

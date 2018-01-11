@@ -6,14 +6,14 @@ use MakinaCorpus\Layout\Grid\HorizontalContainer;
 use MakinaCorpus\Layout\Grid\Item;
 use MakinaCorpus\Layout\Grid\TopLevelContainer;
 use MakinaCorpus\Layout\Render\BootstrapGridRenderer;
-use MakinaCorpus\Layout\Render\Renderer;
-use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
 use MakinaCorpus\Layout\Render\FlexGridRenderer;
+use MakinaCorpus\Layout\Tests\Unit\Render\XmlGridRenderer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Render test, ensures the bottom-top rendering of elements
  */
-class RenderTest extends \PHPUnit_Framework_TestCase
+class RenderTest extends TestCase
 {
     use ComparisonTestTrait;
 

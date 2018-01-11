@@ -3,15 +3,16 @@
 namespace MakinaCorpus\Layout\Tests\Unit;
 
 use MakinaCorpus\Layout\Context\EditToken;
+use MakinaCorpus\Layout\Driver\Memory\TokenLayoutStorage;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Grid\HorizontalContainer;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestTokenLayoutStorage;
+use MakinaCorpus\Layout\Storage\DefaultLayout;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Layout lookup test
  */
-class LayoutLookupTest extends \PHPUnit_Framework_TestCase
+class LayoutLookupTest extends TestCase
 {
     use ComparisonTestTrait;
 
@@ -57,7 +58,7 @@ class LayoutLookupTest extends \PHPUnit_Framework_TestCase
          */
 
         // We will need a storage to have identifiers
-        $storage = new TestTokenLayoutStorage();
+        $storage = new TokenLayoutStorage();
         $storage->saveToken(new EditToken('testing', []));
 
         // Create types
@@ -66,7 +67,7 @@ class LayoutLookupTest extends \PHPUnit_Framework_TestCase
         $bType = $typeRegistry->getType('b');
 
         // Place a top level container and build layout (no items)
-        $layout = new TestLayout(7);
+        $layout = new DefaultLayout(1);
         $topLevel = $layout->getTopLevelContainer();
         $c1 = new HorizontalContainer('C1');
         $topLevel->append($c1);

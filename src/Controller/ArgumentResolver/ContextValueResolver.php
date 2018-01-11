@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 /**
- * This implementation is suitable for Symfony <= 3 and Drupal <= 8.
+ * This implementation is suitable for Symfony >= 3 and Drupal <= 8.
  */
 class ContextValueResolver implements ArgumentValueResolverInterface
 {

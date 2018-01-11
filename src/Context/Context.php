@@ -45,6 +45,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class Context
 {
+    const LAYOUT_TOKEN_PARAM = 'layout-edit';
+
     private $authorizationChecker;
     private $editToken;
     private $eventDispatcher;

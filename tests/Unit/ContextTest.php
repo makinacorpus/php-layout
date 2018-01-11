@@ -6,12 +6,12 @@ use MakinaCorpus\Layout\Context\EditToken;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Error\InvalidTokenError;
 use MakinaCorpus\Layout\Grid\Item;
-use MakinaCorpus\Layout\Tests\Unit\Storage\TestLayout;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Basic context and token testing
  */
-class ContextTest extends \PHPUnit_Framework_TestCase
+class ContextTest extends TestCase
 {
     use ComparisonTestTrait;
 

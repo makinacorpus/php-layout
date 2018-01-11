@@ -1,0 +1,86 @@
+# Drupal specific or overriden components
+services:
+
+    php_layout.goat.storage:
+        public: false
+        class: MakinaCorpus\Layout\Driver\Goat\LayoutStorage
+        arguments: ['@goat.session', '@php_layout.type_registry']
+
+    php_layout.goat.token_storage:
+        public: false
+        class: MakinaCorpus\Layout\Driver\Goat\TokenLayoutStorage
+        arguments: ['@goat.session']
+
+    php_layout.goat.installer:
+        public: true
+        class: MakinaCorpus\Layout\Driver\Goat\LayoutUpdater
+        tags: [{name: goat.updater}]
+
+#    php_layout.grid_renderer_decorator:
+#        public: false
+#        decorates: php_layout.grid_renderer
+#        class: MakinaCorpus\Layout\Render\EditRendererDecorator
+#        arguments: ['@php_layout.grid_renderer_decorator.inner']
+#
+#    php_layout.drupal_layout_controller:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\Controller\LayoutController
+#        arguments: ['@php_layout.grid_renderer_decorator', '@php_layout.renderer', '@php_layout.type_registry']
+
+    #
+    # Item types
+    #
+
+#    php_layout.type.drupal_node:
+#        public: false
+#        class: MakinaCorpus\Drupal\Layout\Type\NodeType
+#        arguments: ['@entity.manager']
+#        tags: [{name: php_layout.type}]
+#
+#    php_layout.type.drupal_page:
+#        public: false
+#        class: MakinaCorpus\Drupal\Layout\Type\PageContentType
+#        arguments: ['@entity.manager']
+#        tags: [{name: php_layout.type}]
+
+    #
+    # Helpers and Drupal business logic
+    #
+
+#    php_layout.drupal_page_injector:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\DefaultPageInjector
+#        arguments: ['@php_layout.context', '@php_layout.renderer', '@php_layout.grid_renderer_decorator']
+#
+#    php_layout.collect_layout_event_subscriber:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\Event\CollectLayoutEventSubscriber
+#        arguments: ['@database']
+#        tags: [{name: event_subscriber}]
+#
+#    php_layout.context_pane_event_subscriber:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\Event\ContextPaneEventSubscriber
+#        arguments: ['@php_layout.admin_layout_controller', '@php_layout.context']
+#        tags: [{name: event_subscriber}]
+#
+#    php_layout.admin_layout_controller:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\Controller\AdminController
+#        arguments: ['@php_layout.context']
+#        calls: [[setContainer, ['@service_container']]]
+
+    #
+    # Security voters
+    #
+
+#    php_layout.layout_permission_voter:
+#        public: false
+#        class: MakinaCorpus\Drupal\Layout\Security\LayoutPermissionVoter
+#        tags: [{name: security.voter}]
+#
+#    php_layout.layout_node_voter:
+#        public: false
+#        class: MakinaCorpus\Drupal\Layout\Security\LayoutNodeVoter
+#        arguments: ['@entity.manager']
+#        tags: [{name: security.voter}]

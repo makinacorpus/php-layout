@@ -1,6 +1,6 @@
 <?php
 
-namespace MakinaCorpus\Layout\Tests\Unit\Storage;
+namespace MakinaCorpus\Layout\Driver\Memory;
 
 use MakinaCorpus\Layout\Context\EditToken;
 use MakinaCorpus\Layout\Error\InvalidTokenError;
@@ -11,8 +11,10 @@ use MakinaCorpus\Layout\Storage\TokenLayoutStorageInterface;
 
 /**
  * Very specific version of layout storage, used only for testing purposes
+ *
+ * @codeCoverageIgnore
  */
-class TestTokenLayoutStorage implements TokenLayoutStorageInterface
+class TokenLayoutStorage implements TokenLayoutStorageInterface
 {
     private $sequence = 1;
     private $tokens = [];

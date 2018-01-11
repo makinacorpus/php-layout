@@ -16,7 +16,6 @@ final class EditToken
 {
     private $additional = [];
     private $layoutIdList = [];
-    private $tokenStorage;
     private $token;
 
     /**

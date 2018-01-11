@@ -9,13 +9,14 @@ use MakinaCorpus\Layout\Controller\ArgumentResolver\EditTokenValueResolver;
 use MakinaCorpus\Layout\Controller\ArgumentResolver\LayoutValueResolver;
 use MakinaCorpus\Layout\Error\GenericError;
 use MakinaCorpus\Layout\Storage\LayoutInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 /**
  * Covers argument resolvers
  */
-class ArgumentResolverTest extends \PHPUnit_Framework_TestCase
+class ArgumentResolverTest extends TestCase
 {
     use ComparisonTestTrait;
 

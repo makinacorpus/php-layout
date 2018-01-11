@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 /**
- * This implementation is suitable for Symfony <= 3 and Drupal <= 8.
+ * This implementation is suitable for Symfony >= 3 and Drupal <= 8.
  *
  * Beware that this implementation will substitute layouts with temporary ones
  * as soon as the layout exists in current context.
