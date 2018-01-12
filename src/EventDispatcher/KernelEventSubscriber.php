@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernel;
 
 /**
  * React upon framework events
@@ -43,10 +44,15 @@ class KernelEventSubscriber implements EventSubscriberInterface
      */
     public function onRequest(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
+
+        if (HttpKernel::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
         $collectEvent = new CollectLayoutEvent($this->context);
         $this->dispatcher->dispatch(CollectLayoutEvent::EVENT_NAME, $collectEvent);
         $tokenFound = false;
-        $request = $event->getRequest();
 
         // By setting the token after the event has run and context has been
         // populated, we ensure that any accidental layout load in the context

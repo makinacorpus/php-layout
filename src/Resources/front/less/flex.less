@@ -1,12 +1,19 @@
+.layout-top {
+  // avoid container leaking on the outside
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .layout-container {
   display: flex;
   flex-flow: row;
+  // nice gutters
   margin: 0 -15px;
 }
 .layout-container > div {
   position: relative;
   flex: auto;
   flex-basis: 0;
+  // nice gutters
   padding-left: 15px;
   padding-right: 15px;
 }

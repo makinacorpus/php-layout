@@ -1,3 +1,7 @@
+.layout-top {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .layout-container {
   display: flex;
   flex-flow: row;

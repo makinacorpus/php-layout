@@ -4,13 +4,13 @@ const MinifyPlugin = require("babel-minify-webpack-plugin");
 const path = require('path');
 const webpack = require('webpack');
 
-const DIST_DIR = path.resolve(__dirname, 'public');
+const DIST_DIR = path.resolve(__dirname, 'src/Resources/public/dist');
 const extractLess = new ExtractTextPlugin({
   filename: "edit.css",
 });
 
 module.exports = {
-  entry: ['core-js/modules/es6.promise', './Resources/front/index.js'],
+  entry: ['core-js/modules/es6.promise', './src/Resources/front/index.js'],
   //devtool: 'source-map',
   plugins: [
     new CleanWebpackPlugin([

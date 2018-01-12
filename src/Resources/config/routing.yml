@@ -1,122 +1,83 @@
-<?php
-/**
- * PHP Layout Drupal module hook definitions and module placeholder.
- */
+#<?php
+#/**
+# * PHP Layout Drupal module hook definitions and module placeholder.
+# */
+#
+#/**
+# * Layout edit token get parameter name
+# */
+#const PHP_LAYOUT_TOKEN_PARAMETER = 'layout-edit';
+#
+#/**
+# * Edit all permission
+# */
+#const PHP_LAYOUT_PERMISSION_EDIT_ALL = 'edit all layouts';
+#
+#/**
+# * Implements hook_menu().
+# */
+#function phplayout_menu() {
+#  $items = [];
+#
+#  // Token control actions
+#  $items['layout/callback/control/edit-one'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.admin_layout_controller::editSingle'],
+#  ];
+#  $items['layout/callback/control/commit-one'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.admin_layout_controller::commitSingle'],
+#  ];
+#  $items['layout/callback/control/rollback-one'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.admin_layout_controller::rollbackSingle'],
+#  ];
+#  $items['layout/callback/control/commit'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.admin_layout_controller::commitAll'],
+#  ];
+#  $items['layout/callback/control/rollback'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.admin_layout_controller::rollbackAll'],
+#  ];
+#
+#  // More specific callbacks
+#  $items['layout/callback/set-page'] = [
+#    'page callback' => 'sf_dic_page',
+#    'page arguments' => ['php_layout.drupal_layout_controller::setPage'],
+#  ];
+#
+#  return $items;
+#}
 
-/**
- * Layout edit token get parameter name
- */
-const PHP_LAYOUT_TOKEN_PARAMETER = 'layout-edit';
+layout_ajax_add_column_container:
+    path: /layout/ajax/add-column-container
+    defaults: { _controller: 'php_layout.edit_controller:addColumnContainerAction' }
 
-/**
- * Edit all permission
- */
-const PHP_LAYOUT_PERMISSION_EDIT_ALL = 'edit all layouts';
+layout_ajax_add_column:
+    path: /layout/ajax/add-column
+    defaults: { _controller: 'php_layout.edit_controller:addColumnAction' }
 
-/**
- * Implements hook_menu().
- */
-function phplayout_menu() {
-  $items = [];
+layout_ajax_add_item:
+    path: /layout/ajax/add-item
+    defaults: { _controller: 'php_layout.edit_controller:addAction' }
 
-  // Edit callbacks for AJAX/other.
-  $items['layout/ajax/add-column'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::addColumn'],
-  ];
-  $items['layout/ajax/add-column-container'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::addColumnContainer'],
-  ];
-  $items['layout/ajax/add-item'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::add'],
-  ];
-  $items['layout/ajax/get-styles'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::getAllowedStyles'],
-  ];
-  $items['layout/ajax/move'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::move'],
-  ];
-  $items['layout/ajax/remove'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::remove'],
-  ];
-  $items['layout/ajax/render'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::render'],
-  ];
-  $items['layout/ajax/set-style'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::setStyle'],
-  ];
+layout_ajax_get_styles:
+    path: /layout/ajax/get-styles
+    defaults: { _controller: 'php_layout.edit_controller:getAllowedStylesAction' }
 
-  // Token control actions
-  $items['layout/callback/control/edit-one'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.admin_layout_controller::editSingle'],
-  ];
-  $items['layout/callback/control/commit-one'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.admin_layout_controller::commitSingle'],
-  ];
-  $items['layout/callback/control/rollback-one'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.admin_layout_controller::rollbackSingle'],
-  ];
-  $items['layout/callback/control/commit'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.admin_layout_controller::commitAll'],
-  ];
-  $items['layout/callback/control/rollback'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.admin_layout_controller::rollbackAll'],
-  ];
+layout_ajax_move:
+    path: /layout/ajax/move
+    defaults: { _controller: 'php_layout.edit_controller:moveAction' }
 
-  // More specific callbacks
-  $items['layout/callback/set-page'] = [
-    'page callback' => 'sf_dic_page',
-    'page arguments' => ['php_layout.drupal_layout_controller::setPage'],
-  ];
+layout_ajax_remove:
+    path: /layout/ajax/remove
+    defaults: { _controller: 'php_layout.edit_controller:removeAction' }
 
-  return $items;
-}
+layout_ajax_render:
+    path: /layout/ajax/render
+    defaults: { _controller: 'php_layout.edit_controller:renderAction' }
 
-/**
- * Implements hook_permission().
- */
-function phplayout_permission() {
-  return [
-    PHP_LAYOUT_PERMISSION_EDIT_ALL => [
-      'title'       => t("Edit all layouts"),
-      "description" => t("Users with this permission can edit all layouts."),
-    ],
-  ];
-}
-
-/**
- * Implements hook_page_build().
- */
-function phplayout_page_build(&$page) {
-  \Drupal::service('php_layout.drupal_page_injector')->inject(\Drupal::request(), $page);
-}
-
-/**
- * Implements hook_library().
- */
-function phplayout_library() {
-  $path = drupal_get_path('module', 'phplayout') . '/public';
-  $opts = ['type'  => 'file', 'media' => 'screen'];
-
-  return [
-    'edit_basic' => [
-      'title'   => 'PHP layout - Basic edit UI',
-      'version' => '1.0',
-      'js'      => [$path . '/edit.js' => []],
-      'css'     => [$path . '/edit.css' => $opts],
-      'dependencies' => [['dragula', 'dragula']],
-    ],
-  ];
-}
+layout_ajax_set_style:
+    path: /layout/ajax/set-style
+    defaults: { _controller: 'php_layout.edit_controller:setStyleAction' }

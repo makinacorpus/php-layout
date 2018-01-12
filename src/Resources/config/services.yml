@@ -52,7 +52,7 @@ services:
         # All other implementations won't care a bit
         public: true
         class: MakinaCorpus\Layout\Controller\EditController
-        arguments: ['@php_layout.grid_renderer_decorator', '@php_layout.token_storage', '@php_layout.type_registry', '@php_layout.renderer']
+        arguments: ['@php_layout.grid_renderer', '@php_layout.type_registry', '@php_layout.renderer']
 
 #    php_layout.admin_controller:
 #        public: true

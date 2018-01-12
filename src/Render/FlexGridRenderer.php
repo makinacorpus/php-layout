@@ -70,6 +70,12 @@ class FlexGridRenderer implements GridRendererInterface
      */
     public function renderTopLevelContainer(TopLevelContainer $container, string $innerHtml, array $attributes = []) : string
     {
+        if (isset($attributes['class'])) {
+            $attributes['class'] .= 'layout-top';
+        } else {
+            $attributes['class'] = 'layout-top';
+        }
+
         return '<div'.$this->renderAttributes($attributes).'>' . $innerHtml . '</div>';
     }
 

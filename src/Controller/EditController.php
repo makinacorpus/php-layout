@@ -19,6 +19,7 @@ use MakinaCorpus\Layout\Type\ItemTypeRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Controller that should be suitable with most frameworks.
@@ -58,6 +59,18 @@ class EditController
     public function toggleTestMode(bool $toggle = true)
     {
         $this->testMode = $toggle;
+    }
+
+    /**
+     * Get post parameter or die
+     */
+    private function getParamOrDie(Request $request, string $name) : string
+    {
+        if (null === ($value = $request->get($name))) {
+            throw new NotFoundHttpException();
+        }
+
+        return $value;
     }
 
     /**
@@ -103,8 +116,10 @@ class EditController
     /**
      * Get allowed styles for item type and identifier
      */
-    public function getAllowedStylesAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    public function getAllowedStylesAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $itemId */)
     {
+        $itemId = $this->getParamOrDie($request, 'itemId');
+
         $this->ensureLayout($token, $layout);
         $item = $layout->findItem($itemId);
 
@@ -126,8 +141,11 @@ class EditController
     /**
      * Set option
      */
-    public function setStyleAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId, string $style = ItemInterface::STYLE_DEFAULT)
+    public function setStyleAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $itemId, string $style = ItemInterface::STYLE_DEFAULT */)
     {
+        $itemId = $this->getParamOrDie($request, 'itemId');
+        $style = $request->get('style', ItemInterface::STYLE_DEFAULT);
+
         $this->ensureLayout($token, $layout);
         $item = $layout->findItem($itemId);
         $parent = $layout->findContainerOf($itemId);
@@ -144,8 +162,10 @@ class EditController
     /**
      * Rerender an item or container
      */
-    public function renderAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    public function renderAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $itemId */)
     {
+        $itemId = $this->getParamOrDie($request, 'itemId');
+
         $this->ensureLayout($token, $layout);
         $item = $layout->findItem($itemId);
         $parent = $layout->findContainerOf($itemId);
@@ -158,8 +178,10 @@ class EditController
     /**
      * Remove an item or container, and all its descendents
      */
-    public function removeAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $itemId)
+    public function removeAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $itemId */)
     {
+        $itemId = $this->getParamOrDie($request, 'itemId');
+
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainerOf($itemId);
 
@@ -189,8 +211,13 @@ class EditController
     /**
      * Add column container into another container
      */
-    public function addColumnContainerAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addColumnContainerAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $containerId, int $position = 0, int $columnCount = 2, string $style = ItemInterface::STYLE_DEFAULT */)
     {
+        $containerId = $this->getParamOrDie($request, 'containerId');
+        $position = $this->getParamOrDie($request, 'position');
+        $columnCount = $this->getParamOrDie($request, 'columnCount');
+        $style = $request->get('style', ItemInterface::STYLE_DEFAULT);
+
         $this->ensureLayout($token, $layout);
 
         if ($containerId) {
@@ -226,8 +253,11 @@ class EditController
     /**
      * Add column to horizontal container
      */
-    public function addColumnAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $position = 0)
+    public function addColumnAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $containerId, int $position = 0 */)
     {
+        $containerId = $this->getParamOrDie($request, 'containerId');
+        $position = $this->getParamOrDie($request, 'position');
+
         $this->ensureLayout($token, $layout);
         $container = $layout->findContainer($containerId);
 
@@ -247,8 +277,14 @@ class EditController
     /**
      * Add an item into another
      */
-    public function addAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT)
+    public function addAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $containerId, string $itemType, string $itemId, int $position = 0, string $style = ItemInterface::STYLE_DEFAULT */)
     {
+        $containerId = $this->getParamOrDie($request, 'containerId');
+        $itemType = $this->getParamOrDie($request, 'itemType');
+        $itemId = $this->getParamOrDie($request, 'itemId');
+        $position = $this->getParamOrDie($request, 'position');
+        $style = $request->get('style', ItemInterface::STYLE_DEFAULT);
+
         $this->ensureLayout($token, $layout);
         $item = $this->typeRegistry->getType($itemType, false)->create($itemId, $style);
         $item->setLayoutId($layout->getId());
@@ -278,8 +314,12 @@ class EditController
     /**
      * Add an item from a container to any other container within the same layout
      */
-    public function moveAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout, int $containerId, int $itemId, int $newPosition)
+    public function moveAction(Request $request, Context $context, EditToken $token, LayoutInterface $layout /*, int $containerId, int $itemId, int $newPosition */)
     {
+        $containerId = $this->getParamOrDie($request, 'containerId');
+        $itemId = $this->getParamOrDie($request, 'itemId');
+        $newPosition = $this->getParamOrDie($request, 'newPosition');
+
         $this->ensureLayout($token, $layout);
 
         $container  = $layout->findContainer($containerId);
