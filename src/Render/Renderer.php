@@ -20,20 +20,15 @@ class Renderer
 
     /**
      * Default constructor
-     *
-     * @param ItemTypeRegistry $typeRegistry
      */
     public function __construct(ItemTypeRegistry $typeRegistry, GridRendererInterface $gridRenderer)
     {
-        $this->typeRegistry = $typeRegistry;
         $this->gridRenderer = $gridRenderer;
+        $this->typeRegistry = $typeRegistry;
     }
 
     /**
      * Collect everything
-     *
-     * @param ItemInterface $item
-     * @param RenderCollection $map
      */
     private function collect(ItemInterface $item, RenderCollection $collection)
     {
@@ -58,10 +53,6 @@ class Renderer
 
     /**
      * Render container children
-     *
-     * @param ContainerInterface $container
-     *
-     * @return string
      */
     private function renderContainerChildren(ContainerInterface $container, RenderCollection $collection) : string
     {
@@ -76,8 +67,6 @@ class Renderer
 
     /**
      * Render horizontal container columns
-     *
-     * @param ContainerInterface $container
      *
      * @return string[]
      */
@@ -94,11 +83,6 @@ class Renderer
 
     /**
      * Render a single container
-     *
-     * @param ContainerInterface $container
-     * @param RenderCollection $collection
-     *
-     * @return string
      */
     private function renderContainer(ContainerInterface $container, RenderCollection $collection) : string
     {
@@ -119,8 +103,6 @@ class Renderer
 
     /**
      * Preload and render everything in the given collection
-     *
-     * @param RenderCollection $collection
      */
     private function renderCollection(RenderCollection $collection)
     {
@@ -144,8 +126,6 @@ class Renderer
 
     /**
      * Get grid renderer
-     *
-     * @return GridRendererInterface
      */
     public function getGridRenderer() : GridRendererInterface
     {
@@ -161,10 +141,6 @@ class Renderer
      * MakinaCorpus\Layout\Render\GridRendererInterface::renderItem() method
      * will be lost. In this very specific use case, prefer using the
      * renderItemIn() method directly.
-     *
-     * @param ItemInterface $item
-     *
-     * @return string
      */
     public function render(ItemInterface $item) : string
     {
@@ -181,12 +157,6 @@ class Renderer
 
     /**
      * Renders a single item, along with its context
-     *
-     * @param ItemInterface $item
-     * @param ContainerInterface $parent
-     * @param int $position
-     *
-     * @return string
      */
     public function renderItemIn(ItemInterface $item, ContainerInterface $parent, int $position) : string
     {

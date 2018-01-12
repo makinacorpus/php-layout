@@ -44,7 +44,7 @@ services:
     php_layout.grid_renderer_decorator:
         public: false
         decorates: php_layout.grid_renderer
-        class: MakinaCorpus\Drupal\Layout\Render\EditRendererDecorator
+        class: MakinaCorpus\Layout\Render\EditRendererDecorator
         arguments: ['@php_layout.grid_renderer_decorator.inner']
 
     php_layout.edit_controller:
@@ -54,10 +54,10 @@ services:
         class: MakinaCorpus\Layout\Controller\EditController
         arguments: ['@php_layout.grid_renderer_decorator', '@php_layout.token_storage', '@php_layout.type_registry', '@php_layout.renderer']
 
-    php_layout.admin_controller:
-        public: true
-        class: MakinaCorpus\Drupal\Layout\Controller\AdminController
-        arguments: ['@router']
+#    php_layout.admin_controller:
+#        public: true
+#        class: MakinaCorpus\Drupal\Layout\Controller\AdminController
+#        arguments: ['@router']
 
     php_layout.grid_renderer:
         # Drupal 8 form implementation needs this to be public
@@ -88,3 +88,9 @@ services:
         class: MakinaCorpus\Layout\EventDispatcher\KernelEventSubscriber
         arguments: ['@php_layout.context', '@event_dispatcher']
         tags: [{name: kernel.event_subscriber}]
+
+    php_layout.twig_extension:
+        public: false
+        class: MakinaCorpus\Layout\Twig\LayoutExtension
+        arguments: ['@php_layout.renderer', '@php_layout.context', '@php_layout.grid_renderer']
+        tags: [{name: twig.extension}]

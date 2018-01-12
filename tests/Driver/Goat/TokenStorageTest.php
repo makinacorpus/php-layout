@@ -39,7 +39,6 @@ class TokenStorageTest extends AbstractLayoutTest
         $storage = $this->createStorage();
         $tokenStorage = $this->createTokenStorage();
 
-        /** @var \MakinaCorpus\Drupal\Layout\Storage\Layout $layout */
         $layout1 = $storage->create();
         $layout2 = $storage->create();
 
@@ -342,7 +341,7 @@ EOT;
         $typeRegistry = $this->createTypeRegistry();
         $renderer     = $this->createRenderer($typeRegistry, new XmlGridRenderer());
 
-        /** @var \MakinaCorpus\Drupal\Layout\Storage\Layout $layout */
+        /** @var \MakinaCorpus\Layout\Storage\DefaultLayout $layout */
         $layout = $storage->create();
         $token = new EditToken('testing', [$layout->getId()]);
 
@@ -414,7 +413,7 @@ EOT;
         $typeRegistry = $this->createTypeRegistry();
         $renderer     = $this->createRenderer($typeRegistry, new XmlGridRenderer());
 
-        /** @var \MakinaCorpus\Drupal\Layout\Storage\Layout $layout */
+        /** @var \MakinaCorpus\Layout\Storage\DefaultLayout $layout */
         $layout = $storage->create();
         $token = new EditToken('testing', [$layout->getId()]);
 

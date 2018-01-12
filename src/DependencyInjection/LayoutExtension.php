@@ -2,7 +2,6 @@
 
 namespace MakinaCorpus\Layout\DependencyInjection;
 
-use Goat\Bundle\DependencyInjection\GoatExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
