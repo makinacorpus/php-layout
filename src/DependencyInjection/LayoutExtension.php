@@ -22,4 +22,11 @@ class LayoutExtension extends Extension
         $loader->load('services.yml');
         $loader->load('symfony.yml');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+    }
 }
